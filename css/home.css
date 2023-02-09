@@ -1,5 +1,5 @@
 :root {
-    --background-color: 
+    --background-color: rgb(212, 209, 209);
 }
 
 html {
@@ -14,18 +14,22 @@ body {
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     color: #000;
-    background-color: var(--background-color);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(../img/background.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
     min-height: 100vh;
 }
 
-#prompt{
+#prompt {
     margin: 10%;
-    background-color:rgba(172, 221, 255, 1);
+    background-color: rgba(172, 221, 255, 1);
     padding: 2%;
     font-size: large;
-    
+
 }
 
-#question{
+#question {
     margin-left: 96%;
 }

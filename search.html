@@ -1,15 +1,13 @@
 <section id="recherche">
-    <div id="search-bar">
-        <form action="./index.php" method="post">
-            <label>
-                <input type="search" name="search" placeholder="Rechercher...">
-            </label>
-            <input type="submit" value="Search">
-        </form>
-    </div>
-
     <!--A incorporer le système de recherche-->
     <nav id="filtres">
+        <div id="search-bar">
+            <form action="index.php" role="search">
+                <label for="search">Recherche</label>
+                <input id="search" type="search" placeholder="Rechercher..." autofocus required />
+                <button type="submit">Valider</button>    
+              </form>
+        </div>
         <ul>
             <li>ASSISTANCE </li>
             <li>COMMUNICATION</li>

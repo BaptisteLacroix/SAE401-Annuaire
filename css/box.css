@@ -1,0 +1,38 @@
+:root {
+   --blue: rgba(172, 221, 255, 1);
+}
+
+.box p {
+   color: #000;
+}
+
+.box {
+   border-radius: 5px;
+   box-shadow: 0px 15px 20px -10px #fff;
+   padding: 2vh 2vw;
+   margin: 12vh auto;
+}
+
+
+.blue {
+   border-top: 3px solid var(--blue);
+}
+
+h2 {
+   color: var(--varyDarkBlue);
+   font-weight: var(--weight3);
+}
+
+
+.row1-container {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
+
+
+.box {
+   width: 50%;
+   background-color: rgba(253, 253, 253, 0.9);
+}
+

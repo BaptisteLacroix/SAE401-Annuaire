@@ -1,11 +1,13 @@
 <?php
-    require "header.html";
-    require "search.html";
-    //require __DIR__."annexe/search.php";
+    require_once __DIR__ . "/header.html";
+    require_once __DIR__ . "/search.html";
+    //require __DIR__ . "annexe/search.php";
 ?>
 
 <main>
-    <section id="prompt">
+
+    <div class="box blue">
+        <h2>Aide recherche</h2>
         <p>
             La recherche s'effectue sur le début du nom de la personne suivie de son prénom :
         </p>
@@ -31,12 +33,12 @@
         <p>
             si votre recherche est toujours infructueuse, recherchez sur une partie du nom, par exemple : *corbus
         </p>
-    </section>
+    </div>
     
 </main>
 
 <?php
-require "footer.html";
+require_once __DIR__ . "/footer.html";
 ?>
 
 </body>
