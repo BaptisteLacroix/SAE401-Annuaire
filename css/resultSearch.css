@@ -1,0 +1,54 @@
+.containerLines {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.line {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    padding: 1vh 0;
+}
+
+.item {
+    background-color: #fff;
+    margin: 2vh 4vw;
+    display: flex;
+    flex-direction: row;
+    border-radius: 10px;
+    transition: all .2s ease-in-out;
+    opacity: 0.9;
+}
+
+.item:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+    opacity: 1;
+}
+
+
+
+
+.infos {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding-left: .5vw;
+}
+
+.statusInfo {
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.nomInfo {
+    font-size: medium;
+}
+
+
+.img {
+    width: 5vw;
+    height: 5vw;
+}

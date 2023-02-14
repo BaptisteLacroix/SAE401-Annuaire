@@ -3,10 +3,6 @@
     src: url("../font/BANNER.ttf") format("truetype");
 }
 
-:root {
-    --header-background: rgba(172, 221, 255, 1);
-    --footer-background : rgba(172, 221, 255, 1);
-}
 
 header {
     height: 10vh;
@@ -14,7 +10,7 @@ header {
     display: block;
 }
 
-header  ul {
+header ul {
     padding: 0;
     list-style: none;
 }
@@ -36,7 +32,7 @@ header  ul {
 }
 
 
-#accueil > ul {
+#accueil>ul {
     padding: 0;
     display: flex;
     list-style: none;
@@ -51,7 +47,7 @@ header  ul {
     color: black;
 }
 
-#right-nav{
+#right-nav {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -78,41 +74,4 @@ header  ul {
 
 #flags img:hover {
     cursor: pointer;
-}
-
-
-#filtres ul {
-    padding: 0;
-    display: flex;
-    list-style: none;
-    align-items: center;
-    justify-content: space-between;
-    margin: 0 1vw;
-
-}
-
-#filtres ul li {
-    padding: 3vh;
-}
-
-#filtres ul li:hover {
-    border-bottom: var(--header-background);
-    color: var(--header-background);
-    transition: 0.5s;
-    cursor: pointer;
-}
-
-
-@media screen and (max-width:830px) {
-    #filtres ul {
-        flex-direction: column;
-    }
-}
-
-
-
-
-#question {
-    height: 3vh;
-    width: 3vw;
 }

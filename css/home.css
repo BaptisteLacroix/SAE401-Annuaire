@@ -1,11 +1,39 @@
 :root {
-    --background-color: rgb(212, 209, 209);
+    --background-color: rgba(212, 209, 209, 0);
+    --header-background: rgba(172, 221, 255, 1);
+    --rad: .7rem;
+    --dur: .3s;
+    --color-dark: #2f2f2f;
+    --color-light: #fff;
+    --color-brand: rgba(172, 221, 255, 1);
+    --font-fam: 'Lato', sans-serif;
+    --height: 4vh;
+    --btn-width: 7vh;
+    --bez: cubic-bezier(0, 0, 0.43, 1.49);
+    --footer-background: rgba(172, 221, 255, 1);
+}
+
+::-webkit-scrollbar {
+	width: 6px;
+	background-color: var(--color-dark);
+}
+
+::-webkit-scrollbar-thumb {
+	border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: var(--header-background);
 }
 
 html {
     padding: 0;
     margin: 0;
     scroll-behavior: smooth;
+}
+
+main {
+    flex: 1;
 }
 
 body {
@@ -19,17 +47,7 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
-}
-
-#prompt {
-    margin: 10%;
-    background-color: rgba(172, 221, 255, 1);
-    padding: 2%;
-    font-size: large;
-
-}
-
-#question {
-    margin-left: 96%;
 }
