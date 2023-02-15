@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Lacroix Baptiste">
+    <meta name="author" content="Conil Marvin">
+    <meta name="author" content="Pautreau Romain">
+    <meta name="author" content="Lopes Mateus">
+    <meta name="author" content="Hassan Sacha">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/home.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/menu.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/search.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/box.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/footer.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/resultSearch.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/login.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/profile.css')}}"/>
+    <script type="text/javascript" src="{{url_for('static', filename='js/data.js')}}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Sinta</title>
+</head>
+
+<body>
+<header>
+    <nav id="accueil">
+        <ul>
+            <li>
+                <div id="logo">[_Sinta_]</div>
+            </li>
+            <li><a class="headertext" href="./index">Annuaire</a></li>
+            <li>
+                <ul id="right-nav">
+                    <li>
+                        <a id="loginText" href="./login">Login</a>
+                    </li>
+                    <li id="flags">
+                        <img src="{{url_for('static', filename='img/drapeau/fr.svg')}}" alt="french_flag"></a>
+                        <img src="{{url_for('static', filename='img/drapeau/en.svg')}}" alt="english_flag"></a>
+                        <img src="{{url_for('static', filename='img/drapeau/es.svg')}}" alt="spain_flag"></a>
+                    </li>
+                </ul>
+
+            </li>
+        </ul>
+
+    </nav>
+</header>
+
+<section id="recherche">
+    <!--À incorporer le système de recherche-->
+    <nav id="filtres">
+        <div id="search-bar">
+            <form id="search-form" action="/templates/globalSearch.html?filter=UNBOUGLA" role="search">
+                <label id="search-label" for="search">Recherche</label>
+                <input autocomplete="off" id="search" type="search" placeholder="Rechercher..." autofocus required/>
+                <button id="search-button" type="submit">Valider</button>
+            </form>
+        </div>
+        <ul>
+            <li>
+                <a class="filter" href="./globalSearch?filter=assistance">ASSISTANCE</a>
+            </li>
+            <li>
+                <a class="filter" href="./globalSearch?filter=assistance">COMMUNICATION</a>
+            </li>
+            <li>
+                <a class="filter" href="./globalSearch?filter=assistance">RESOURCES HUMAINES</a>
+            </li>
+            <li>
+                <a class="filter" href="./globalSearch?filter=assistance">FINANCES</a>
+            </li>
+            <li>
+                <a class="filter" href="./globalSearch?filter=assistance">INFORMATIQUE</a>
+            </li>
+        </ul>
+    </nav>
+</section>
+<main>
+    <div class="box blue">
+        <h2>Aide recherche</h2>
+        <p>
+            La recherche s'effectue sur le début du nom de la personne suivie de son prénom :
+        </p>
+        <p>
+            "Mar" recherche toutes les personnes dont le nom commence par mar
+        </p>
+        <p>
+            "Martin m" recherche toutes les personnes nommées martin dont le prénom commence par m
+        </p>
+        <p>
+            Il est possible d'utiliser le caractère * comme joker :
+        </p>
+        <p>
+            "Mar* m" recherche toutes les personnes dont le nom commence par mar et dont le prénom commence par m
+        </p>
+        <p>
+            Pour les noms composés, le séparateur entre la particule et le nom n'est pas normalisé, il se peut que
+            ce soit un tiret, un blanc, un souligné. Utilisez le joker * pour couvrir tous les cas :
+        </p>
+        <p>
+            le*corbusier couvre lecorbusier, le corbusier, le-corbusier et le_corbusier
+        </p>
+        <p>
+            si votre recherche est toujours infructueuse, recherchez sur une partie du nom, par exemple : *corbus
+        </p>
+    </div>
+
+</main>
+
+<footer class="sticky-footer">
+    <div>
+        © Copyright - Sinta - 2023
+    </div>
+    <div>
+        Conil Marvin - Hassan Sacha - Lacroix Baptiste - Lopes Mateus - Pautreau Romain
+    </div>
+</footer>
+</body>

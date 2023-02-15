@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="author" content="Lacroix Baptiste">
+    <meta name="author" content="Conil Marvin">
+    <meta name="author" content="Pautreau Romain">
+    <meta name="author" content="Lopes Mateus">
+    <meta name="author" content="Hassan Sacha">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/home.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/menu.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/search.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/box.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/footer.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/resultSearch.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/login.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/profile.css')}}"/>
+    <script type="text/javascript" src="{{url_for('static', filename='js/data.js')}}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Sinta</title>
+</head>
+
+<body>
+<header>
+    <nav id="accueil">
+        <ul>
+            <li>
+                <div id="logo">[_Sinta_]</div>
+            </li>
+            <li><a class="headertext" href="./index">Annuaire</a></li>
+            <li>
+                <ul id="right-nav">
+                    <li>
+                        <a id="loginText" href="./login">Login</a>
+                    </li>
+                    <li id="flags">
+                        <img src="{{url_for('static', filename='img/drapeau/fr.svg')}}" alt="french_flag"></a>
+                        <img src="{{url_for('static', filename='img/drapeau/en.svg')}}" alt="english_flag"></a>
+                        <img src="{{url_for('static', filename='img/drapeau/es.svg')}}" alt="spain_flag"></a>
+                    </li>
+                </ul>
+
+            </li>
+        </ul>
+
+    </nav>
+</header>
+<main>
+    <div class="containerLogin">
+        <div class="loginImage">
+            <img src="{{url_for('static', filename='img/loginImage.jpg')}}" alt="login">
+        </div>
+
+        <div class="login-box">
+            <h2>Se connecter</h2>
+            <form action="./login" method="post">
+                <div class="user-box">
+                    <label for="E-mail"></label>
+                    <input type="text" name="E-mail" id="E-mail" required autocomplete="off">
+                    <label>Identifiant</label>
+                </div>
+                <div class="user-box">
+                    <label for="password"></label>
+                    <input type="password" name="password" id="password" required autocomplete="off">
+                    <label>Mot de passe</label>
+                </div>
+
+
+                <div class="remember">
+                    <input type="checkbox" name="remember" id="remember">
+                    <label for="remember"></label>
+                    <label class="text" for="remember">Se souvenir de moi</label>
+                </div>
+                <div class="connection">
+                    <input class="connect" type="submit" value="Se connecter">
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer class="sticky-footer">
+    <div>
+        © Copyright - Sinta - 2023
+    </div>
+    <div>
+        Conil Marvin - Hassan Sacha - Lacroix Baptiste - Lopes Mateus - Pautreau Romain
+    </div>
+</footer>
+</body>
