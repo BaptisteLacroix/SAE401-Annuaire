@@ -1,0 +1,39 @@
+#profile-name {
+    font-size: xx-large;
+    font-weight: bold;
+    text-align: center;
+    flex: 1;
+}  
+
+.profile-box {
+    padding: 1vh 0;
+}
+
+.profile-title {
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.profile-info {
+    font-size: large;
+    padding: 1vh 0;
+}
+
+.profile-info>div {
+    padding: .5vh 0;
+}
+
+.profile-info>div>span {
+    font-style: italic;
+}
+
+#profile-picture {
+    width: 7vw;
+    border-radius: 100%;
+}
+
+.title-box {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}

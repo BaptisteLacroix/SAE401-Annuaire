@@ -1,4 +1,4 @@
-form {
+#search-form {
     position: relative;
     width: 30vw;
     background: var(--color-brand);
@@ -6,8 +6,8 @@ form {
     margin: 2vh auto 0;
 }
 
-input,
-button {
+input[type="search"],
+#search-button {
     height: var(--height);
     font-family: var(--font-fam);
     border: 0;
@@ -22,13 +22,13 @@ input[type="search"] {
     padding: 0 1vw;
     border-radius: var(--rad);
     appearance: none;
-    transition: all var(--dur) var(--bez);
+    transition: all var(--dur) ease-in-out;
     transition-property: width, border-radius;
     z-index: 1;
     position: relative;
 }
 
-button {
+#search-button {
     display: none;
     position: absolute;
     top: 0;
@@ -39,21 +39,21 @@ button {
     border-radius: 0 var(--rad) var(--rad) 0;
 }
 
-button:hover {
+#search-button:hover {
     cursor: pointer;
 }
 
-input:not(:placeholder-shown) {
+input[type="search"]:not(:placeholder-shown) {
     border-radius: var(--rad) 0 0 var(--rad);
     width: calc(100% - var(--btn-width));
 
 }
 
-input:not(:placeholder-shown)+button {
+input[type="search"]:not(:placeholder-shown)+#search-button {
     display: block;
 }
 
-label {
+#search-label {
     position: absolute;
     clip: rect(1px, 1px, 1px, 1px);
     padding: 0;
@@ -82,7 +82,7 @@ label {
 .filter:hover {
     border-bottom: var(--header-background);
     color: var(--header-background);
-    transition: 0.5s ease-in-out;
+    transition: 0.3s ease-in-out;
     cursor: pointer;
 }
 

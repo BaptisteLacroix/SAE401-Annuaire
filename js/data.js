@@ -5,12 +5,12 @@ function generateFromSearch() {
       item.className = "item";
 
       item.addEventListener("click", function () {
-         window.location.href = "./profile.html";
+         window.location.href = "./profile.php";
       });
 
 
       let img = document.createElement("img");
-      img.src = "./img/profile.png";
+      img.src = "/img/profile.png";
       img.alt = "test";
       img.className = "img";
       item.appendChild(img);

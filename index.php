@@ -1,6 +1,6 @@
 <?php
-    require_once __DIR__ . "/header.html";
-    require_once __DIR__ . "/search.html";
+    require_once __DIR__ . "/annexe/html/header.html";
+    require_once __DIR__ . "/annexe/html/search.html";
     //require __DIR__ . "annexe/search.php";
 ?>
 
@@ -38,7 +38,7 @@
 </main>
 
 <?php
-require_once __DIR__ . "/footer.html";
+require_once __DIR__ . "/annexe/html/footer.html";
 ?>
 
 </body>

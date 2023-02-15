@@ -51,4 +51,6 @@
 .img {
     width: 5vw;
     height: 5vw;
+    padding: .5vh;
+    border-radius: 100%;
 }

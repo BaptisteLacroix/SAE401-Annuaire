@@ -2,14 +2,13 @@
     --background-color: rgba(212, 209, 209, 0);
     --header-background: rgba(172, 221, 255, 1);
     --rad: .7rem;
-    --dur: .3s;
+    --dur: .2s;
     --color-dark: #2f2f2f;
     --color-light: #fff;
     --color-brand: rgba(172, 221, 255, 1);
     --font-fam: 'Lato', sans-serif;
     --height: 4vh;
     --btn-width: 7vh;
-    --bez: cubic-bezier(0, 0, 0.43, 1.49);
     --footer-background: rgba(172, 221, 255, 1);
 }
 
@@ -34,6 +33,10 @@ html {
 
 main {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 body {
