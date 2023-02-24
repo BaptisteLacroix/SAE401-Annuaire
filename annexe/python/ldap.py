@@ -1,6 +1,6 @@
-import csv
-
 import ldap3
+import pandas as pd
+from pandas._libs import json
 
 
 # It creates a connection to the LDAP server, and allows you to create
@@ -35,7 +35,7 @@ class Ldap:
 
     def connection(self):
         """
-        The function takes the server IP address, the user name, the password, the domain name and the organization name as
+        The function takes the server IP address, the username, the password, the domain name and the organization name as
         parameters. It then creates a connection to the LDAP server and binds the connection to the user
         """
         # Connexion à l'annuaire Active Directory
@@ -47,8 +47,9 @@ class Ldap:
         # Vérifier si la connexion a réussi
         if self.conn.bind():
             print("Connexion réussie")
-        else:
-            print("Echec de connexion")
+            return True
+        print("Echec de connexion")
+        return False
 
     def create_organisation(self, organisation_name):
         """
@@ -250,59 +251,58 @@ class Ldap:
         for entry in self.conn.entries:
             print(entry)
 
+    # DO an anction as user
+
 
 def function():
-    # Read the CSV file
-    with open('users.csv') as f:
-        reader = csv.DictReader(f, delimiter=';')
-        lines = [line for line in reader]
+    # Open the CSV file and read its contents
+    data = pd.read_csv('users.csv', sep=';', encoding='utf-8')
+    # Create an empty dictionary to store the organizational hierarchy
+    hierarchy = {}
 
-    # Create a dictionary to hold the groups hierarchy
-    groups = {}
+    # Group the data by Form_base and iterate over each group
+    for form_base, group in data.groupby('Form_base'):
+        # Create a dictionary to store the positions for the current Form_base
+        positions = {}
 
-    # Iterate over the lines and add each group to the dictionary
-    for line in lines:
-        # Skip empty titles and last names
-        if not line['Title'] or not line['last_name']:
-            continue
+        # Iterate over each row in the group and add the position to the positions dictionary
+        for index, row in group.iterrows():
+            # Get the position and its parent position
+            position = row['Title']
+            parent_position = row['Supérieur_hiérarchique']
 
-        # Create a group dictionary for this line
-        group = {
-            'name': line['Title'],
-            'subgroups': {},
-        }
+            # If the parent position is NaN, set it to the current Form_base
+            if pd.isna(parent_position):
+                parent_position = form_base
 
-        # Add the line as a member of its direct supervisor's subgroup
-        if line['Supérieur_hiérarchique']:
-            direct_supervisor = line['Supérieur_hiérarchique']
-            if direct_supervisor not in groups:
-                groups[direct_supervisor] = {
-                    'name': direct_supervisor,
-                    'subgroups': {},
-                }
-            groups[direct_supervisor]['subgroups'][line['Title']] = group
-        else:
-            # Add the group to the top level of the hierarchy
-            groups[line['Title']] = group
+            # Get the parent dictionary for the current position
+            parent_dict = positions.get(parent_position, positions)
 
-    print(groups)
-    for group in groups.values():
-        print_group(group)
+            # Create a dictionary for the current position
+            position_dict = parent_dict.setdefault(position, {})
 
+            # Add the position to the positions dictionary
+            positions[position] = position_dict
 
-# Print the groups hierarchy
-def print_group(group, indent=''):
-    print(indent + group['name'])
-    for subgroup_name, subgroup in group['subgroups'].items():
-        print_group(subgroup, indent + '    ')
+        # Add the positions dictionary to the hierarchy for the current Form_base
+        hierarchy[form_base] = positions
+
+    # Print the hierarchy
+    print(hierarchy)
+    print(json.dumps(hierarchy, indent=4, ensure_ascii=False))
 
 
 def main():
     organisation_name = 'Société SINTA'
-    # ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
-    # ldap.connection()
-    # ldap.get_all_users()
-    function()
+    #ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
+    #ldap.connection()
+    #ldap.search_user('Claire Shugg')
+    #ldap.search_group('PDG')
+
+    innman = Ldap('10.22.32.3', 'SINTA', 'LAN', 'innman_lutero', 'StMkiafmwQ2')
+    print(innman.connection())
+
+    # function()
 
 
 if __name__ == '__main__':
