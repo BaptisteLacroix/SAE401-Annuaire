@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request
+import secrets
+
+from flask import Flask, render_template, request, session, url_for, redirect, g
+
+from annexe.python.ldap import Ldap
 from annexe.python.login import Login
 
 app = Flask(__name__, template_folder='templates')
-
-LOGGING = False
-LOG = None
 
 
 @app.route('/')
@@ -18,22 +19,40 @@ def index():
     return render_template('index.html')
 
 
+@app.before_request
+def before_request():
+    g.user = None
+    try:
+        g.login
+    except AttributeError:
+        # Create a new instance of the Login class for each request
+        g.login = Login()
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    global LOGGING
-    global LOG
+    """
+    TODO
+    :return:
+    """
     # Check if the user is already logged in
+    if session.get('username'):
+        return redirect(url_for('index'))
 
-    if LOGGING:
-        return render_template('index.html')
     if request.method == 'POST':
-        # Check if the user is already logged in
-        LOG = Login(request.form['username'], request.form['password'])
-        is_connect = LOG.connect()
-        if is_connect:
-            LOGGING = True
-            return render_template('index.html')
-        return render_template('login.html')
+        username = request.form['username']
+        password = request.form['password']
+        remember = request.form.get('remember')
+        if g.login.connect(username, password):
+            session['username'] = username
+            if remember == 'on':
+                session.permanent = True
+            else:
+                session.permanent = False
+            return redirect(url_for('index'))
+        else:
+            error = 'Incorrect username or password'
+            return render_template('login.html', error=error)
     else:
         return render_template('login.html')
 
@@ -44,12 +63,11 @@ def logout():
     The function logout() is a route that renders the template index.html
     :return: The index.html file is being returned.
     """
-    global LOGGING
-    global LOG
-    if not LOGGING:
+    if not session.get('username'):
         return render_template('index.html')
-    LOG.logout()
-    LOGGING = False
+    session.pop('username', None)
+    g.login.logout()
+    g.pop('login', None)
     return render_template('index.html')
 
 
@@ -61,8 +79,29 @@ def global_search():
     """
     # show the user profile for that user
     filter_value = request.args.get('filter')
-    print(filter_value)
-    return render_template('globalSearch.html', filter=filter_value)
+
+    if g.login.ldap is None:
+        ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
+        ldap.connection()
+        entries = ldap.get_all_users('Société SINTA')
+    else:
+        ldap = g.login.ldap
+        entries = ldap.get_all_users('Société SINTA')
+
+    # Retrieve the necessary information for each compatible user and store it in a list of dicts
+    results = []
+    print(entries[0].title.value)
+    for entry in entries:
+        result = {
+            'title': entry.title.value,
+            'last_name': entry.sn.value,
+            'first_name': entry.givenName.value,
+        }
+        results.append(result)
+
+    print(results)
+
+    return render_template('globalSearch.html', filter=filter_value, users=results)
 
 
 @app.route('/profile')
@@ -76,4 +115,6 @@ def profile():
 
 
 if __name__ == '__main__':
+    app.secret_key = secrets.token_hex(16)
     app.run(debug=True)
+    session['username'] = None

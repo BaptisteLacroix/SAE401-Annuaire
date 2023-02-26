@@ -7,25 +7,23 @@ from pandas._libs import json
 # organisations, groups and users, as well as search for them
 class Ldap:
 
-    def __init__(self, server_ip, dc_name, dc_org, user, password):
+    def __init__(self, server, dc_name, dc_org, user, password):
         """
         *|MARCADOR_CURSOR|*
 
-        :param server_ip: The IP address of the vCenter server
         :param dc_name: The name of the datacenter you want to connect to
         :param dc_org: The name of the organization that the datacenter is in
         :param user: The username to log in to the vCenter server
         :param password: The password for the user account you're using to connect to the vCenter server
         """
-        self.server_ip = server_ip
         self.user = user
         self.password = password
         self.conn = None
-        self.server = None
+        self.server = server
         self.dc_name = dc_name
         self.dc_org = dc_org
 
-    def __del__(self):
+    def logout(self):
         """
         The __del__ method is called when the object is about to be destroyed
         """
@@ -39,8 +37,7 @@ class Ldap:
         parameters. It then creates a connection to the LDAP server and binds the connection to the user
         """
         # Connexion à l'annuaire Active Directory
-        self.server = ldap3.Server(self.server_ip, get_info=ldap3.ALL)
-        # Creating a connection to the LDAP server.
+        # Creating a connexion to the LDAP server.
         self.conn = ldap3.Connection(self.server, f'cn={self.user},cn=users,dc={self.dc_name},dc={self.dc_org}',
                                      self.password)
 
@@ -209,13 +206,16 @@ class Ldap:
         self.conn.search(search_base=f'dc={self.dc_name},dc={self.dc_org}',
                          search_filter=f'(cn={username})',
                          search_scope=ldap3.SUBTREE,
-                         attributes=['*'])
+                         attributes=['*', 'unicodePwd', 'userAccountControl'])
 
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
         for entry in self.conn.entries:
             print(entry)
+            if 'unicodePwd' in entry:
+                print(f"User password: {entry['unicodePwd']}")
+        return self.conn.entries
 
     def search_group(self, group_name):
         """
@@ -241,15 +241,18 @@ class Ldap:
         :param organisation_name: The name of the organisation you want to search in
         """
         self.conn.search(search_base=f'ou={organisation_name},dc={self.dc_name},dc={self.dc_org}',
-                         search_filter='(objectClass=*)',
+                         search_filter='(objectClass=user)',
                          search_scope=ldap3.SUBTREE,
-                         attributes=['*'])
+                         attributes=['*', 'unicodePwd', 'userAccountControl'])
 
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
         for entry in self.conn.entries:
             print(entry)
+            if 'unicodePwd' in entry:
+                print(f"User password: {entry['unicodePwd']}")
+        return self.conn.entries
 
     # DO an anction as user
 
@@ -294,13 +297,15 @@ def function():
 
 def main():
     organisation_name = 'Société SINTA'
-    #ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
-    #ldap.connection()
-    #ldap.search_user('Claire Shugg')
-    #ldap.search_group('PDG')
+    ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
+    ldap.connection()
+    #ldap.search_user('Lutero Innman')
+    ldap.search_user('Claire Shugg')
+    # ldap.get_all_users('Société SINTA')
+    # ldap.search_group('PDG')
 
-    innman = Ldap('10.22.32.3', 'SINTA', 'LAN', 'innman_lutero', 'StMkiafmwQ2')
-    print(innman.connection())
+    # innman = Ldap('10.22.32.3', 'SINTA', 'LAN', 'innman_lutero', 'StMkiafmwQ2')
+    # print(innman.connection())
 
     # function()
 

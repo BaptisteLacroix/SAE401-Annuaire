@@ -1,51 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="author" content="Lacroix Baptiste">
-    <meta name="author" content="Conil Marvin">
-    <meta name="author" content="Pautreau Romain">
-    <meta name="author" content="Lopes Mateus">
-    <meta name="author" content="Hassan Sacha">
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/home.css')}}"/>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/menu.css')}}"/>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/search.css')}}"/>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/box.css')}}"/>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/footer.css')}}"/>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/resultSearch.css')}}"/>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/login.css')}}"/>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/profile.css')}}"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Sinta</title>
-</head>
+{% include './import/nav.html' %}
 
 <body>
-<header>
-    <nav id="accueil">
-        <ul>
-            <li>
-                <div id="logo">[_Sinta_]</div>
-            </li>
-            <li><a class="headertext" href="./index">Annuaire</a></li>
-            <li>
-                <ul id="right-nav">
-                    <li>
-                        <a id="loginText" href="./login">Login</a>
-                        <a id="logoutText">Logout</a>
-                    </li>
-                    <li id="flags">
-                        <img src="{{url_for('static', filename='img/drapeau/fr.svg')}}" alt="french_flag"></a>
-                        <img src="{{url_for('static', filename='img/drapeau/en.svg')}}" alt="english_flag"></a>
-                        <img src="{{url_for('static', filename='img/drapeau/es.svg')}}" alt="spain_flag"></a>
-                    </li>
-                </ul>
 
-            </li>
-        </ul>
+{% include './import/header.html' %}
 
-    </nav>
-</header>
+{% include './import/search.html' %}
+
+{% if error %}
+<p style="text-align: center; color: red; z-index: 999">{{ error }}</p>
+{% endif %}
 <main>
     <div class="containerLogin">
         <div class="loginImage">
@@ -80,13 +46,6 @@
     </div>
 </main>
 
-<footer class="sticky-footer">
-    <div>
-        © Copyright - Sinta - 2023
-    </div>
-    <div>
-        Conil Marvin - Hassan Sacha - Lacroix Baptiste - Lopes Mateus - Pautreau Romain
-    </div>
-</footer>
-<script type="text/javascript" src="{{url_for('static', filename='js/data.js')}}"></script>
+{% include './import/footer.html' %}
+
 </body>
