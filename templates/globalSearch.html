@@ -10,17 +10,19 @@
 {% include './import/search.html' %}
 
 {% block content %}
-  <div class="line">
+<div class="line">
     {% for user in users %}
-      <div class="item" onclick="window.location.href='profile/{{ user.username }}'">
-        <img src="../static/img/profile.png" alt="Profile Picture" class="img">
-        <div class="infos">
-          <div class="statusInfo">{{ user.title }}</div>
-          <div class="nomInfo">{{ user.first_name }} {{ user.last_name }}</div>
+    <a href="./profile?user={{ user.first_name + ' ' + user.last_name }}">
+        <div class="item">
+            <img src="../static/img/profile.png" alt="Profile Picture" class="img">
+            <div class="infos">
+                <div class="statusInfo">{{ user.title }}</div>
+                <div class="nomInfo">{{ user.first_name }} {{ user.last_name }}</div>
+            </div>
         </div>
-      </div>
+    </a>
     {% endfor %}
-  </div>
+</div>
 {% endblock %}
 
 <main>

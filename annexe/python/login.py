@@ -29,3 +29,7 @@ class Login:
         # Check if a user is logged in
         # Return True if logged in, False if not
         return self.conn and self.conn.bound
+
+    def get_ldap(self):
+        # Return the ldap object
+        return self.ldap

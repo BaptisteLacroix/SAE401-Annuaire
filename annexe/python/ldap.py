@@ -1,6 +1,4 @@
 import ldap3
-import pandas as pd
-from pandas._libs import json
 
 
 # It creates a connection to the LDAP server, and allows you to create
@@ -176,8 +174,6 @@ class Ldap:
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
-        for entry in self.conn.entries:
-            print(entry)
 
     def search_object_class(self, entrie_name):
         """
@@ -194,8 +190,6 @@ class Ldap:
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
-        for entry in self.conn.entries:
-            print(entry)
 
     def search_user(self, username):
         """
@@ -211,10 +205,6 @@ class Ldap:
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
-        for entry in self.conn.entries:
-            print(entry)
-            if 'unicodePwd' in entry:
-                print(f"User password: {entry['unicodePwd']}")
         return self.conn.entries
 
     def search_group(self, group_name):
@@ -231,16 +221,14 @@ class Ldap:
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
-        for entry in self.conn.entries:
-            print(entry)
 
-    def get_all_users(self, organisation_name):
+    def get_all_users(self, search_base):
         """
         It searches for all entries in the subtree of the organisation_name organisation, and prints them
 
-        :param organisation_name: The name of the organisation you want to search in
+        :param search_base: The base of the search
         """
-        self.conn.search(search_base=f'ou={organisation_name},dc={self.dc_name},dc={self.dc_org}',
+        self.conn.search(search_base=search_base,
                          search_filter='(objectClass=user)',
                          search_scope=ldap3.SUBTREE,
                          attributes=['*', 'unicodePwd', 'userAccountControl'])
@@ -248,59 +236,16 @@ class Ldap:
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
-        for entry in self.conn.entries:
-            print(entry)
-            if 'unicodePwd' in entry:
-                print(f"User password: {entry['unicodePwd']}")
         return self.conn.entries
-
-    # DO an anction as user
-
-
-def function():
-    # Open the CSV file and read its contents
-    data = pd.read_csv('users.csv', sep=';', encoding='utf-8')
-    # Create an empty dictionary to store the organizational hierarchy
-    hierarchy = {}
-
-    # Group the data by Form_base and iterate over each group
-    for form_base, group in data.groupby('Form_base'):
-        # Create a dictionary to store the positions for the current Form_base
-        positions = {}
-
-        # Iterate over each row in the group and add the position to the positions dictionary
-        for index, row in group.iterrows():
-            # Get the position and its parent position
-            position = row['Title']
-            parent_position = row['Supérieur_hiérarchique']
-
-            # If the parent position is NaN, set it to the current Form_base
-            if pd.isna(parent_position):
-                parent_position = form_base
-
-            # Get the parent dictionary for the current position
-            parent_dict = positions.get(parent_position, positions)
-
-            # Create a dictionary for the current position
-            position_dict = parent_dict.setdefault(position, {})
-
-            # Add the position to the positions dictionary
-            positions[position] = position_dict
-
-        # Add the positions dictionary to the hierarchy for the current Form_base
-        hierarchy[form_base] = positions
-
-    # Print the hierarchy
-    print(hierarchy)
-    print(json.dumps(hierarchy, indent=4, ensure_ascii=False))
 
 
 def main():
     organisation_name = 'Société SINTA'
     ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
     ldap.connection()
-    #ldap.search_user('Lutero Innman')
+    # ldap.search_user('Lutero Innman')
     ldap.search_user('Claire Shugg')
+    # ldap.get_all_users('SINTADirection')
     # ldap.get_all_users('Société SINTA')
     # ldap.search_group('PDG')
 
@@ -312,35 +257,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-"""
-PDG
-    Responsable Communication
-         Chargé de communication réseaux sociaux
-         Chargé de publicité
-         Chargé de presse
-         Chargé de contenue
-    Directeur des Ressources Humaines
-         Chargé de recrutement
-         Chargé de formation
-         Gestionnaire des RH
-    Responsable assistance
-         Chargé d'assistance téléphonique
-         Chargé d'assistance web
-         Assistant administratif
-         Support client
-    Responsable Informatique
-         Responsable de l'administration réseau
-         Gestionnaire de base de données
-         Responsable de développement web
-         Analyste de données graphiques
-    Directrice financière
-         Comptable
-         Trésorerie
-         Analyste financier
-         Contrôle de gestion
-    Directrice marketing
-         Analyste marketing
-         Chargé de produit
-         Responsable du branding
-"""
