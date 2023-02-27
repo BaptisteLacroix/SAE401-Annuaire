@@ -11,10 +11,8 @@
    box-shadow: 0px 15px 20px -10px #fff;
    padding: 2vh 2vw;
    margin: 12vh auto;
-}
-
-
-.blue {
+   width: 50%;
+   background-color: rgba(253, 253, 253, 0.9);
    border-top: 3px solid var(--blue);
 }
 
@@ -23,16 +21,17 @@ h2 {
    font-weight: var(--weight3);
 }
 
-
 .row1-container {
    display: flex;
    justify-content: center;
    align-items: center;
 }
 
-
-.box {
-   width: 50%;
-   background-color: rgba(253, 253, 253, 0.9);
+@media screen and (max-width: 800px) {
+   
+   .box {
+      width: 80%;
+   }
+   
 }
 

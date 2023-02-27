@@ -94,10 +94,24 @@ input[type="search"]:not(:placeholder-shown)+#search-button {
     text-decoration: none;
 }
 
+@media screen and (max-width:1200px) {
 
-@media screen and (max-width:830px) {
-    #filtres ul {
-        flex-direction: column;
+    #search-form {
+        width: 50%;
     }
 }
 
+@media screen and (max-width:900px) {
+    #filtres ul {
+        flex-direction: column;
+    }
+
+    #filtres ul li {
+        margin: 0;
+        padding: 2vw 0;
+    }
+
+    #search-form {
+        width: 90%;
+    }
+}
