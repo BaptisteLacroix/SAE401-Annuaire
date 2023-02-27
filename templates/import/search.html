@@ -1,0 +1,33 @@
+<section id="recherche">
+    <!--À incorporer le système de recherche-->
+    <nav id="filtres">
+        <div id="search-bar">
+            <form id="search-form" action="./globalSearch" role="search" method="post">
+                <label id="search-label" for="search">Recherche</label>
+                <input autocomplete="off" id="search" type="search" name="searchValue" placeholder="Rechercher..."
+                       autofocus required/>
+                <button id="search-button" type="submit">Valider</button>
+            </form>
+        </div>
+        <ul>
+            <li>
+                <a class="filter" href="./globalSearch?filter=assistance">ASSISTANCE</a>
+            </li>
+            <li>
+                <a class="filter" href="./globalSearch?filter=communication">COMMUNICATION</a>
+            </li>
+            <li>
+                <a class="filter" href="./globalSearch?filter=rh">RESOURCES HUMAINES</a>
+            </li>
+            <li>
+                <a class="filter" href="./globalSearch?filter=finances">FINANCES</a>
+            </li>
+            <li>
+                <a class="filter" href="./globalSearch?filter=informatique">INFORMATIQUE</a>
+            </li>
+            <li>
+                <a class="filter" href="./globalSearch?filter=presidence">PRESIDENCE</a>
+            </li>
+        </ul>
+    </nav>
+</section>

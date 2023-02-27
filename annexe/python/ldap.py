@@ -1,5 +1,3 @@
-import csv
-
 import ldap3
 
 
@@ -7,21 +5,19 @@ import ldap3
 # organisations, groups and users, as well as search for them
 class Ldap:
 
-    def __init__(self, server_ip, dc_name, dc_org, user, password):
+    def __init__(self, server, dc_name, dc_org, user, password):
         """
         *|MARCADOR_CURSOR|*
 
-        :param server_ip: The IP address of the vCenter server
         :param dc_name: The name of the datacenter you want to connect to
         :param dc_org: The name of the organization that the datacenter is in
         :param user: The username to log in to the vCenter server
         :param password: The password for the user account you're using to connect to the vCenter server
         """
-        self.server_ip = server_ip
         self.user = user
         self.password = password
         self.conn = None
-        self.server = None
+        self.server = server
         self.dc_name = dc_name
         self.dc_org = dc_org
 
@@ -35,20 +31,24 @@ class Ldap:
 
     def connection(self):
         """
-        The function takes the server IP address, the user name, the password, the domain name and the organization name as
+        The function takes the server IP address, the username, the password, the domain name and the organization name as
         parameters. It then creates a connection to the LDAP server and binds the connection to the user
         """
         # Connexion à l'annuaire Active Directory
-        self.server = ldap3.Server(self.server_ip, get_info=ldap3.ALL)
-        # Creating a connection to the LDAP server.
+        # Creating a connexion to the LDAP server.
         self.conn = ldap3.Connection(self.server, f'cn={self.user},cn=users,dc={self.dc_name},dc={self.dc_org}',
                                      self.password)
+
+        print("Connexion à l'annuaire Active Directory")
+
+        print(self.conn)
 
         # Vérifier si la connexion a réussi
         if self.conn.bind():
             print("Connexion réussie")
-        else:
-            print("Echec de connexion")
+            return True
+        print("Echec de connexion")
+        return False
 
     def create_organisation(self, organisation_name):
         """
@@ -178,8 +178,6 @@ class Ldap:
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
-        for entry in self.conn.entries:
-            print(entry)
 
     def search_object_class(self, entrie_name):
         """
@@ -196,8 +194,6 @@ class Ldap:
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
-        for entry in self.conn.entries:
-            print(entry)
 
     def search_user(self, username):
         """
@@ -206,15 +202,14 @@ class Ldap:
         :param username: The username to search for
         """
         self.conn.search(search_base=f'dc={self.dc_name},dc={self.dc_org}',
-                         search_filter=f'(cn={username})',
+                         search_filter=f'(&(objectclass=user)(cn={username}*))',
                          search_scope=ldap3.SUBTREE,
-                         attributes=['*'])
+                         attributes=['*', 'unicodePwd', 'userAccountControl'])
 
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
-        for entry in self.conn.entries:
-            print(entry)
+        return self.conn.entries
 
     def search_group(self, group_name):
         """
@@ -230,112 +225,39 @@ class Ldap:
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
-        for entry in self.conn.entries:
-            print(entry)
 
-    def get_all_users(self, organisation_name):
+    def get_all_users(self, search_base):
         """
         It searches for all entries in the subtree of the organisation_name organisation, and prints them
 
-        :param organisation_name: The name of the organisation you want to search in
+        :param search_base: The base of the search
         """
-        self.conn.search(search_base=f'ou={organisation_name},dc={self.dc_name},dc={self.dc_org}',
-                         search_filter='(objectClass=*)',
+        self.conn.search(search_base=search_base,
+                         search_filter='(objectClass=user)',
                          search_scope=ldap3.SUBTREE,
-                         attributes=['*'])
+                         attributes=['*', 'unicodePwd', 'userAccountControl'])
 
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
-        for entry in self.conn.entries:
-            print(entry)
-
-
-def function():
-    # Read the CSV file
-    with open('users.csv') as f:
-        reader = csv.DictReader(f, delimiter=';')
-        lines = [line for line in reader]
-
-    # Create a dictionary to hold the groups hierarchy
-    groups = {}
-
-    # Iterate over the lines and add each group to the dictionary
-    for line in lines:
-        # Skip empty titles and last names
-        if not line['Title'] or not line['last_name']:
-            continue
-
-        # Create a group dictionary for this line
-        group = {
-            'name': line['Title'],
-            'subgroups': {},
-        }
-
-        # Add the line as a member of its direct supervisor's subgroup
-        if line['Supérieur_hiérarchique']:
-            direct_supervisor = line['Supérieur_hiérarchique']
-            if direct_supervisor not in groups:
-                groups[direct_supervisor] = {
-                    'name': direct_supervisor,
-                    'subgroups': {},
-                }
-            groups[direct_supervisor]['subgroups'][line['Title']] = group
-        else:
-            # Add the group to the top level of the hierarchy
-            groups[line['Title']] = group
-
-    print(groups)
-    for group in groups.values():
-        print_group(group)
-
-
-# Print the groups hierarchy
-def print_group(group, indent=''):
-    print(indent + group['name'])
-    for subgroup_name, subgroup in group['subgroups'].items():
-        print_group(subgroup, indent + '    ')
+        return self.conn.entries
 
 
 def main():
     organisation_name = 'Société SINTA'
-    # ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
-    # ldap.connection()
-    # ldap.get_all_users()
-    function()
+    ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
+    ldap.connection()
+    # ldap.search_user('Lutero Innman')
+    print(ldap.search_user('Claire Shugg'))
+    # ldap.get_all_users('SINTADirection')
+    # ldap.get_all_users('Société SINTA')
+    # ldap.search_group('PDG')
+
+    # innman = Ldap('10.22.32.3', 'SINTA', 'LAN', 'innman_lutero', 'StMkiafmwQ2')
+    # print(innman.connection())
+
+    # function()
 
 
 if __name__ == '__main__':
     main()
-
-"""
-PDG
-    Responsable Communication
-         Chargé de communication réseaux sociaux
-         Chargé de publicité
-         Chargé de presse
-         Chargé de contenue
-    Directeur des Ressources Humaines
-         Chargé de recrutement
-         Chargé de formation
-         Gestionnaire des RH
-    Responsable assistance
-         Chargé d'assistance téléphonique
-         Chargé d'assistance web
-         Assistant administratif
-         Support client
-    Responsable Informatique
-         Responsable de l'administration réseau
-         Gestionnaire de base de données
-         Responsable de développement web
-         Analyste de données graphiques
-    Directrice financière
-         Comptable
-         Trésorerie
-         Analyste financier
-         Contrôle de gestion
-    Directrice marketing
-         Analyste marketing
-         Chargé de produit
-         Responsable du branding
-"""

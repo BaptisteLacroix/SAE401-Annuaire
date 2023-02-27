@@ -31,6 +31,11 @@ header ul {
     font-size: 20px;
 }
 
+#logoutText {
+    font-size: 20px;
+    cursor: pointer;
+}
+
 
 #accueil>ul {
     padding: 0;
