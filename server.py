@@ -1,9 +1,8 @@
 import secrets
 
-from flask import Flask, render_template, request, session, url_for, redirect, g
+from flask import Flask, render_template, request, session, url_for, redirect
 
 from annexe.python.ldap import Ldap
-from annexe.python.login import Login
 
 app = Flask(__name__, template_folder='templates')
 
@@ -17,16 +16,6 @@ def index():
     """
     # show the user profile for that user
     return render_template('index.html')
-
-
-@app.before_request
-def before_request():
-    g.user = None
-    try:
-        g.login
-    except AttributeError:
-        # Create a new instance of the Login class for each request
-        g.login = Login()
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -43,7 +32,8 @@ def login():
         username = request.form['username']
         password = request.form['password']
         remember = request.form.get('remember')
-        if g.login.connect(username, password):
+        ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', username, password)
+        if ldap.connection():
             session['username'] = username
             session['password'] = password
             if remember == 'on':
@@ -66,13 +56,13 @@ def logout():
     """
     if not session.get('username'):
         return render_template('index.html')
+    print("session logout")
     session.pop('username', None)
-    g.login.logout()
-    g.pop('login', None)
+    session.pop('password', None)
     return render_template('index.html')
 
 
-@app.route('/globalSearch')
+@app.route('/globalSearch', methods=['GET', 'POST'])
 def global_search():
     """
     It takes a GET request with a parameter called 'filter' and renders the globalSearch.html template with the filter value
@@ -90,26 +80,34 @@ def global_search():
     ]
     # get the value of the filter parameter key from all_filters
     filter_value = all_filters[0].get(request.args.get('filter'))
-
+    post_value = request.form.get('searchValue')
     if session.get('username') is None:
         ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
         ldap.connection()
-        entries = ldap.get_all_users(filter_value if not None else 'Société SINTA')
-        ldap.logout()
+        if post_value is not None:
+            entries = ldap.search_user(post_value)
+        else:
+            entries = ldap.get_all_users(filter_value if not None else 'Société SINTA')
     else:
         ldap = Ldap('10.21.32.3', 'SINTA', 'LAN', session.get('username'), session.get('password'))
         ldap.connection()
-        entries = ldap.get_all_users(filter_value if not None else 'Société SINTA')
+        if post_value is not None:
+            entries = ldap.search_user(post_value)
+        else:
+            entries = ldap.get_all_users(filter_value if not None else 'Société SINTA')
 
     # Retrieve the necessary information for each compatible user and store it in a list of dicts
     results = []
     for entry in entries:
-        result = {
-            'title': entry.title.value,
-            'last_name': entry.sn.value,
-            'first_name': entry.givenName.value,
-        }
-        results.append(result)
+        try:
+            result = {
+                'title': entry.title.value,
+                'last_name': entry.sn.value,
+                'first_name': entry.givenName.value,
+            }
+            results.append(result)
+        except AttributeError:
+            pass
 
     return render_template('globalSearch.html', filter=filter_value, users=results)
 
@@ -126,7 +124,6 @@ def profile():
         ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
         ldap.connection()
         entries = ldap.search_user(filter_value)
-        ldap.logout()
         results = []
         for entry in entries:
             result = {
@@ -140,12 +137,9 @@ def profile():
             }
             results.append(result)
     else:
-        print(session.get('username'))
-        print(session.get('password'))
         ldap = Ldap('10.21.32.3', 'SINTA', 'LAN', session.get('username'), session.get('password'))
-        print(ldap.connection())
+        ldap.connection()
         entries = ldap.search_user(filter_value)
-        ldap.logout()
         results = []
         for entry in entries:
             result = {

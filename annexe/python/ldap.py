@@ -21,7 +21,7 @@ class Ldap:
         self.dc_name = dc_name
         self.dc_org = dc_org
 
-    def logout(self):
+    def __del__(self):
         """
         The __del__ method is called when the object is about to be destroyed
         """
@@ -38,6 +38,10 @@ class Ldap:
         # Creating a connexion to the LDAP server.
         self.conn = ldap3.Connection(self.server, f'cn={self.user},cn=users,dc={self.dc_name},dc={self.dc_org}',
                                      self.password)
+
+        print("Connexion à l'annuaire Active Directory")
+
+        print(self.conn)
 
         # Vérifier si la connexion a réussi
         if self.conn.bind():
@@ -198,7 +202,7 @@ class Ldap:
         :param username: The username to search for
         """
         self.conn.search(search_base=f'dc={self.dc_name},dc={self.dc_org}',
-                         search_filter=f'(cn={username})',
+                         search_filter=f'(&(objectclass=user)(cn={username}*))',
                          search_scope=ldap3.SUBTREE,
                          attributes=['*', 'unicodePwd', 'userAccountControl'])
 
@@ -244,7 +248,7 @@ def main():
     ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
     ldap.connection()
     # ldap.search_user('Lutero Innman')
-    ldap.search_user('Claire Shugg')
+    print(ldap.search_user('Claire Shugg'))
     # ldap.get_all_users('SINTADirection')
     # ldap.get_all_users('Société SINTA')
     # ldap.search_group('PDG')
