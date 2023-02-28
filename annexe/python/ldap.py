@@ -248,9 +248,9 @@ def main():
     ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
     ldap.connection()
     # ldap.search_user('Lutero Innman')
-    print(ldap.search_user('Claire Shugg'))
+    # print(ldap.search_user('Claire Shugg'))
     # ldap.get_all_users('SINTADirection')
-    # ldap.get_all_users('Société SINTA')
+    print(ldap.get_all_users("OU=Société SINTA,DC=SINTA,DC=LAN"))
     # ldap.search_group('PDG')
 
     # innman = Ldap('10.22.32.3', 'SINTA', 'LAN', 'innman_lutero', 'StMkiafmwQ2')

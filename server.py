@@ -40,6 +40,7 @@ def login():
                 session.permanent = True
             else:
                 session.permanent = False
+            # send a message that tell the client is connected
             return redirect(url_for('index'))
         else:
             error = 'Incorrect username or password'
@@ -68,33 +69,30 @@ def global_search():
     It takes a GET request with a parameter called 'filter' and renders the globalSearch.html template with the filter value
     :return: The globalSearch.html page is being returned.
     """
+    default_password = 'IUT!2023'
+    default_username = 'administrateur'
     all_filters = [
         {
             "assistance": "OU=Sépartement Assistance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
             "communication": "OU=Département Communication,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
-            "finance": "OU=Département Finance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
+            "finances": "OU=Département Finance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
             "informatique": "OU=Département Informatique,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
             "rh": "OU=Département Ressources Humaines,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
             "presidence": "OU=Présidence,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
+            "default": "OU=Société SINTA,DC=SINTA,DC=LAN"
         }
     ]
     # get the value of the filter parameter key from all_filters
     filter_value = all_filters[0].get(request.args.get('filter'))
     post_value = request.form.get('searchValue')
-    if session.get('username') is None:
-        ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
-        ldap.connection()
-        if post_value is not None:
-            entries = ldap.search_user(post_value)
-        else:
-            entries = ldap.get_all_users(filter_value if not None else 'Société SINTA')
+    ldap = Ldap('10.22.32.3', 'SINTA', 'LAN',
+                default_username if session.get('username') is None else session.get('username'),
+                default_password if session.get('password') is None else session.get('password'))
+    ldap.connection()
+    if post_value is not None:
+        entries = ldap.search_user(post_value)
     else:
-        ldap = Ldap('10.21.32.3', 'SINTA', 'LAN', session.get('username'), session.get('password'))
-        ldap.connection()
-        if post_value is not None:
-            entries = ldap.search_user(post_value)
-        else:
-            entries = ldap.get_all_users(filter_value if not None else 'Société SINTA')
+        entries = ldap.get_all_users(all_filters[0].get("default") if filter_value is None else filter_value)
 
     # Retrieve the necessary information for each compatible user and store it in a list of dicts
     results = []
@@ -108,7 +106,6 @@ def global_search():
             results.append(result)
         except AttributeError:
             pass
-
     return render_template('globalSearch.html', filter=filter_value, users=results)
 
 
@@ -118,13 +115,17 @@ def profile():
     The function profile() is a route that renders the template profile.html
     :return: The profile.html file is being returned.
     """
+    default_password = 'IUT!2023'
+    default_username = 'administrateur'
     filter_value = request.args.get('user')
 
+    ldap = Ldap('10.22.32.3', 'SINTA', 'LAN',
+                default_username if session.get('username') is None else session.get('username'),
+                default_password if session.get('password') is None else session.get('password'))
+    ldap.connection()
+    entries = ldap.search_user(filter_value)
+    results = []
     if session.get('username') is None:
-        ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
-        ldap.connection()
-        entries = ldap.search_user(filter_value)
-        results = []
         for entry in entries:
             result = {
                 'last_name': entry.sn.value,
@@ -137,10 +138,6 @@ def profile():
             }
             results.append(result)
     else:
-        ldap = Ldap('10.21.32.3', 'SINTA', 'LAN', session.get('username'), session.get('password'))
-        ldap.connection()
-        entries = ldap.search_user(filter_value)
-        results = []
         for entry in entries:
             result = {
                 'last_name': entry.sn.value,
@@ -148,16 +145,16 @@ def profile():
                 'mail': entry.mail.value,
                 'title': entry.title.value,
                 'telephone': entry.telephoneNumber.value,
+                'company': entry.company.value,
+                'department': entry.distinguishedName.value.split(',')[1].split('=')[1],
                 'c': entry.c.value,
                 'co': entry.co.value,
                 'l': entry.l.value,
                 'streetAddress': entry.streetAddress.value,
                 'postalCode': entry.postalCode.value,
                 'userPrincipalName': entry.userPrincipalName.value,
-
             }
             results.append(result)
-
     # show the user profile for that user
     return render_template('profile.html', user=results[0])
 
