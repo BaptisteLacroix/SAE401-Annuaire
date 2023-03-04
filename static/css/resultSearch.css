@@ -12,6 +12,11 @@
     padding: 1vh 0;
 }
 
+.line a {
+    text-decoration: none;
+    color: black;
+}
+
 .item {
     background-color: #fff;
     margin: 2vh 4vw;
@@ -27,8 +32,6 @@
     transform: scale(1.05);
     opacity: 1;
 }
-
-
 
 
 .infos {

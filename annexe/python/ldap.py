@@ -1,3 +1,5 @@
+import csv
+
 import ldap3
 
 
@@ -40,8 +42,6 @@ class Ldap:
                                      self.password)
 
         print("Connexion à l'annuaire Active Directory")
-
-        print(self.conn)
 
         # Vérifier si la connexion a réussi
         if self.conn.bind():
@@ -242,21 +242,51 @@ class Ldap:
             print("Aucune entrée trouvée")
         return self.conn.entries
 
+    def set_user_birthday(self, username, birthday):
+        self.conn.search(search_base=f'dc={self.dc_name},dc={self.dc_org}',
+                         search_filter=f'(&(objectclass=user)(cn={username}*))',
+                         search_scope=ldap3.SUBTREE,
+                         attributes=['uBirthday'])
+        if self.conn.entries:
+            user_dn = self.conn.entries[0].entry_dn
+            changes = {'uBirthday': [(ldap3.MODIFY_REPLACE, [birthday])]}
+            self.conn.modify(user_dn, changes)
+            print(f"Successfully set uBirthday {birthday} attribute for user {username}")
+        else:
+            print(f"User {username} not found in Active Directory")
+
+
+def function(ldap):
+    with open('users.csv') as csvfile:
+        reader = csv.reader(csvfile, delimiter=';')
+        next(reader)  # Skip the header row
+        # Loop over each row in the CSV file
+
+        for row in reader:
+            # check if the line is null
+            if not row or row[0] == '':
+                continue
+            # Construct search query
+            first_name = row[2]
+            last_name = row[1]
+            new_birthday = row[5]
+            ldap.set_user_birthday(first_name + " " + last_name, new_birthday)
+
 
 def main():
     organisation_name = 'Société SINTA'
     ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
     ldap.connection()
-    # ldap.search_user('Lutero Innman')
+    # print(ldap.search_user('Lutero Innman'))
     # print(ldap.search_user('Claire Shugg'))
     # ldap.get_all_users('SINTADirection')
-    print(ldap.get_all_users("OU=Société SINTA,DC=SINTA,DC=LAN"))
+    # print(ldap.get_all_users("OU=Société SINTA,DC=SINTA,DC=LAN"))
     # ldap.search_group('PDG')
 
     # innman = Ldap('10.22.32.3', 'SINTA', 'LAN', 'innman_lutero', 'StMkiafmwQ2')
     # print(innman.connection())
 
-    # function()
+    function(ldap)
 
 
 if __name__ == '__main__':

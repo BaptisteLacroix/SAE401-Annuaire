@@ -1,4 +1,5 @@
 import secrets
+from datetime import datetime
 
 from flask import Flask, render_template, request, session, url_for, redirect
 
@@ -73,10 +74,11 @@ def global_search():
     default_username = 'administrateur'
     all_filters = [
         {
-            "assistance": "OU=Sépartement Assistance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
+            "assistance": "OU=Département Assistance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
             "communication": "OU=Département Communication,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
-            "finances": "OU=Département Finance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
+            "finance": "OU=Département Finance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
             "informatique": "OU=Département Informatique,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
+            "marketing": "OU=Département Marketing,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
             "rh": "OU=Département Ressources Humaines,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
             "presidence": "OU=Présidence,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
             "default": "OU=Société SINTA,DC=SINTA,DC=LAN"
@@ -150,6 +152,8 @@ def profile():
                 'c': entry.c.value,
                 'co': entry.co.value,
                 'l': entry.l.value,
+                'uBirthday': entry.uBirthday.value,
+                'age': (datetime.now() - datetime.strptime(entry.uBirthday.value, "%d/%m/%Y")).days // 365,
                 'streetAddress': entry.streetAddress.value,
                 'postalCode': entry.postalCode.value,
                 'userPrincipalName': entry.userPrincipalName.value,

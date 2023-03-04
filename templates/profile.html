@@ -35,7 +35,8 @@
         <div class="profile-box">
             <div class="profile-title">Informations avancées</div>
             <div class="profile-info">
-                <div>Pays : <span> {{ user['c'] }} {{ user['co'] }} </span></div>
+                <div>Date de naissance : <span> {{ user['uBirthday'] }} ({{ user['age'] }} ans)</span></div>
+                <div>Pays : <span> {{ user['c'] }}, {{ user['co'] }} </span></div>
                 <div>Ville : <span> {{ user['l'] }} </span></div>
                 <div>Adresse : <span> {{ user['streetAddress'] }} </span></div>
                 <div>Code postal : <span> {{ user['postalCode'] }} </span></div>
