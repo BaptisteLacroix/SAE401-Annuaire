@@ -12,34 +12,34 @@
 {% if error %}
 <p style="text-align: center; color: red; z-index: 999">{{ error }}</p>
 {% endif %}
-<main>
+<main id="page-login">
     <div class="containerLogin">
         <div class="loginImage">
             <img src="{{url_for('static', filename='img/loginImage.jpg')}}" alt="login">
         </div>
 
         <div class="login-box">
-            <h2>Se connecter</h2>
+            <h2 id="login-login">Se connecter</h2>
             <form action="./login" method="post">
                 <div class="user-box">
                     <label for="username"></label>
                     <input type="text" name="username" id="username" required autocomplete="off">
-                    <label>Identifiant</label>
+                    <label id="login-username">Identifiant</label>
                 </div>
                 <div class="user-box">
                     <label for="password"></label>
                     <input type="password" name="password" id="password" required autocomplete="off">
-                    <label>Mot de passe</label>
+                    <label id="login-password">Mot de passe</label>
                 </div>
 
 
                 <div class="remember">
                     <input type="checkbox" name="remember" id="remember">
                     <label for="remember"></label>
-                    <label class="text" for="remember">Se souvenir de moi</label>
+                    <label id="login-remember" class="text" for="remember">Se souvenir de moi</label>
                 </div>
                 <div class="connection">
-                    <input class="connect" type="submit" value="Se connecter">
+                    <input id="login-connect" class="connect" type="submit" value="Se connecter">
                 </div>
             </form>
         </div>

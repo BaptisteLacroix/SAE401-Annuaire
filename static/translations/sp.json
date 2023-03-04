@@ -1,0 +1,51 @@
+{
+  "header-title": "Anuario",
+  "search-label": "Búsqueda",
+  "search-button": "Validar",
+  "search": "Buscar...",
+  "search-presidence": "PRESIDENCIA",
+  "search-assistance": "ASISTENCIA",
+  "search-communication": "COMUNICACIÓN",
+  "search-rh": "RECURSOS HUMANOS",
+  "search-finance": "FINANZAS",
+  "search-marketing": "MARKETING",
+  "search-informatique": "INFORMÁTICA",
+  "index": [
+    {
+      "index-help": "Ayuda para la búsqueda",
+      "index-par1": "La búsqueda se realiza en el inicio del apellido de la persona seguido de su nombre:",
+      "index-par2": "\"Mar\", busca todas las personas cuyo apellido comienza por mar",
+      "index-par3": "\",Martin m\" busca todas las personas llamadas Martin cuyo nombre comienza por m",
+      "index-par4": "Es posible utilizar el carácter * como comodín:",
+      "index-par5": "\",Mar* m\", busca todas las personas cuyo apellido comienza por mar y cuyo nombre comienza por m",
+      "index-par6": "Para los apellidos compuestos, el separador entre la partícula y el apellido no está normalizado, puede ser\n un guión, un espacio, un guión bajo. Utilice el comodín * para cubrir todos los casos:",
+      "index-par7": "le*corbusier cubre lecorbusier, le corbusier, le-corbusier y le_corbusier",
+      "index-par8": "Si su búsqueda sigue siendo infructuosa, busque en una parte del apellido, por ejemplo: *corbus"
+    }
+  ],
+  "login": [
+    {
+      "login-login": "Iniciar sesión",
+      "login-username": "Nombre de usuario",
+      "login-password": "Contraseña",
+      "login-remember": "Recuérdame",
+      "login-connect": "Conectar"
+    }
+  ],
+  "profile": [
+    {
+      "profile-per-info": "Información personal",
+      "profile-aff": "Afectación",
+      "profile-dep": "Departamento: ",
+      "profile-role": "Rol: ",
+      "profile-tel": "Tel: ",
+      "profile-comp": "Compañía: ",
+      "profile-info-a": "Información avanzada",
+      "profile-date": "Fecha de nacimiento: ",
+      "profile-country": "País: ",
+      "profile-city": "Ciudad: ",
+      "profile-address": "Dirección: ",
+      "profile-postal-code": "Código postal: "
+    }
+  ]
+}

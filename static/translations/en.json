@@ -1,0 +1,51 @@
+{
+  "header-title": "Directory",
+  "search-label": "Search",
+  "search-button": "Submit",
+  "search": "Search...",
+  "search-presidence": "PRESIDENCY",
+  "search-assistance": "ASSISTANCE",
+  "search-communication": "COMMUNICATION",
+  "search-rh": "HUMAN RESOURCES",
+  "search-finance": "FINANCE",
+  "search-marketing": "MARKETING",
+  "search-informatique": "INFORMATION TECHNOLOGY",
+  "index": [
+    {
+      "index-help": "Search Help",
+      "index-par1": "The search is performed on the beginning of the person's last name followed by their first name:",
+      "index-par2": "\"Mar\" searches for all people whose last name starts with mar",
+      "index-par3": "\"Martin m\" searches for all people named Martin whose first name starts with m",
+      "index-par4": "It is possible to use the * character as a wildcard:",
+      "index-par5": "\"Mar* m\" searches for all people whose last name starts with mar and whose first name starts with m",
+      "index-par6": "For compound names, the separator between the particle and the name is not standardized, it may be a hyphen, a space, or an underscore. Use the * wildcard to cover all cases:",
+      "index-par7": "le*corbusier covers lecorbusier, le corbusier, le-corbusier, and le_corbusier",
+      "index-par8": "if your search is still unsuccessful, search for a part of the name, for example: *corbus"
+    }
+  ],
+  "login": [
+    {
+      "login-login": "Log In",
+      "login-username": "Username",
+      "login-password": "Password",
+      "login-remember": "Remember me",
+      "login-connect": "Log In"
+    }
+  ],
+  "profile": [
+    {
+      "profile-per-info": "Personal Information",
+      "profile-aff": "Assignment",
+      "profile-dep": "Department: ",
+      "profile-role": "Role: ",
+      "profile-tel": "Tel: ",
+      "profile-comp": "Company: ",
+      "profile-info-a": "Advanced Information",
+      "profile-date": "Date of Birth: ",
+      "profile-country": "Country: ",
+      "profile-city": "City: ",
+      "profile-address": "Address: ",
+      "profile-postal-code": "Postal Code: "
+    }
+  ]
+}

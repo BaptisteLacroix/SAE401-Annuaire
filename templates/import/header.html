@@ -4,7 +4,9 @@
             <li>
                 <div id="logo">[_Sinta_]</div>
             </li>
-            <li><a class="headertext" href="./index">Annuaire</a></li>
+            <li>
+                <a id="header-title" class="headertext" href="./index">Annuaire</a>
+            </li>
             <li>
                 <ul id="right-nav">
                     <li>
@@ -12,9 +14,10 @@
                         <a id="logoutText">Logout</a>
                     </li>
                     <li id="flags">
-                        <img src="{{url_for('static', filename='img/drapeau/fr.svg')}}" alt="french_flag"></a>
-                        <img src="{{url_for('static', filename='img/drapeau/en.svg')}}" alt="english_flag"></a>
-                        <img src="{{url_for('static', filename='img/drapeau/es.svg')}}" alt="spain_flag"></a>
+                        <img id="french" src="{{ url_for('static', filename='img/drapeau/fr.svg') }}" alt="french_flag">
+                        <img id="english" src="{{ url_for('static', filename='img/drapeau/en.svg') }}"
+                             alt="english_flag">
+                        <img id="spanish" src="{{ url_for('static', filename='img/drapeau/es.svg') }}" alt="spain_flag">
                     </li>
                 </ul>
 

@@ -1,0 +1,51 @@
+{
+  "header-title": "Annuaire",
+  "search-label": "Recherche",
+  "search-button": "Valider",
+  "search": "Rechercher...",
+  "search-presidence": "PRÉSIDENCE",
+  "search-assistance": "ASSISTANCE",
+  "search-communication": "COMMUNICATION",
+  "search-rh": "RESSOURCES HUMAINES",
+  "search-finance": "FINANCE",
+  "search-marketing": "MARKETING",
+  "search-informatique": "INFORMATIQUE",
+  "index": [
+    {
+      "index-help": "Aide recherche",
+      "index-par1": "La recherche s'effectue sur le début du nom de la personne suivie de son prénom :",
+      "index-par2": "\"Mar\" recherche toutes les personnes dont le nom commence par mar",
+      "index-par3": "\"Martin m\" recherche toutes les personnes nommées martin dont le prénom commence par m",
+      "index-par4": "Il est possible d'utiliser le caractère * comme joker :",
+      "index-par5": "\"Mar* m\" recherche toutes les personnes dont le nom commence par mar et dont le prénom commence par m",
+      "index-par6": "Pour les noms composés, le séparateur entre la particule et le nom n'est pas normalisé, il se peut que\n            ce soit un tiret, un blanc, un souligné. Utilisez le joker * pour couvrir tous les cas :",
+      "index-par7": "le*corbusier couvre lecorbusier, le corbusier, le-corbusier et le_corbusier",
+      "index-par8": "si votre recherche est toujours infructueuse, recherchez sur une partie du nom, par exemple : *corbus"
+    }
+  ],
+  "login": [
+    {
+      "login-login": "Se connecter",
+      "login-username": "Identifiant",
+      "login-password": "Mot de passe",
+      "login-remember": "Se souvenir de moi",
+      "login-connect": "Se connecter"
+    }
+  ],
+  "profile": [
+    {
+      "profile-per-info": "Informations personnelles",
+      "profile-aff": "Affectation",
+      "profile-dep": "Département : ",
+      "profile-role": "Rôle : ",
+      "profile-tel": "Tel : ",
+      "profile-comp": "Compagnie : ",
+      "profile-info-a": "Informations avancées",
+      "profile-date": "Date de naissance : ",
+      "profile-country": "Pays : ",
+      "profile-city": "Ville : ",
+      "profile-address": "Adresse : ",
+      "profile-postal-code": "Code postal : "
+    }
+  ]
+}

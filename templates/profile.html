@@ -8,14 +8,14 @@
 {% include './import/header.html' %}
 
 {% include './import/search.html' %}
-<main>
+<main id="page-profile">
     <div class="box blue">
         <div class="title-box">
             <h2 id="profile-name"> {{ user['first_name'] }} {{ user['last_name'] }} </h2>
             <img id="profile-picture" src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar">
         </div>
         <div class="profile-box">
-            <div class="profile-title">
+            <div id="profile-per-info" class="profile-title">
                 Informations Personnelles
             </div>
             <div class="profile-info">
@@ -23,23 +23,23 @@
             </div>
         </div>
         <div class="profile-box">
-            <div class="profile-title">Affectation</div>
+            <div id="profile-aff" class="profile-title">Affectation</div>
             <div class="profile-info">
-                <div>Département : <span> {{ user['department'] }} </span></div>
-                <div>Rôle : <span> {{ user['title'] }} </span></div>
-                <div>Tel : <span> {{ user['telephone'] }} </span></div>
-                <div>Compagnie : <span> {{ user['company'] }} </span></div>
+                <div id="profile-dep">Département : <span> {{ user['department'] }} </span></div>
+                <div id="profile-role">Rôle : <span> {{ user['title'] }} </span></div>
+                <div id="profile-tel">Tel : <span> {{ user['telephone'] }} </span></div>
+                <div id="profile-comp">Compagnie : <span> {{ user['company'] }} </span></div>
             </div>
         </div>
         {% if user|length > 7 %}
         <div class="profile-box">
-            <div class="profile-title">Informations avancées</div>
+            <div id="profile-info-a" class="profile-title">Informations avancées</div>
             <div class="profile-info">
-                <div>Date de naissance : <span> {{ user['uBirthday'] }} ({{ user['age'] }} ans)</span></div>
-                <div>Pays : <span> {{ user['c'] }}, {{ user['co'] }} </span></div>
-                <div>Ville : <span> {{ user['l'] }} </span></div>
-                <div>Adresse : <span> {{ user['streetAddress'] }} </span></div>
-                <div>Code postal : <span> {{ user['postalCode'] }} </span></div>
+                <div id="profile-date">Date de naissance : <span> {{ user['uBirthday'] }} ({{ user['age'] }} ans)</span></div>
+                <div id="profile-country">Pays : <span> {{ user['c'] }}, {{ user['co'] }} </span></div>
+                <div id="profile-city">Ville : <span> {{ user['l'] }} </span></div>
+                <div id="profile-address">Adresse : <span> {{ user['streetAddress'] }} </span></div>
+                <div id="profile-postal-code">Code postal : <span> {{ user['postalCode'] }} </span></div>
             </div>
         </div>
         {% endif %}
