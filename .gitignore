@@ -2,4 +2,5 @@
 README.md
 .gitignore
 .idea/*
-./annexe/python/__pycache__/*
+./annexe/python/__pycache__/
+__pychache__/

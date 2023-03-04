@@ -7,6 +7,7 @@
                 <input autocomplete="off" id="search" type="search" name="searchValue" placeholder="Rechercher..."
                        autofocus required/>
                 <button id="search-button" type="submit">Valider</button>
+                <ul id="search-suggestions"></ul>
             </form>
         </div>
         <ul>
@@ -34,3 +35,26 @@
         </ul>
     </nav>
 </section>
+<script>
+    const suggestions = [
+        {% for suggestion in suggestions %}
+            "{{ suggestion }}",
+        {% endfor %}
+    ];
+    const searchInput = document.getElementById("search");
+    const searchSuggestions = document.getElementById("search-suggestions");
+
+    searchInput.addEventListener("input", function () {
+        searchSuggestions.innerHTML = "";
+        if (searchInput.value.length > 0) {
+            for (let i = 0; i < suggestions.length; i++) {
+                if (suggestions[i].toLowerCase().includes(searchInput.value.toLowerCase())) {
+                    const suggestion = document.createElement("li");
+                    suggestion.innerHTML = `<a href="./profile?user=${suggestions[i]}">${suggestions[i]}</a>`;
+                    searchSuggestions.appendChild(suggestion);
+                }
+            }
+        }
+    });
+
+</script>

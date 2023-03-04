@@ -286,7 +286,7 @@ def main():
     # innman = Ldap('10.22.32.3', 'SINTA', 'LAN', 'innman_lutero', 'StMkiafmwQ2')
     # print(innman.connection())
 
-    function(ldap)
+    # function(ldap)
 
 
 if __name__ == '__main__':

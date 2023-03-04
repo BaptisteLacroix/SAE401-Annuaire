@@ -15,8 +15,29 @@ def index():
     The function index() is a route that renders the template index.html
     :return: The index.html file is being returned.
     """
+    default_password = 'IUT!2023'
+    default_username = 'administrateur'
+    all_filters = ["OU=Département Assistance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
+                   "OU=Département Communication,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
+                   "OU=Département Finance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
+                   "OU=Département Informatique,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
+                   "OU=Département Marketing,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
+                   "OU=Département Ressources Humaines,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
+                   "OU=Présidence,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
+                   "OU=Société SINTA,DC=SINTA,DC=LAN"
+                   ]
     # show the user profile for that user
-    return render_template('index.html')
+    ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', default_username, default_password)
+    ldap.connection()
+    users = []
+    for f in all_filters:
+        entries = ldap.get_all_users(f)
+        for entry in entries:
+            users.append(entry.displayName.value)
+    # delete all duplicates
+    users = list(dict.fromkeys(users))
+    print(len(users))
+    return render_template('index.html', suggestions=users)
 
 
 @app.route('/login', methods=['GET', 'POST'])

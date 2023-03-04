@@ -49,7 +49,7 @@ input[type="search"]:not(:placeholder-shown) {
 
 }
 
-input[type="search"]:not(:placeholder-shown)+#search-button {
+input[type="search"]:not(:placeholder-shown) + #search-button {
     display: block;
 }
 
@@ -63,8 +63,6 @@ input[type="search"]:not(:placeholder-shown)+#search-button {
     overflow: hidden;
 }
 
-
-
 #filtres ul {
     padding: 0;
     display: flex;
@@ -75,7 +73,48 @@ input[type="search"]:not(:placeholder-shown)+#search-button {
 
 }
 
-#filtres ul li {
+#search-bar {
+    position: relative;
+}
+
+#search-suggestions {
+    position: absolute;
+    flex-direction: column;
+    top: 40px;
+    left: -5px;
+    width: 100%;
+    max-height: 15vh;
+    background: var(--color-light);
+    border-radius: 0 0 var(--rad) var(--rad);
+    z-index: 2;
+    overflow-y: auto;
+}
+
+#search-suggestions li {
+    width: 100%;
+    border-bottom: 1px solid var(--color-brand);
+    cursor: pointer;
+    padding: 0;
+}
+
+#search-suggestions li:hover {
+    background: var(--color-brand);
+    color: var(--color-light);
+}
+
+#search-suggestions li:last-child {
+    border-bottom: 0;
+}
+
+#search-suggestions li a {
+    text-decoration: none;
+    color: var(--color-dark);
+    display: block;
+    padding: 1vh 1vw;
+}
+
+
+#filtres > ul li {
     padding: 3vh;
 }
 
@@ -94,19 +133,19 @@ input[type="search"]:not(:placeholder-shown)+#search-button {
     text-decoration: none;
 }
 
-@media screen and (max-width:1200px) {
+@media screen and (max-width: 1200px) {
 
     #search-form {
         width: 50%;
     }
 }
 
-@media screen and (max-width:900px) {
-    #filtres ul {
+@media screen and (max-width: 900px) {
+    #filtres > ul {
         flex-direction: column;
     }
 
-    #filtres ul li {
+    #filtres > ul li {
         margin: 0;
         padding: 2vw 0;
     }
