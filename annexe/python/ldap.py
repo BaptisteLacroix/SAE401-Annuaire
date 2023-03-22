@@ -277,16 +277,20 @@ def main():
     organisation_name = 'Société SINTA'
     ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
     ldap.connection()
-    # print(ldap.search_user('Lutero Innman'))
+    # print(ldap.search_all_ou_class())
+    print(ldap.search_user('skipp mathiassen'))
     # print(ldap.search_user('Claire Shugg'))
     # ldap.get_all_users('SINTADirection')
-    # print(ldap.get_all_users("OU=Société SINTA,DC=SINTA,DC=LAN"))
+    # print(ldap.get_all_users("OU=Département Informatique,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN"))
     # ldap.search_group('PDG')
 
     # innman = Ldap('10.22.32.3', 'SINTA', 'LAN', 'innman_lutero', 'StMkiafmwQ2')
     # print(innman.connection())
 
     # function(ldap)
+    print("---------------------")
+    ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'skipp mathiassen', 'fAlbfXjQySy7')
+    ldap.connection()
 
 
 if __name__ == '__main__':
