@@ -37,7 +37,6 @@ function setLanguage(language) {
                                 // check if the element is a Node
                                 if (element.id.indexOf("profile-") !== -1) {
                                     let spanText = element.innerHTML.split(">")[1].split("<")[0];
-                                    console.log(spanText)
                                     element.innerHTML = value2 + `<span>` + spanText + `</span>`;
                                 } else {
                                     element.innerHTML = value2;
