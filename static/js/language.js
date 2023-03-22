@@ -16,19 +16,6 @@ window.addEventListener("load", function () {
     });
 });
 
-
-const userData = {
-    "dep": "{{ user['department'] }}",
-    "role": "{{ user['title'] }}",
-    "tel": "{{ user['telephone'] }}",
-    "comp": "{{ user['company'] }}",
-    "date": "{{ user['uBirthday'] }}, {{ user['age'] }}",
-    "country": "{{ user['c'] }}, {{ user['co'] }}",
-    "city": "{{ user['l'] }}",
-    "adresse": "{{ user['streetAddress'] }}",
-    "postal-code": "{{ user['postalCode'] }}"
-}
-
 function setLanguage(language) {
     fetch(`../static/translations/${language}.json`)
         .then(response => response.json())
@@ -47,9 +34,11 @@ function setLanguage(language) {
                         for (const [key2, value2] of Object.entries(item)) {
                             const element = document.getElementById(key2);
                             if (element) {
-                                if (element.contains("profile-")) {
-                                    let secondElement = element.id.split("-")[1];
-                                    element.innerHTML = value2 + `<span>` + userData[secondElement] + `</span>`;
+                                // check if the element is a Node
+                                if (element.id.indexOf("profile-") !== -1) {
+                                    let spanText = element.innerHTML.split(">")[1].split("<")[0];
+                                    console.log(spanText)
+                                    element.innerHTML = value2 + `<span>` + spanText + `</span>`;
                                 } else {
                                     element.innerHTML = value2;
                                 }
@@ -59,6 +48,5 @@ function setLanguage(language) {
                 }
             }
 
-        })
-        .catch(error => console.error(error));
+        });
 }
