@@ -3,10 +3,18 @@
     <nav id="filtres">
         <div id="search-bar">
             <form id="search-form" action="./globalSearch" role="search" method="post">
-                <label id="search-label" for="search"></label>
-                <input autocomplete="off" id="search" type="search" name="searchValue" placeholder="Rechercher..."
-                    autofocus required />
-                <button id="search-button" type="submit">Valider</button>
+                <div id="search">
+                    <span id="filters-used"></span>
+                    <span id="search-input">
+                        <input autocomplete="off" type="search" name="searchValue" placeholder="Rechercher..." autofocus
+                            required />
+                    </span>
+                    <span id="search-validation">
+                        <button id="search-button" type="submit">Valider</button>
+                    </span>
+
+                </div>
+
                 <ul id="search-suggestions"></ul>
             </form>
         </div>

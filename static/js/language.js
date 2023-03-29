@@ -1,9 +1,9 @@
 // On window load add eventlistener to the flags
 window.addEventListener("load", function () {
     // Get the stored language or default to 'en'
-    const storedLanguage = localStorage.getItem("language") || "en";
-    setLanguage(storedLanguage);
-    
+    //    const storedLanguage = localStorage.getItem("language") || "en";
+    //    setLanguage(storedLanguage);
+
     // Add eventlistener to the flags
     document.addEventListener("click", function (event) {
         if (event.target.id === "french") {
