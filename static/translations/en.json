@@ -34,18 +34,18 @@
   ],
   "profile": [
     {
-      "profile-per-info": "Personal Information",
-      "profile-aff": "Assignment",
-      "profile-dep": "Department: ",
-      "profile-role": "Role: ",
-      "profile-tel": "Tel: ",
-      "profile-comp": "Company: ",
-      "profile-info-a": "Advanced Information",
-      "profile-date": "Date of Birth: ",
-      "profile-country": "Country: ",
-      "profile-city": "City: ",
-      "profile-address": "Address: ",
-      "profile-postal-code": "Postal Code: "
+      "profileper-info": "Personal Information",
+      "profileaff": "Assignment",
+      "profile-dep": "Department : ",
+      "profile-role": "Role : ",
+      "profile-tel": "Tel : ",
+      "profile-comp": "Company : ",
+      "profileinfo-a": "Advanced Information",
+      "profile-date": "Date of Birth : ",
+      "profile-country": "Country : ",
+      "profile-city": "City : ",
+      "profile-address": "Address : ",
+      "profile-postal-code": "Postal Code : "
     }
   ]
 }

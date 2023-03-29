@@ -23,7 +23,6 @@ function setLanguage(language) {
         .then(data => {
             // Store the selected language in local storage
             localStorage.setItem("language", language);
-
             // get the active page
             let page = document.querySelectorAll('[id^="page-"]')[0].id.split("-")[1];
             for (const [key, value] of Object.entries(data)) {
@@ -36,15 +35,20 @@ function setLanguage(language) {
                         for (const [key2, value2] of Object.entries(item)) {
                             const element = document.getElementById(key2);
                             if (element) {
-                                element.innerHTML = value2;
+                                // check if the element is a Node
+                                if (element.id.indexOf("profile-") !== -1) {
+                                    let spanText = element.innerHTML.split(">")[1].split("<")[0];
+                                    element.innerHTML = value2 + `<span>` + spanText + `</span>`;
+                                } else {
+                                    element.innerHTML = value2;
+                                }
                             }
                         }
                     });
                 }
             }
 
-        })
-        .catch(error => console.error(error));
+        });
 }
 
 function setEvents() {

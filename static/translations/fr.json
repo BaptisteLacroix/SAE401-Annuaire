@@ -34,13 +34,13 @@
   ],
   "profile": [
     {
-      "profile-per-info": "Informations personnelles",
-      "profile-aff": "Affectation",
+      "profileper-info": "Informations personnelles",
+      "profileaff": "Affectation",
       "profile-dep": "Département : ",
       "profile-role": "Rôle : ",
       "profile-tel": "Tel : ",
       "profile-comp": "Compagnie : ",
-      "profile-info-a": "Informations avancées",
+      "profileinfo-a": "Informations avancées",
       "profile-date": "Date de naissance : ",
       "profile-country": "Pays : ",
       "profile-city": "Ville : ",

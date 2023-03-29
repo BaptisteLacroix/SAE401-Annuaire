@@ -10,8 +10,23 @@
             <li>
                 <ul id="right-nav">
                     <li>
-                        <a id="loginText" href="./login">Login</a>
-                        <a id="logoutText">Logout</a>
+                        <a id="loginText" href="./login">
+                            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                 preserveAspectRatio="xMidYMid meet" viewBox="0 0 16 16">
+                                <g fill="black">
+                                    <path d="M11 6a3 3 0 1 1-6 0a3 3 0 0 1 6 0z"></path>
+                                    <path fill-rule="evenodd"
+                                          d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"></path>
+                                </g>
+                            </svg>
+                        </a>
+                        <a id="logoutText" href="./index">
+                            <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                 preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
+                                <path fill="black"
+                                      d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2a9.985 9.985 0 0 1 8 4h-2.71a8 8 0 1 0 .001 12h2.71A9.985 9.985 0 0 1 12 22zm7-6v-3h-8v-2h8V8l5 4l-5 4z"/>
+                            </svg>
+                        </a>
                     </li>
                     <li id="flags">
                         <img id="french" src="{{ url_for('static', filename='img/drapeau/fr.svg') }}" alt="french_flag">

@@ -148,6 +148,7 @@ def profile():
     ldap.connection()
     entries = ldap.search_user(filter_value)
     results = []
+    print("ouais ouais oauis")
     if session.get('username') is None:
         for entry in entries:
             result = {
@@ -159,7 +160,9 @@ def profile():
                 'company': entry.company.value,
                 'department': entry.distinguishedName.value.split(',')[1].split('=')[1],
             }
+            print(result)
             results.append(result)
+            print(results)
     else:
         for entry in entries:
             result = {
@@ -181,6 +184,7 @@ def profile():
             }
             results.append(result)
     # show the user profile for that user
+    print(results[0])
     return render_template('profile.html', user=results[0])
 
 

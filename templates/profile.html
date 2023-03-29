@@ -15,7 +15,7 @@
             <img id="profile-picture" src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar">
         </div>
         <div class="profile-box">
-            <div id="profile-per-info" class="profile-title">
+            <div id="profileper-info" class="profile-title">
                 Informations Personnelles
             </div>
             <div class="profile-info">
@@ -33,9 +33,10 @@
         </div>
         {% if user|length > 7 %}
         <div class="profile-box">
-            <div id="profile-info-a" class="profile-title">Informations avancées</div>
+            <div id="profileinfo-a" class="profile-title">Informations avancées</div>
             <div class="profile-info">
-                <div id="profile-date">Date de naissance : <span> {{ user['uBirthday'] }} ({{ user['age'] }} ans)</span></div>
+                <div id="profile-date">Date de naissance : <span> {{ user['uBirthday'] }} ({{ user['age'] }})</span>
+                </div>
                 <div id="profile-country">Pays : <span> {{ user['c'] }}, {{ user['co'] }} </span></div>
                 <div id="profile-city">Ville : <span> {{ user['l'] }} </span></div>
                 <div id="profile-address">Adresse : <span> {{ user['streetAddress'] }} </span></div>
