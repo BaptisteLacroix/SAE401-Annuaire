@@ -125,7 +125,7 @@ class Ldap:
             'givenName': first_name,
             'mail': email,
             'userPassword': password,
-            'uBirthday': birth_date,
+            'birthDate': birth_date,
             'telephoneNumber': professional_phone,
             'homePhone': private_phone,
             'title': title,
@@ -246,15 +246,14 @@ class Ldap:
         self.conn.search(search_base=f'dc={self.dc_name},dc={self.dc_org}',
                          search_filter=f'(&(objectclass=user)(cn={username}*))',
                          search_scope=ldap3.SUBTREE,
-                         attributes=['uBirthday'])
+                         attributes=['birthDate'])
         if self.conn.entries:
             user_dn = self.conn.entries[0].entry_dn
-            changes = {'uBirthday': [(ldap3.MODIFY_REPLACE, [birthday])]}
+            changes = {'birthDate': [(ldap3.MODIFY_REPLACE, [birthday])]}
             self.conn.modify(user_dn, changes)
             print(f"Successfully set uBirthday {birthday} attribute for user {username}")
         else:
             print(f"User {username} not found in Active Directory")
-
 
 def function(ldap):
     with open('users.csv') as csvfile:
@@ -275,15 +274,15 @@ def function(ldap):
 
 def main():
     organisation_name = 'Société SINTA'
-    ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
+    ldap = Ldap('10.22.32.7', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
     ldap.connection()
-    # print(ldap.search_user('Lutero Innman'))
+    print(ldap.search_user('Lutero Innman'))
     # print(ldap.search_user('Claire Shugg'))
     # ldap.get_all_users('SINTADirection')
     # print(ldap.get_all_users("OU=Société SINTA,DC=SINTA,DC=LAN"))
     # ldap.search_group('PDG')
 
-    # innman = Ldap('10.22.32.3', 'SINTA', 'LAN', 'innman_lutero', 'StMkiafmwQ2')
+    # innman = Ldap('10.22.32.7', 'SINTA', 'LAN', 'innman_lutero', 'StMkiafmwQ2')
     # print(innman.connection())
 
     # function(ldap)

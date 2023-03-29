@@ -173,7 +173,7 @@ def profile():
                 'c': entry.c.value,
                 'co': entry.co.value,
                 'l': entry.l.value,
-                'uBirthday': entry.uBirthday.value,
+                'birthDate': entry.uBirthday.value,
                 'age': (datetime.now() - datetime.strptime(entry.uBirthday.value, "%d/%m/%Y")).days // 365,
                 'streetAddress': entry.streetAddress.value,
                 'postalCode': entry.postalCode.value,

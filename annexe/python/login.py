@@ -7,7 +7,7 @@ class Login:
 
     def __init__(self):
         # Initialize the login class
-        self.server = Server('10.22.32.3', get_info=ALL)
+        self.server = Server('10.22.32.7', get_info=ALL)
         self.domain = 'SINTA'
         self.username = None
         self.password = None
