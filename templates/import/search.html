@@ -49,9 +49,10 @@
     "{{ suggestion }}",
         {% endfor %}
     ];
+
     const searchInput = document.getElementById("search");
     const searchSuggestions = document.getElementById("search-suggestions");
-
+    
     searchInput.addEventListener("input", function () {
         searchSuggestions.innerHTML = "";
         if (searchInput.value.length > 0) {
@@ -64,5 +65,6 @@
             }
         }
     });
+    console.log(suggestions);
 
 </script>

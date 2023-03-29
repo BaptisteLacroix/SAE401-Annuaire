@@ -6,7 +6,7 @@ from flask import Flask, render_template, request, session, url_for, redirect
 from annexe.python.ldap import Ldap
 
 app = Flask(__name__, template_folder='templates')
-
+app.secret_key = secrets.token_hex(16)
 
 @app.route('/')
 @app.route('/index')
@@ -189,7 +189,7 @@ def profile():
 
 
 if __name__ == '__main__':
-    app.secret_key = secrets.token_hex(16)
+    print("------------------------------------------------------------------- ", app.secret_key)
     app.run(debug=True)
     session.setdefault('username', None)
     session.setdefault('password', None)
