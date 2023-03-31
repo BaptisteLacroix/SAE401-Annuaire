@@ -22,17 +22,10 @@ header ul {
 
 #logo {
     font-family: "logo";
-    font-size: 2em;
+    font-size: 2vw;
+    
 }
 
-#loginText {
-    font-size: 20px;
-}
-
-#logoutText {
-    font-size: 20px;
-    cursor: pointer;
-}
 
 
 #accueil>ul {
@@ -41,7 +34,6 @@ header ul {
     list-style: none;
     justify-content: space-around;
     align-items: center;
-    margin: auto 30px;
     height: 10vh;
 }
 
@@ -59,15 +51,14 @@ header ul {
 
 .headertext {
     font-family: sans-serif;
-    font-size: 30px;
+    font-size: 3vw;
     font-weight: bold;
 }
 
 #flags {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-    width: 6vw;
     padding-top: .5vh;
 }
 
@@ -77,4 +68,14 @@ header ul {
 
 #flags img:hover {
     cursor: pointer;
+}
+
+@media screen and (max-width:900px) {
+    #logo {
+        font-size: 2vh;
+    }
+
+    .headertext {
+        font-size: 2vh;
+    }
 }
