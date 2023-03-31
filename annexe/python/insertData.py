@@ -62,21 +62,20 @@ def add_to_admin_group(conn, row):
         # make this group with the admin privileges the users in this group will, can manage the Active Directory
         group_attributes = {'objectClass': ['top', 'group'], 'cn': 'Grp_AdmAD', 'groupType': '-2147483646'}
         conn.add(group_dn, attributes=group_attributes)
-    else:
 
-        # search the user with the first_name attribute["first_name"] and last_name attribute["last_name"]
-        conn.search(search_base=f'OU={row["Département"]},OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN',
-                    search_filter=f'(&(objectclass=user)(cn={row["first_name"]} {row["last_name"]}*))',
-                    search_scope=SUBTREE,
-                    attributes=['distinguishedName'])
+    # search the user with the first_name attribute["first_name"] and last_name attribute["last_name"]
+    conn.search(search_base=f'OU={row["Département"]},OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN',
+                search_filter=f'(&(objectclass=user)(cn={row["first_name"]} {row["last_name"]}*))',
+                search_scope=SUBTREE,
+                attributes=['distinguishedName'])
 
-        user_dn = str(conn.entries[0].distinguishedName)
+    user_dn = str(conn.entries[0].distinguishedName)
 
-        # add the user to the group {Grp_AdmAD}
-        conn.modify(f'cn=Grp_AdmAD,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN',
-                    {'member': [(MODIFY_ADD, [user_dn])]})
-        # show where the users are added
-        print("ajout utilisateur ADMINNNN dans groupe : ", conn.result['result'])
+    # add the user to the group {Grp_AdmAD}
+    conn.modify(f'cn=Grp_AdmAD,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN',
+                {'member': [(MODIFY_ADD, [user_dn])]})
+    # show where the users are added
+    print("ajout utilisateur ADMINNNN dans groupe : ", conn.result['result'])
 
 
 def create_group(conn, row):
@@ -97,7 +96,7 @@ def create_group(conn, row):
         }
         conn.add(group_dn, attributes=group_attributes)
         # show where the users are added
-        print("Ajout groupe : ", conn.result)
+        print("Ajout groupe : ", conn.result['result'])
 
 
 def add_user_to_group(conn, row):
