@@ -255,28 +255,12 @@ class Ldap:
         else:
             print(f"User {username} not found in Active Directory")
 
-def function(ldap):
-    with open('users.csv') as csvfile:
-        reader = csv.reader(csvfile, delimiter=';')
-        next(reader)  # Skip the header row
-        # Loop over each row in the CSV file
-
-        for row in reader:
-            # check if the line is null
-            if not row or row[0] == '':
-                continue
-            # Construct search query
-            first_name = row[2]
-            last_name = row[1]
-            new_birthday = row[5]
-            ldap.set_user_birthday(first_name + " " + last_name, new_birthday)
-
 
 def main():
     organisation_name = 'Société SINTA'
     ldap = Ldap('10.22.32.7', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
     ldap.connection()
-    # print(ldap.search_user('Claire Shugg'))
+    print(ldap.search_user('Claire Shugg'))
     # ldap.get_all_users('SINTADirection')
     # print(ldap.get_all_users("OU=Département Informatique,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN"))
     # ldap.search_group('PDG')
