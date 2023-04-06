@@ -1,18 +1,23 @@
+import hashlib
+
 import pandas as pd
-from ldap3 import Server, Connection, ALL, MODIFY_ADD, SUBTREE
+from ldap3 import Server, Connection, ALL, MODIFY_ADD, SUBTREE, MODIFY_REPLACE
 
 
 def create_user(conn, df):
     for _, row in df.iterrows():
         dn = f"cn={row['first_name']} {row['last_name']},OU={row['Département']},OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN"
 
+        password = row['password']
+        # hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
         attributes = {
             'objectClass': ['top', 'person', 'organizationalPerson', 'user'],
             'name': row['first_name'] + ' ' + row['last_name'],
             'givenName': row['first_name'],
             'sn': row['last_name'],
             'mail': row['e-mail'],
-            'userPassword': row['password'],
+            # set password as sha256 hash
+            'userPassword': password,
             'birthDate': row['birthday'].strftime('%Y/%m/%d'),
             'telephoneNumber': str(row['tel_prof']),
             'mobile': str(row['tel-perso']),
@@ -32,7 +37,7 @@ def create_user(conn, df):
         conn.add(dn, attributes=attributes)
 
         # show where the users are added
-        print("\n\nAjout utilisateur : ", conn.result['result'])
+        print("\n\nAjout utilisateur : ", conn.result)
 
         # create the group
         create_group(conn, row)
@@ -62,6 +67,13 @@ def add_to_admin_group(conn, row):
         # make this group with the admin privileges the users in this group will, can manage the Active Directory
         group_attributes = {'objectClass': ['top', 'group'], 'cn': 'Grp_AdmAD', 'groupType': '-2147483646'}
         conn.add(group_dn, attributes=group_attributes)
+        admin_group_dn = 'cn=Administrateurs,cn=Builtin,dc=SINTA,dc=LAN'
+        conn.modify(admin_group_dn, {'member': [(MODIFY_ADD, [group_dn])]})
+        control_access_rule = 'CN=Domain Controllers,CN=Users,DC=SINTA,DC=LAN;user'
+        conn.modify(group_dn, {'ntSecurityDescriptor': [(MODIFY_REPLACE, ['D:(A;;RP;;;' + control_access_rule + ')'])]})
+        # Check that the group was added to the Administrators group
+        conn.search(admin_group_dn, '(objectClass=*)', attributes=['member'])
+        print(conn.entries[0].member)
 
     # search the user with the first_name attribute["first_name"] and last_name attribute["last_name"]
     conn.search(search_base=f'OU={row["Département"]},OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN',

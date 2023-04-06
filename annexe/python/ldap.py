@@ -1,5 +1,3 @@
-import csv
-
 import ldap3
 
 
@@ -74,6 +72,21 @@ class Ldap:
         else:
             print("Echec de l'ajout de l'unité d'organisation")
 
+    def get_organiation_unit_by_name(self, organisation_name):
+        """
+        It searches for an organisation unit by its name in all the organisation units in the LDAP directory
+        :param organisation_name: The name of the organisation unit to search for
+        :return: The organisation unit if it exists, None otherwise
+        """
+        self.conn.search(search_base=f'OU=Société SINTA,dc={self.dc_name},dc={self.dc_org}',
+                         search_filter=f'(ou={organisation_name})',
+                         search_scope=ldap3.SUBTREE,
+                         attributes=['ou'])
+
+        if self.conn.entries:
+            return self.conn.entries[0].entry_dn
+        return None
+
     def create_group(self, organisation_name, group_name):
         """
         It creates a group in the specified organisation
@@ -82,7 +95,15 @@ class Ldap:
         :param group_name: The name of the group you want to create
         """
         # Données du groupe
-        group_dn = f'cn={group_name},ou={organisation_name},dc={self.dc_name},dc={self.dc_org}'
+
+        # Found the organisation_name and get the DN
+        organisation_dn = self.get_organiation_unit_by_name(organisation_name)
+        print(organisation_dn)
+        if organisation_dn is None:
+            print("L'unité d'organisation n'existe pas")
+            return
+
+        group_dn = f'cn={group_name},{organisation_dn}'
         group_attributes = {
             'objectClass': ['top', 'group'],
             'cn': [group_name]
@@ -97,74 +118,52 @@ class Ldap:
         else:
             print("Echec de l'ajout du groupe")
 
-    def create_user(self, organisation_name, last_name, first_name,
-                    email, password, birth_date, private_phone, professional_phone, title,
-                    address, group_name):
+    def found_group(self, group):
         """
-        It creates a user in the Active Directory
-
-        :param organisation_name: The name of the organisation
-        :param last_name: The user's last name
-        :param first_name: The first name of the user
-        :param email: The email address of the user
-        :param password: The password for the user
-        :param birth_date: The date of birth of the user
-        :param private_phone: The user's private phone number
-        :param professional_phone: The user's professional phone number
-        :param title: The title of the user
-        :param address: The user's street address
-        :param group_name: The name of the group you want to add the user to
+        Found the group in the SINTA.LAN domain
+        :param group: The name of the group to search for
+        :return: the group if it exists, None otherwise
         """
-        # Données de l'utilisateur
-        user_dn = f'cn={last_name} {first_name},ou={organisation_name},dc={self.dc_name},dc={self.dc_org}'
+        self.conn.search(search_base=f'OU=Société SINTA,dc={self.dc_name},dc={self.dc_org}',
+                         search_filter=f'(cn={group})',
+                         search_scope=ldap3.SUBTREE,
+                         attributes=['cn'])
 
-        user_attributes = {
-            'objectClass': ['top', 'person', 'organizationalPerson', 'user'],
-            'cn': last_name + ' ' + first_name,
-            'sn': last_name,
-            'givenName': first_name,
-            'mail': email,
-            'userPassword': password,
-            'birthDate': birth_date,
-            'telephoneNumber': professional_phone,
-            'homePhone': private_phone,
-            'title': title,
-            'streetAddress': address,
-            'SamAccountName': last_name + '.' + first_name
-        }
+        if self.conn.entries:
+            return self.conn.entries[0].entry_dn
+        return None
 
-        # Ajout de l'utilisateur
-        self.conn.add(user_dn, attributes=user_attributes)
-
-        # Vérification de la réussite de l'ajout
-        if self.conn.result['result'] == 0:
-            print("Utilisateur ajouté avec succès")
-        else:
-            print("Echec de l'ajout de l'utilisateur")
-            # show the problem
-            print(self.conn.result)
-
-        self.add_user_to_group(last_name, first_name, organisation_name, group_name)
-
-    def add_user_to_group(self, last_name, first_name, organisation_name, group_name):
+    def add_user_to_group(self, display_name, group_name):
         """
         It adds a user to a group
 
-        :param last_name: The last name of the user
-        :param first_name: The first name of the user
-        :param organisation_name: The name of the organisation
+        :param display_name: The name of the user to add to the group
         :param group_name: The name of the group to add the user to
         """
         # Ajout de l'utilisateur au groupe
-        self.conn.extend.microsoft.add_members_to_groups(
-            f'cn={last_name} {first_name},ou={organisation_name},dc={self.dc_name},dc={self.dc_org}',
-            [f'cn={group_name},ou={organisation_name},dc={self.dc_name},dc={self.dc_org}'])
+        group_cn = self.found_group(group_name)
+        print(group_cn)
+        if group_cn is None:
+            print("Le groupe n'existe pas")
+            return
 
-        # Vérification de la réussite de l'ajout
-        if self.conn.result['result'] == 0:
-            print("Utilisateur ajouté au groupe avec succès")
-        else:
-            print("Echec de l'ajout de l'utilisateur au groupe")
+        # for each user
+        print(display_name)
+        for user in display_name:
+            user_cn = self.search_user(user)
+            if user_cn is None:
+                print("L'utilisateur n'existe pas")
+                return
+            print(user_cn[0].distinguishedName.value)
+            self.conn.extend.microsoft.add_members_to_groups(
+                f'{user_cn[0].distinguishedName.value}',
+                [f'{group_cn}'])
+
+            # Vérification de la réussite de l'ajout
+            if self.conn.result['result'] == 0:
+                print(f"Utilisateur {user} ajouté au groupe {group_name} avec succès")
+            else:
+                print("Echec de l'ajout de l'utilisateur au groupe")
 
     def search_all_object_class(self):
         """
@@ -178,6 +177,21 @@ class Ldap:
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
+
+    def get_all_organisation_unit(self):
+        """
+        Get all the organisation unit from the SINTA.LAN ldap.
+        :return: A list of all the organisation unit
+        """
+        self.conn.search(search_base=f'dc={self.dc_name},dc={self.dc_org}',
+                         search_filter='(objectClass=organizationalUnit)',
+                         search_scope=ldap3.SUBTREE,
+                         attributes=['ou'])
+
+        if not self.conn.entries:
+            print("Aucune entrée trouvée")
+            return []
+        return [entry.ou.value for entry in self.conn.entries]
 
     def search_object_class(self, entrie_name):
         """
@@ -209,22 +223,8 @@ class Ldap:
         # Affichage du résultat de la recherche
         if not self.conn.entries:
             print("Aucune entrée trouvée")
+            return None
         return self.conn.entries
-
-    def search_group(self, group_name):
-        """
-        It searches for a group in the LDAP directory
-
-        :param group_name: The name of the group you want to search for
-        """
-        self.conn.search(search_base=f'dc={self.dc_name},dc={self.dc_org}',
-                         search_filter=f'(cn={group_name})',
-                         search_scope=ldap3.SUBTREE,
-                         attributes=['*'])
-
-        # Affichage du résultat de la recherche
-        if not self.conn.entries:
-            print("Aucune entrée trouvée")
 
     def get_all_users(self, search_base):
         """
@@ -255,12 +255,101 @@ class Ldap:
         else:
             print(f"User {username} not found in Active Directory")
 
+    def getAdmUsers(self):
+        """
+        Get all the users in Grp_AdmAD
+        :return: list of users
+        """
+        self.conn.search(search_base=f'dc={self.dc_name},dc={self.dc_org}',
+                         search_filter=f'(cn=Grp_AdmAD)',
+                         search_scope=ldap3.SUBTREE,
+                         attributes=['member'])
+        if self.conn.entries:
+            users = []
+            for user in self.conn.entries[0].member.values:
+                users.append(self.search_user(user.split(',')[0].split('=')[1])[0].sAMAccountName.value)
+            return users
+        print("No users found in Grp_AdmAD")
+        return []
+
+    def get_all_groups(self):
+        """
+        It search all groups in the LDAP directory
+        :return: list of groups
+        """
+        self.conn.search(search_base=f'OU=Société SINTA,dc={self.dc_name},dc={self.dc_org}',
+                         search_filter=f'(objectClass=group)',
+                         search_scope=ldap3.SUBTREE,
+                         attributes=['*'])
+        if self.conn.entries:
+            groups = []
+            for group in self.conn.entries:
+                groups.append(group.cn.value)
+            return groups
+        print("No groups found")
+        return []
+
+    def delete_group(self, group):
+        """
+        Delete a group from the LDAP directory
+        :param group: The group to delete
+        :return: True if the group has been deleted, False otherwise
+        """
+        entry_dn = self.found_group(group)
+        if entry_dn:
+            self.conn.delete(entry_dn)
+            return True
+        return False
+
+    def check_password(self, username, password):
+        """
+        Check if the password is correct for the username.
+        :param username: The username
+        :param password: The password
+        :return: True if the password is correct, False otherwise
+        """
+        # found the user
+        try:
+            entries = self.search_user(username.split('_')[1] + " " + username.split('_')[0])
+        except IndexError:
+            entries = self.search_user(username)
+        if self.conn.entries:
+            password = f"b'{password}'"
+            return entries[0].sAMAccountName.value == username and \
+                str(entries[0].userPassword.value) == password
+        return False
+
+    def delete_users_from_group(self, users, group):
+        """
+        Delete a user from a group
+        :param users: List of users to delete
+        :param group: The group
+        :return: True if the user has been deleted, False otherwise
+        """
+        entry_dn = self.found_group(group)
+        if entry_dn:
+            print(entry_dn)
+            for user in users:
+                u = self.search_user(user)
+                if u:
+                    print("user found")
+                    changes = {'member': [(ldap3.MODIFY_DELETE, [u[0].entry_dn])]}
+                    self.conn.modify(entry_dn, changes)
+                    print(f"Successfully deleted user {user} from group {group}")
+                else:
+                    print(f"User {user} not found")
+            return True
+        print(f"Group {group} not found")
+        return False
+
 
 def main():
-    organisation_name = 'Société SINTA'
     ldap = Ldap('10.22.32.7', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
     ldap.connection()
     print(ldap.search_user('Claire Shugg'))
+    # print(ldap.getAdmUsers())
+    # print(ldap.get_organiation_unit_by_name('Présidence'))
+    # print(ldap.search_user('Lutero'))
     # ldap.get_all_users('SINTADirection')
     # print(ldap.get_all_users("OU=Département Informatique,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN"))
     # ldap.search_group('PDG')
@@ -270,7 +359,7 @@ def main():
 
     # function(ldap)
     # print("---------------------")
-    # ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', 'skipp mathiassen', 'fAlbfXjQySy7')
+    # ldap = Ldap('10.22.32.7', 'SINTA', 'LAN', 'shugg claire', 'j5q2qPDD1yQ')
     # ldap.connection()
 
 

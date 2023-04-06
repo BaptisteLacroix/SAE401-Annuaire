@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+{% include './import/head.html' %}
+
+<body>
+
+{% include './import/header.html' %}
+
+{% include './import/search.html' %}
+
+<main id="page-adminPanel">
+
+    <div class="box blue">
+        <h1>Supprimer Groupe</h1>
+        <form action="/adminPanel/deleteGroup" method="post">
+            <label>
+                <select name="group">
+                    {% for group in groups %}
+                        <option value="{{ group }}">{{ group }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <input type="submit" value="Supprimer">
+        </form>
+    </div>
+    <div class="box blue">
+        <h1>Rajouter groupe</h1>
+        <form action="/adminPanel/addGroup" method="post">
+            <label>
+                <input type="text" name="group" placeholder="Nom du groupe">
+            </label>
+            <label>
+                <select name="OU">
+                    {% for organisation_unit in all_organisation_unit %}
+                        <option value="{{ organisation_unit }}"> {{ organisation_unit }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <input type="submit" value="Ajouter">
+        </form>
+    </div>
+    <div class="box blue">
+        <h1>Ajouter utilisateurs à groupe</h1>
+        <form action="/adminPanel/addUserToGroup" method="post">
+            <label>
+                <!-- authorized multiple values -->
+                <select name="users" multiple>
+                    {% for user in users %}
+                        <option value="{{ user }}">{{ user }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                <select name="group">
+                    {% for group in groups %}
+                        <option value="{{ group }}">{{ group }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <input type="submit" value="Ajouter">
+        </form>
+    </div>
+    <div class="box blue">
+        <h1>Supprimer Utilisateur de groupe</h1>
+        <form action="/adminPanel/deleteUserFromGroup" method="post">
+            <label>
+                <select name="users" multiple>
+                    {% for user in users %}
+                        <option value="{{ user }}">{{ user }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>
+                <select name="group">
+                    {% for group in groups %}
+                        <option value="{{ group }}">{{ group }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <input type="submit" value="Supprimer">
+        </form>
+    </div>
+</main>
+
+{% include './import/footer.html' %}
+
+</body>

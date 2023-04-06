@@ -4,9 +4,11 @@ from datetime import datetime
 from flask import Flask, render_template, request, session, url_for, redirect
 
 from annexe.python.ldap import Ldap
+from annexe.python.private import getAdminLogin
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = secrets.token_hex(16)
+
 
 @app.route('/')
 @app.route('/index')
@@ -15,8 +17,7 @@ def index():
     The function index() is a route that renders the template index.html
     :return: The index.html file is being returned.
     """
-    default_password = 'IUT!2023'
-    default_username = 'administrateur'
+    default_username, default_password = getAdminLogin()
     all_filters = ["OU=Département Assistance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
                    "OU=Département Communication,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
                    "OU=Département Finance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
@@ -24,10 +25,9 @@ def index():
                    "OU=Département Marketing,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
                    "OU=Département Ressources Humaines,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
                    "OU=Présidence,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
-                   "OU=Société SINTA,DC=SINTA,DC=LAN"
-                   ]
+                   "OU=Société SINTA,DC=SINTA,DC=LAN"]
     # show the user profile for that user
-    ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', default_username, default_password)
+    ldap = Ldap('10.22.32.7', 'SINTA', 'LAN', default_username, default_password)
     ldap.connection()
     users = []
     for f in all_filters:
@@ -36,7 +36,6 @@ def index():
             users.append(entry.displayName.value)
     # delete all duplicates
     users = list(dict.fromkeys(users))
-    print(len(users))
     return render_template('index.html', suggestions=users)
 
 
@@ -54,14 +53,26 @@ def login():
         username = request.form['username']
         password = request.form['password']
         remember = request.form.get('remember')
-        ldap = Ldap('10.22.32.3', 'SINTA', 'LAN', username, password)
-        if ldap.connection():
-            session['username'] = username
-            session['password'] = password
+        # search the user in the Adm_group
+        ldap = admin_connection()
+        adm_users = ldap.getAdmUsers()
+        if username not in adm_users and username != 'administrateur':
+            return render_template('login.html', error='You are not allowed to connect')
+        # check the password and the username for the user in the Adm_group
+        if Ldap('10.22.32.7', 'SINTA', 'LAN', username, password).connection():
+            # set the session
+            session['username'], session['password'] = username, password
             if remember == 'on':
                 session.permanent = True
-            else:
-                session.permanent = False
+                app.permanent_session_lifetime = datetime.timedelta(minutes=30)
+            # send a message that tell the client is connected
+            return redirect(url_for('index'))
+        if ldap.check_password(username, password):
+            # set the session
+            session['username'], session['password'] = username, password
+            if remember == 'on':
+                session.permanent = True
+                app.permanent_session_lifetime = datetime.timedelta(minutes=30)
             # send a message that tell the client is connected
             return redirect(url_for('index'))
         else:
@@ -69,6 +80,83 @@ def login():
             return render_template('login.html', error=error)
     else:
         return render_template('login.html')
+
+
+@app.route('/adminPanel')
+def adminPanel():
+    if (not session.get('username')) or (not session.get('password')):
+        return redirect(url_for('index'))
+
+    ldap = admin_connection()
+
+    groups = ldap.get_all_groups()
+    users = ldap.get_all_users("OU=Société SINTA,DC=SINTA,DC=LAN")
+    users_names = []
+    for user in users:
+        users_names.append(user.displayName.value)
+    all_organisation_unit = ldap.get_all_organisation_unit()
+    if 'Domain Controllers' in all_organisation_unit:
+        all_organisation_unit.remove('Domain Controllers')
+    return render_template('adminPanel.html', groups=groups, users=users_names,
+                           all_organisation_unit=all_organisation_unit)
+
+
+def admin_connection():
+    default_username, default_password = getAdminLogin()
+    ldap = Ldap('10.22.32.7', 'SINTA', 'LAN', default_username, default_password)
+    ldap.connection()
+    return ldap
+
+
+@app.route('/adminPanel/addUserToGroup', methods=['GET', 'POST'])
+def addUserToGroup():
+    if (not session.get('username')) or (not session.get('password')):
+        return redirect(url_for('index'))
+    ldap = admin_connection()
+    if request.method == 'POST':
+        user = request.form.getlist('users')
+        group = request.form['group']
+        ldap.add_user_to_group(user, group)
+        return redirect(url_for('adminPanel'))
+    return redirect(url_for('adminPanel'))
+
+
+@app.route('/adminPanel/deleteGroup', methods=['GET', 'POST'])
+def deleteGroup():
+    if (not session.get('username')) or (not session.get('password')):
+        return redirect(url_for('index'))
+    ldap = admin_connection()
+    if request.method == 'POST':
+        # set to users all users from the form
+        group = request.form['group']
+        ldap.delete_group(group)
+        return redirect(url_for('adminPanel'))
+    return redirect(url_for('adminPanel'))
+
+
+@app.route('/adminPanel/addGroup', methods=['GET', 'POST'])
+def addGroup():
+    if (not session.get('username')) or (not session.get('password')):
+        return redirect(url_for('index'))
+    ldap = admin_connection()
+    if request.method == 'POST':
+        group = request.form['group']
+        organisation_unit = request.form['OU']
+        ldap.create_group(organisation_unit, group)
+        return redirect(url_for('adminPanel'))
+
+
+@app.route('/adminPanel/deleteUserFromGroup', methods=['GET', 'POST'])
+def deleteUserFromGroup():
+    if (not session.get('username')) or (not session.get('password')):
+        return redirect(url_for('index'))
+    ldap = admin_connection()
+    if request.method == 'POST':
+        # set to users all users from the form
+        users = request.form.getlist('users')
+        group = request.form['group']
+        ldap.delete_users_from_group(users, group)
+        return redirect(url_for('adminPanel'))
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -91,8 +179,7 @@ def global_search():
     It takes a GET request with a parameter called 'filter' and renders the globalSearch.html template with the filter value
     :return: The globalSearch.html page is being returned.
     """
-    default_password = 'IUT!2023'
-    default_username = 'administrateur'
+    default_username, default_password = getAdminLogin()
     all_filters = [
         {
             "assistance": "OU=Département Assistance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
@@ -108,7 +195,7 @@ def global_search():
     # get the value of the filter parameter key from all_filters
     filter_value = all_filters[0].get(request.args.get('filter'))
     post_value = request.form.get('searchValue')
-    ldap = Ldap('10.22.32.3', 'SINTA', 'LAN',
+    ldap = Ldap('10.22.32.7', 'SINTA', 'LAN',
                 default_username if session.get('username') is None else session.get('username'),
                 default_password if session.get('password') is None else session.get('password'))
     ldap.connection()
@@ -138,11 +225,10 @@ def profile():
     The function profile() is a route that renders the template profile.html
     :return: The profile.html file is being returned.
     """
-    default_password = 'IUT!2023'
-    default_username = 'administrateur'
+    default_username, default_password = getAdminLogin()
     filter_value = request.args.get('user')
 
-    ldap = Ldap('10.22.32.3', 'SINTA', 'LAN',
+    ldap = Ldap('10.22.32.7', 'SINTA', 'LAN',
                 default_username if session.get('username') is None else session.get('username'),
                 default_password if session.get('password') is None else session.get('password'))
     ldap.connection()
@@ -189,7 +275,6 @@ def profile():
 
 
 if __name__ == '__main__':
-    print("------------------------------------------------------------------- ", app.secret_key)
     app.run(debug=True)
     session.setdefault('username', None)
     session.setdefault('password', None)
