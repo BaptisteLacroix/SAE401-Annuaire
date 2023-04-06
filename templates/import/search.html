@@ -4,10 +4,13 @@
         <div id="search-bar">
             <form id="search-form" action="./globalSearch" role="search" method="post">
                 <div id="search">
-                    <span id="filters-used"></span>
+                    <label id="filters-used">
+                    </label>
                     <span id="search-input">
-                        <input autocomplete="off" id="input-search"  type="search" name="searchValue" placeholder="Rechercher..." autofocus
-                            required />
+                        <label for="input-search"></label><input autocomplete="off" id="input-search" type="search"
+                                                                 name="searchValue"
+                                                                 placeholder="Rechercher..." autofocus
+                                                                 required/>
                     </span>
                     <span id="search-validation">
                         <button id="search-button" type="submit">Valider</button>
@@ -15,8 +18,7 @@
 
                 </div>
 
-                <ul id="search-suggestions">
-                </ul>
+                <ul id="search-suggestions"></ul>
             </form>
         </div>
         <ul>
@@ -47,13 +49,13 @@
 <script>
     const suggestions = [
         {% for suggestion in suggestions %}
-    "{{ suggestion }}",
+            "{{ suggestion }}",
         {% endfor %}
     ];
 
-    const searchInput = document.getElementById("search");
+    const searchInput = document.getElementById("input-search");
     const searchSuggestions = document.getElementById("search-suggestions");
-    
+
     searchInput.addEventListener("input", function () {
         searchSuggestions.innerHTML = "";
         if (searchInput.value.length > 0) {
@@ -67,5 +69,4 @@
         }
     });
     console.log(suggestions);
-
 </script>
