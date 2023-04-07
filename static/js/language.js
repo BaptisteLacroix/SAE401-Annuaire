@@ -69,6 +69,7 @@ function setEvents() {
         filters[i].addEventListener("click", function () {
             addOnSearchbar(filters[i]);
             filters[i].classList.add("selected");
+            filters[i].setAttribute("name", "filter");
         });
     }
 }
@@ -85,6 +86,7 @@ function addOnSearchbar(element) {
         croix.addEventListener("click", function () {
             deleteElement(span);
             element.classList.remove("selected");
+            element.removeAttribute("name");
         })
         span.appendChild(croix);
         searchBar.appendChild(span);
@@ -93,7 +95,7 @@ function addOnSearchbar(element) {
 
 function validate(element, container) {
     let activeFilters = container.getElementsByClassName("active-filter");
-    if (activeFilters.length == 3) {
+    if (activeFilters.length === 3) {
         return false;
     }
     for (let i = 0; i < activeFilters.length; i++) {

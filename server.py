@@ -10,13 +10,7 @@ app = Flask(__name__, template_folder='templates')
 app.secret_key = secrets.token_hex(16)
 
 
-@app.route('/')
-@app.route('/index')
-def index():
-    """
-    The function index() is a route that renders the template index.html
-    :return: The index.html file is being returned.
-    """
+def init_users_informations():
     default_username, default_password = getAdminLogin()
     all_filters = ["OU=Département Assistance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
                    "OU=Département Communication,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
@@ -26,7 +20,6 @@ def index():
                    "OU=Département Ressources Humaines,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
                    "OU=Présidence,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN",
                    "OU=Société SINTA,DC=SINTA,DC=LAN"]
-    # show the user profile for that user
     ldap = Ldap('10.22.32.7', 'SINTA', 'LAN', default_username, default_password)
     ldap.connection()
     users = []
@@ -35,8 +28,21 @@ def index():
         for entry in entries:
             users.append(entry.displayName.value)
     # delete all duplicates
-    users = list(dict.fromkeys(users))
-    return render_template('index.html', suggestions=users)
+    return list(dict.fromkeys(users))
+
+
+USERS_PROPOSITION = init_users_informations()
+
+
+@app.route('/')
+@app.route('/index')
+def index():
+    """
+    The function index() is a route that renders the template index.html
+    :return: The index.html file is being returned.
+    """
+    # show the user profile for that user
+    return render_template('index.html', suggestions=USERS_PROPOSITION)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -98,7 +104,7 @@ def adminPanel():
     if 'Domain Controllers' in all_organisation_unit:
         all_organisation_unit.remove('Domain Controllers')
     return render_template('adminPanel.html', groups=groups, users=users_names,
-                           all_organisation_unit=all_organisation_unit)
+                           all_organisation_unit=all_organisation_unit, suggestions=USERS_PROPOSITION)
 
 
 def admin_connection():
@@ -195,15 +201,16 @@ def global_search():
     # get the value of the filter parameter key from all_filters
     filter_value = all_filters[0].get(request.args.get('filter'))
     post_value = request.form.get('searchValue')
-    ldap = Ldap('10.22.32.7', 'SINTA', 'LAN',
-                default_username if session.get('username') is None else session.get('username'),
-                default_password if session.get('password') is None else session.get('password'))
+    ldap = admin_connection()
     ldap.connection()
+    print(post_value)
     if post_value is not None:
         entries = ldap.search_user(post_value)
     else:
         entries = ldap.get_all_users(all_filters[0].get("default") if filter_value is None else filter_value)
 
+    if entries is None:
+        entries = []
     # Retrieve the necessary information for each compatible user and store it in a list of dicts
     results = []
     for entry in entries:
@@ -216,7 +223,7 @@ def global_search():
             results.append(result)
         except AttributeError:
             pass
-    return render_template('globalSearch.html', filter=filter_value, users=results)
+    return render_template('globalSearch.html', filter=filter_value, users=results, suggestions=USERS_PROPOSITION)
 
 
 @app.route('/profile')
@@ -259,11 +266,10 @@ def profile():
                 'telephone': entry.telephoneNumber.value,
                 'company': entry.company.value,
                 'department': entry.distinguishedName.value.split(',')[1].split('=')[1],
-                'c': entry.c.value,
                 'co': entry.co.value,
                 'l': entry.l.value,
-                'birthDate': entry.uBirthday.value,
-                'age': (datetime.now() - datetime.strptime(entry.uBirthday.value, "%d/%m/%Y")).days // 365,
+                'birthDate': entry.birthDate.value,
+                'age': (datetime.now() - datetime.strptime(entry.birthDate.value, "%Y/%m/%d")).days // 365,
                 'streetAddress': entry.streetAddress.value,
                 'postalCode': entry.postalCode.value,
                 'userPrincipalName': entry.userPrincipalName.value,
@@ -271,7 +277,7 @@ def profile():
             results.append(result)
     # show the user profile for that user
     print(results[0])
-    return render_template('profile.html', user=results[0])
+    return render_template('profile.html', user=results[0], suggestions=USERS_PROPOSITION)
 
 
 if __name__ == '__main__':

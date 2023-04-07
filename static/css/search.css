@@ -18,6 +18,7 @@
     margin: auto;
     position: relative;
     display: flex;
+    margin: auto;
     flex-direction: row;
     align-items: center;
     overflow-x: auto;
@@ -127,7 +128,13 @@ input[type="search"] {
 
 
 
-
+#filtres #search-suggestions {
+    position: relative;
+    top: 1px;
+    flex-wrap: wrap;
+    margin: auto;
+    width: 50%;
+}
 
 
 
@@ -137,6 +144,7 @@ input[type="search"] {
     list-style: none;
     align-items: center;
     justify-content: center;
+    flex-direction: row;
     flex-wrap: wrap;
     margin: 0 1vw;
 }
