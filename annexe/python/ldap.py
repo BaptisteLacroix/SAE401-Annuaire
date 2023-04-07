@@ -1,3 +1,5 @@
+from typing import List
+
 import ldap3
 
 
@@ -215,7 +217,7 @@ class Ldap:
 
         :param username: The username to search for
         """
-        self.conn.search(search_base=f'dc={self.dc_name},dc={self.dc_org}',
+        self.conn.search(search_base=f'OU=Société SINTA,dc={self.dc_name},dc={self.dc_org}',
                          search_filter=f'(&(objectclass=user)(cn={username}*))',
                          search_scope=ldap3.SUBTREE,
                          attributes=['*', 'unicodePwd', 'userAccountControl'])
@@ -225,6 +227,28 @@ class Ldap:
             print("Aucune entrée trouvée")
             return None
         return self.conn.entries
+
+    def get_users_from_mutliple_organisation(self, search_user: str, organisation_cn: List[str]):
+        """
+        It searches for all entries corresponding to the search_user parameter in the subtree of
+        all the organisation in the organisation_cn list
+        :param search_user: The user to search for
+        :param organisation_cn: The list of organisation to search in
+        :return: A list of all the users found
+        """
+        users = []
+        for organisation in organisation_cn:
+            self.conn.search(search_base=organisation,
+                             search_filter=f'(&(objectclass=user)(cn={search_user}*))',
+                             search_scope=ldap3.SUBTREE,
+                             attributes=['*', 'unicodePwd', 'userAccountControl'])
+
+            # Affichage du résultat de la recherche
+            if not self.conn.entries:
+                print("Aucune entrée trouvée")
+            else:
+                users.extend(self.conn.entries)
+        return users
 
     def get_all_users(self, search_base):
         """

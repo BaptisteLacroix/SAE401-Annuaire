@@ -59,14 +59,55 @@
     searchInput.addEventListener("input", function () {
         searchSuggestions.innerHTML = "";
         if (searchInput.value.length > 0) {
-            for (let i = 0; i < suggestions.length; i++) {
-                if (suggestions[i].toLowerCase().includes(searchInput.value.toLowerCase())) {
-                    const suggestion = document.createElement("li");
-                    suggestion.innerHTML = `<a href="./profile?user=${suggestions[i]}">${suggestions[i]}</a>`;
-                    searchSuggestions.appendChild(suggestion);
-                }
+            // if the input contains only alphabetical characters
+            // search for suggestions that start with the input value
+            if (/^[a-zA-Z]+$/.test(searchInput.value)) {
+                suggestions.forEach(suggestion => {
+                    if (suggestion.toLowerCase().startsWith(searchInput.value.toLowerCase())) {
+                        const suggestionElement = document.createElement("li");
+                        suggestionElement.innerHTML = `<a href="./profile?user=${suggestion}">${suggestion}</a>`;
+                        searchSuggestions.appendChild(suggestionElement);
+                    }
+                });
+            }
+            // if the input contains * characters
+            // if *a search for suggestions that end with a
+            if (searchInput.value.startsWith("*")) {
+                suggestions.forEach(suggestion => {
+                    if (suggestion.toLowerCase().endsWith(searchInput.value.substring(1).toLowerCase())) {
+                        const suggestionElement = document.createElement("li");
+                        suggestionElement.innerHTML = `<a href="./profile?user=${suggestion}">${suggestion}</a>`;
+                        searchSuggestions.appendChild(suggestionElement);
+                    }
+                });
+            }
+            // if (any alphabetic letter + "*" Character) and end with (any alphabetic letter) search for suggestions
+            // that start with (the character(s) and end with the name that start with (the character(s))
+            if (searchInput.value.startsWith(/[a-zA-Z]+/) && searchInput.value.endsWith(/[a-zA-Z]+/)) {
+                suggestions.forEach(suggestion => {
+                    if (suggestion.toLowerCase().startsWith(searchInput.value.substring(1, searchInput.value.length - 1).toLowerCase())) {
+                        const suggestionElement = document.createElement("li");
+                        suggestionElement.innerHTML = `<a href="./profile?user=${suggestion}">${suggestion}</a>`;
+                        searchSuggestions.appendChild(suggestionElement);
+                    }
+                });
             }
         }
     });
+
+
+    const form = document.getElementById('search-form');
+
+    form.addEventListener('submit', () => {
+        const filtersUsedLabel = document.querySelector('#filters-used');
+        const filtersUsedText = filtersUsedLabel.textContent;
+        const filtersUsedValues = filtersUsedText.split('❌').map(value => value.trim()).filter(value => value.length > 0);
+        const filtersUsedInput = document.createElement('input');
+        filtersUsedInput.type = 'hidden';
+        filtersUsedInput.name = 'filtersUsed';
+        filtersUsedInput.value = JSON.stringify(filtersUsedValues);
+        form.appendChild(filtersUsedInput);
+    });
+
     console.log(suggestions);
 </script>
