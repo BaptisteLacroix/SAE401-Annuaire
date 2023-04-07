@@ -12,73 +12,73 @@
 <main id="page-adminPanel">
 
     <div class="box blue">
-        <h1>Supprimer Groupe</h1>
+        <h1 class="adminPanelSectionTitle">Supprimer Groupe</h1>
         <form action="/adminPanel/deleteGroup" method="post">
             <label>
-                <select name="group">
+                <select name="group" class="single">
                     {% for group in groups %}
                         <option value="{{ group }}">{{ group }}</option>
                     {% endfor %}
                 </select>
             </label>
-            <input type="submit" value="Supprimer">
+            <input type="submit" class="adminPanelButton" value="Supprimer"/>
         </form>
     </div>
     <div class="box blue">
-        <h1>Rajouter groupe</h1>
+        <h1 class="adminPanelSectionTitle">Rajouter groupe</h1>
         <form action="/adminPanel/addGroup" method="post">
             <label>
-                <input type="text" name="group" placeholder="Nom du groupe">
+                <input type="text" name="group" placeholder="Nom du groupe"/>
             </label>
             <label>
-                <select name="OU">
+                <select name="OU" class="single">
                     {% for organisation_unit in all_organisation_unit %}
                         <option value="{{ organisation_unit }}"> {{ organisation_unit }}</option>
                     {% endfor %}
                 </select>
             </label>
-            <input type="submit" value="Ajouter">
+            <input type="submit" class="adminPanelButton" value="Ajouter"/>
         </form>
     </div>
     <div class="box blue">
-        <h1>Ajouter utilisateurs à groupe</h1>
+        <h1 class="adminPanelSectionTitle">Ajouter utilisateurs à groupe</h1>
         <form action="/adminPanel/addUserToGroup" method="post">
-            <label>
+            <label> Utilisateurs
                 <!-- authorized multiple values -->
-                <select name="users" multiple>
+                <select name="users" multiple class="multiple-selection">
                     {% for user in users %}
                         <option value="{{ user }}">{{ user }}</option>
                     {% endfor %}
                 </select>
             </label>
-            <label>
-                <select name="group">
+            <label> Groupe
+                <select name="group" class="single">
                     {% for group in groups %}
                         <option value="{{ group }}">{{ group }}</option>
                     {% endfor %}
                 </select>
             </label>
-            <input type="submit" value="Ajouter">
+            <input type="submit" class="adminPanelButton" value="Ajouter"/>
         </form>
     </div>
     <div class="box blue">
-        <h1>Supprimer Utilisateur de groupe</h1>
+        <h1 class="adminPanelSectionTitle">Supprimer Utilisateur de groupe</h1>
         <form action="/adminPanel/deleteUserFromGroup" method="post">
-            <label>
-                <select name="users" multiple>
+            <label> Utilisateurs
+                <select name="users" multiple class="multiple-selection">
                     {% for user in users %}
                         <option value="{{ user }}">{{ user }}</option>
                     {% endfor %}
                 </select>
             </label>
-            <label>
-                <select name="group">
+            <label> Groupe
+                <select name="group" class="single">
                     {% for group in groups %}
                         <option value="{{ group }}">{{ group }}</option>
                     {% endfor %}
                 </select>
             </label>
-            <input type="submit" value="Supprimer">
+            <input type="submit" class="adminPanelButton" value="Supprimer"/>
         </form>
     </div>
 </main>

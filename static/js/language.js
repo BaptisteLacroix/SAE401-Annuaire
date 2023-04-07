@@ -15,6 +15,18 @@ window.addEventListener("load", function () {
         }
     });
     setEvents();
+
+    const select = document.querySelector('.multiple-selection');
+
+    select.addEventListener('mousedown', function (e) {
+        const option = e.target;
+        if (option.tagName === 'OPTION') {
+            option.classList.toggle('selected');
+            e.preventDefault(); // prevent the default blue selection
+        }
+    });
+
+
 });
 
 function setLanguage(language) {

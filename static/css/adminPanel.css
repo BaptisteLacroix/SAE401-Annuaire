@@ -1,3 +1,89 @@
-main#page-adminPanel {
+.adminPanelSectionTitle {
+    text-align: center;
+}
 
+#page-adminPanel input[type="text"] {
+    width: 100%;
+    padding: 1.2vh 0;
+    font-size: 16px;
+    color: var(--color-dark);
+    margin-bottom: 3vh;
+    border: none;
+    border-bottom: 1px solid var(--color-dark);
+    outline: none;
+    background: transparent;
+}
+
+.adminPanelButton {
+    display: block;
+    background: transparent;
+    border: none;
+    padding: 1vh 1vw;
+    border-radius: 20px;
+    font-size: medium;
+    color: var(--color-dark);
+    font-weight: bold;
+    text-align: center;
+    margin: 1vh auto;
+    border: var(--color-dark) solid 2px;
+    transition: all 0.2s ease-in-out;
+}
+
+.adminPanelButton:hover {
+    cursor: pointer;
+    background: var(--color-dark);
+    color: var(--color-light);
+}
+
+#page-adminPanel select {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    padding: 1vh;
+}
+
+#page-adminPanel .multiple-selection option {
+    font-size: medium;
+    border-bottom: solid var(--color-dark) 1px;
+    padding: 1vw;
+    border-radius: 5px;
+}
+
+#page-adminPanel .multiple-selection option:hover {
+    cursor: pointer;
+    font-weight: bold;
+    background: rgba(253, 253, 253, 0.5);
+}
+
+#page-adminPanel .multiple-selection option.selected {
+    cursor: pointer;
+    font-weight: bold;
+    background: rgba(172, 221, 255, 0.2);
+}
+
+#page-adminPanel .multiple-selection {
+    display: block;
+    margin: 5vh 0;
+    height: 20vh;
+}
+
+#page-adminPanel .multiple-selection::-webkit-scrollbar {
+	background-color: transparent;
+}
+
+#page-adminPanel .multiple-selection::-webkit-scrollbar-thumb {
+	background-color: var(--color-dark);
+}
+
+
+#page-adminPanel .single:hover {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.single option {
+    outline: none;
+    border: none;
+    padding: 5px;
 }

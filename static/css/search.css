@@ -2,6 +2,7 @@
     position: relative;
     border-radius: var(--rad);
     margin: 2vh auto 0;
+
 }
 
 #search {
@@ -14,6 +15,7 @@
     width: 50%;
     padding: 0 1vw;
     z-index: 1;
+    margin: auto;
     position: relative;
     display: flex;
     margin: auto;
