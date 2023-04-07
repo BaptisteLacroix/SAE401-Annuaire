@@ -5,7 +5,6 @@
 
 
 header {
-    height: 10vh;
     background-color: var(--header-background);
     display: block;
 }
@@ -26,15 +25,17 @@ header ul {
     
 }
 
-
-
 #accueil>ul {
     padding: 0;
     display: flex;
     list-style: none;
     justify-content: space-around;
     align-items: center;
-    height: 10vh;
+}
+
+#accueil>ul>li {
+    width: 200px;
+    text-align: center;
 }
 
 #accueil a {

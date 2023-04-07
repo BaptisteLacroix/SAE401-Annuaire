@@ -15,6 +15,18 @@ window.addEventListener("load", function () {
         }
     });
     setEvents();
+
+    const select = document.querySelector('.multiple-selection');
+
+    select.addEventListener('mousedown', function (e) {
+        const option = e.target;
+        if (option.tagName === 'OPTION') {
+            option.classList.toggle('selected');
+            e.preventDefault(); // prevent the default blue selection
+        }
+    });
+
+
 });
 
 function setLanguage(language) {
@@ -55,7 +67,8 @@ function setEvents() {
     let filters = document.getElementsByClassName("filter");
     for (let i = 0; i < filters.length; i++) {
         filters[i].addEventListener("click", function () {
-            addOnSearchbar(filters[i].textContent);
+            addOnSearchbar(filters[i]);
+            filters[i].classList.add("selected");
         });
     }
 }
@@ -63,14 +76,15 @@ function setEvents() {
 function addOnSearchbar(element) {
     let span = document.createElement("span");
     span.className = "active-filter";
-    span.innerText = element;
+    span.innerText = element.textContent;
     let searchBar = document.getElementById("filters-used");
     if (validate(element, searchBar)) {
         let croix = document.createElement("span");
         croix.className = "delete-element";
         croix.innerText = "❌";
-        croix.addEventListener("click", function() {
+        croix.addEventListener("click", function () {
             deleteElement(span);
+            element.classList.remove("selected");
         })
         span.appendChild(croix);
         searchBar.appendChild(span);
@@ -84,7 +98,7 @@ function validate(element, container) {
     }
     for (let i = 0; i < activeFilters.length; i++) {
         console.log(activeFilters[i].textContent);
-        if (activeFilters[i].textContent == element+"❌") {
+        if (activeFilters[i].textContent == element.textContent + "❌") {
             return false;
         }
     }
