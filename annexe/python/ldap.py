@@ -1,5 +1,3 @@
-from typing import List
-
 import ldap3
 
 
@@ -31,7 +29,7 @@ class Ldap:
         print("Fermeture de la connexion")
         self.conn.unbind()
 
-    def connection(self):
+    def connection(self) -> bool:
         """
         The function takes the server IP address, the username, the password, the domain name and the organization name as
         parameters. It then creates a connection to the LDAP server and binds the connection to the user
@@ -50,7 +48,7 @@ class Ldap:
         print("Echec de connexion")
         return False
 
-    def create_organisation(self, organisation_name):
+    def create_organisation(self, organisation_name: str) -> None:
         """
         It creates an organizational unit (ou) in the LDAP directory
 
@@ -74,7 +72,7 @@ class Ldap:
         else:
             print("Echec de l'ajout de l'unité d'organisation")
 
-    def get_organiation_unit_by_name(self, organisation_name):
+    def get_organiation_unit_by_name(self, organisation_name: str) -> str | None:
         """
         It searches for an organisation unit by its name in all the organisation units in the LDAP directory
         :param organisation_name: The name of the organisation unit to search for
@@ -89,7 +87,7 @@ class Ldap:
             return self.conn.entries[0].entry_dn
         return None
 
-    def create_group(self, organisation_name, group_name):
+    def create_group(self, organisation_name: str, group_name: str) -> None:
         """
         It creates a group in the specified organisation
 
@@ -120,7 +118,7 @@ class Ldap:
         else:
             print("Echec de l'ajout du groupe")
 
-    def found_group(self, group):
+    def found_group(self, group: str) -> str | None:
         """
         Found the group in the SINTA.LAN domain
         :param group: The name of the group to search for
@@ -135,28 +133,25 @@ class Ldap:
             return self.conn.entries[0].entry_dn
         return None
 
-    def add_user_to_group(self, display_name, group_name):
+    def add_user_to_group(self, users_display_name: list[str], group_name: str) -> None:
         """
         It adds a user to a group
 
-        :param display_name: The name of the user to add to the group
+        :param users_display_name: The name of the user to add to the group
         :param group_name: The name of the group to add the user to
         """
         # Ajout de l'utilisateur au groupe
         group_cn = self.found_group(group_name)
-        print(group_cn)
         if group_cn is None:
             print("Le groupe n'existe pas")
             return
 
         # for each user
-        print(display_name)
-        for user in display_name:
+        for user in users_display_name:
             user_cn = self.search_user(user)
             if user_cn is None:
                 print("L'utilisateur n'existe pas")
                 return
-            print(user_cn[0].distinguishedName.value)
             self.conn.extend.microsoft.add_members_to_groups(
                 f'{user_cn[0].distinguishedName.value}',
                 [f'{group_cn}'])
@@ -167,20 +162,7 @@ class Ldap:
             else:
                 print("Echec de l'ajout de l'utilisateur au groupe")
 
-    def search_all_object_class(self):
-        """
-        It searches the entire directory for all objects that have the objectClass attribute
-        """
-        # Recherche de toutes les entrées dans l'annuaire
-        self.conn.search(search_base=f'dc={self.dc_name},dc={self.dc_org}', search_filter='(objectClass=*)',
-                         search_scope=ldap3.SUBTREE,
-                         attributes=['*'])
-
-        # Affichage du résultat de la recherche
-        if not self.conn.entries:
-            print("Aucune entrée trouvée")
-
-    def get_all_organisation_unit(self):
+    def get_all_organisation_unit(self) -> list[str]:
         """
         Get all the organisation unit from the SINTA.LAN ldap.
         :return: A list of all the organisation unit
@@ -191,44 +173,30 @@ class Ldap:
                          attributes=['ou'])
 
         if not self.conn.entries:
-            print("Aucune entrée trouvée")
             return []
         return [entry.ou.value for entry in self.conn.entries]
 
-    def search_object_class(self, entrie_name):
-        """
-        It searches the LDAP server for entries with the objectClass attribute equal to the value of the entrie_name
-        parameter
-
-        :param entrie_name: The name of the object class you want to search for
-        """
-        self.conn.search(search_base=f'dc={self.dc_name},dc={self.dc_org}',
-                         search_filter=f'(objectClass={entrie_name})',
-                         search_scope=ldap3.SUBTREE,
-                         attributes=['*'])
-
-        # Affichage du résultat de la recherche
-        if not self.conn.entries:
-            print("Aucune entrée trouvée")
-
-    def search_user(self, username):
+    def search_user(self, username: str) -> list[ldap3.Entry] | None:
         """
         It searches for a user in the LDAP directory
 
         :param username: The username to search for
         """
-        self.conn.search(search_base=f'OU=Société SINTA,dc={self.dc_name},dc={self.dc_org}',
-                         search_filter=f'(&(objectclass=user)(cn={username}*))',
-                         search_scope=ldap3.SUBTREE,
-                         attributes=['*', 'unicodePwd', 'userAccountControl'])
+        try:
+            self.conn.search(search_base=f'OU=Société SINTA,dc={self.dc_name},dc={self.dc_org}',
+                             search_filter=f'(&(objectclass=user)(cn={username}*))',
+                             search_scope=ldap3.SUBTREE,
+                             attributes=['*', 'unicodePwd', 'userAccountControl'])
 
-        # Affichage du résultat de la recherche
-        if not self.conn.entries:
-            print("Aucune entrée trouvée")
+            # Affichage du résultat de la recherche
+            if not self.conn.entries:
+                print("Aucune entrée trouvée")
+                return None
+            return self.conn.entries
+        except TypeError:
             return None
-        return self.conn.entries
 
-    def get_users_from_mutliple_organisation(self, search_user: str, organisation_cn: List[str]):
+    def get_users_from_mutliple_organisation(self, search_user: str, organisation_cn: list[str]) -> list[ldap3.Entry]:
         """
         It searches for all entries corresponding to the search_user parameter in the subtree of
         all the organisation in the organisation_cn list
@@ -236,21 +204,28 @@ class Ldap:
         :param organisation_cn: The list of organisation to search in
         :return: A list of all the users found
         """
-        users = []
-        for organisation in organisation_cn:
-            self.conn.search(search_base=organisation,
-                             search_filter=f'(&(objectclass=user)(cn={search_user}*))',
-                             search_scope=ldap3.SUBTREE,
-                             attributes=['*', 'unicodePwd', 'userAccountControl'])
+        if search_user == "*":
+            search_user = ""
+        # else if search_user doe not contain '*' add it at the end and at the beginning*
+        elif '*' not in search_user:
+            search_user = f'*{search_user}*'
+        else:
+            search_user = f'{search_user}'
+        try:
+            users = []
+            for organisation in organisation_cn:
+                self.conn.search(search_base=organisation,
+                                 search_filter=f'(&(objectclass=user)(cn={search_user}))',
+                                 search_scope=ldap3.SUBTREE,
+                                 attributes=['*', 'unicodePwd', 'userAccountControl'])
+                # Affichage du résultat de la recherche
+                if self.conn.entries:
+                    users.extend(self.conn.entries)
+            return users
+        except TypeError:
+            return []
 
-            # Affichage du résultat de la recherche
-            if not self.conn.entries:
-                print("Aucune entrée trouvée")
-            else:
-                users.extend(self.conn.entries)
-        return users
-
-    def get_all_users(self, search_base):
+    def get_all_users(self, search_base: str) -> list[ldap3.Entry]:
         """
         It searches for all entries in the subtree of the organisation_name organisation, and prints them
 
@@ -266,9 +241,37 @@ class Ldap:
             print("Aucune entrée trouvée")
         return self.conn.entries
 
-    def set_user_birthday(self, username, birthday):
+    def get_multiple_users(self, users: list[str]) -> list[ldap3.Entry]:
+        """
+        Get all the users in the list users
+        :param users: list of users
+        :return: list of users
+        """
+        entries = []
+        for user in users:
+            return_value = self.search_user(user)
+            if return_value is not None:
+                entries.extend(return_value)
+        return entries
+
+    def get_mutliple_users_from_multiple_organisation(self, users: list[str], organisation_cn: list[str]) -> list[
+        ldap3.Entry]:
+        """
+        Get all the users in the list users
+        :param users: list of users
+        :param organisation_cn: list of organisation
+        :return: list of users
+        """
+        entries = []
+        for user in users:
+            return_value = self.get_users_from_mutliple_organisation(user, organisation_cn)
+            if return_value is not None:
+                entries.extend(return_value)
+        return entries
+
+    def set_user_birthday(self, username: str, birthday: str) -> None:
         self.conn.search(search_base=f'dc={self.dc_name},dc={self.dc_org}',
-                         search_filter=f'(&(objectclass=user)(cn={username}*))',
+                         search_filter=f'(&(objectclass=user)(cn={username}))',
                          search_scope=ldap3.SUBTREE,
                          attributes=['birthDate'])
         if self.conn.entries:
@@ -279,13 +282,13 @@ class Ldap:
         else:
             print(f"User {username} not found in Active Directory")
 
-    def getAdmUsers(self):
+    def getAdmUsers(self) -> list[str]:
         """
         Get all the users in Grp_AdmAD
         :return: list of users
         """
         self.conn.search(search_base=f'dc={self.dc_name},dc={self.dc_org}',
-                         search_filter=f'(cn=Grp_AdmAD)',
+                         search_filter='(cn=Grp_AdmAD)',
                          search_scope=ldap3.SUBTREE,
                          attributes=['member'])
         if self.conn.entries:
@@ -296,13 +299,13 @@ class Ldap:
         print("No users found in Grp_AdmAD")
         return []
 
-    def get_all_groups(self):
+    def get_all_groups(self) -> list[str]:
         """
         It search all groups in the LDAP directory
         :return: list of groups
         """
         self.conn.search(search_base=f'OU=Société SINTA,dc={self.dc_name},dc={self.dc_org}',
-                         search_filter=f'(objectClass=group)',
+                         search_filter='(objectClass=group)',
                          search_scope=ldap3.SUBTREE,
                          attributes=['*'])
         if self.conn.entries:
@@ -313,7 +316,7 @@ class Ldap:
         print("No groups found")
         return []
 
-    def delete_group(self, group):
+    def delete_group(self, group: str) -> bool:
         """
         Delete a group from the LDAP directory
         :param group: The group to delete
@@ -325,7 +328,7 @@ class Ldap:
             return True
         return False
 
-    def check_password(self, username, password):
+    def check_password(self, username: str, password: str) -> bool:
         """
         Check if the password is correct for the username.
         :param username: The username
@@ -343,10 +346,10 @@ class Ldap:
                 str(entries[0].userPassword.value) == password
         return False
 
-    def delete_users_from_group(self, users, group):
+    def delete_users_from_group(self, users: list[str], group: str) -> bool:
         """
         Delete a user from a group
-        :param users: List of users to delete
+        :param users: list of users to delete
         :param group: The group
         :return: True if the user has been deleted, False otherwise
         """
@@ -371,6 +374,7 @@ def main():
     ldap = Ldap('10.22.32.7', 'SINTA', 'LAN', 'administrateur', 'IUT!2023')
     ldap.connection()
     print(ldap.search_user('Claire Shugg'))
+    # print(ldap.search_user('Harlin Tadlow'))
     # print(ldap.getAdmUsers())
     # print(ldap.get_organiation_unit_by_name('Présidence'))
     # print(ldap.search_user('Lutero'))

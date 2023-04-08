@@ -1,8 +1,9 @@
 #search-form {
     position: relative;
+    width: 30vw;
+    background: var(--color-brand);
     border-radius: var(--rad);
     margin: 2vh auto 0;
-
 }
 
 #search {
@@ -12,13 +13,11 @@
     background: var(--color-light);
     border-radius: var(--rad);
     border: 0;
-    width: 50%;
+    width: 100%;
     padding: 0 1vw;
     z-index: 1;
-    margin: auto;
     position: relative;
     display: flex;
-    margin: auto;
     flex-direction: row;
     align-items: center;
     overflow-x: auto;
@@ -52,14 +51,15 @@ input[type="search"] {
     cursor: pointer;
 }
 
-#search-input:has(input[type="search"]:not(:placeholder-shown))  {
+#search-input:has(input[type="search"]:not(:placeholder-shown)) {
     border-radius: var(--rad) 0 0 var(--rad);
     width: calc(100% - var(--btn-width));
 }
 
-#search-input:has(input[type="search"]:not(:placeholder-shown)) + #search-validation>#search-button {
+#search-input:has(input[type="search"]:not(:placeholder-shown)) + #search-validation > #search-button {
     display: block;
 }
+
 #search-input:has(input[type="search"]:not(:placeholder-shown)) + #search-validation {
     display: block;
 }
@@ -80,16 +80,16 @@ input[type="search"] {
 }
 
 #filters-used::-webkit-scrollbar {
-	height: 4px;
-	background-color: var(--color-light);
+    height: 4px;
+    background-color: var(--color-light);
 }
 
 #filters-used::-webkit-scrollbar-thumb {
-	border-radius: 20px;
+    border-radius: 20px;
 }
 
 #filters-used::-webkit-scrollbar-thumb {
-	background-color: var(--header-background);
+    background-color: var(--header-background);
 }
 
 .active-filter {
@@ -114,39 +114,20 @@ input[type="search"] {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#filtres #search-suggestions {
-    position: relative;
-    top: 1px;
-    flex-wrap: wrap;
-    margin: auto;
-    width: 50%;
-}
-
-
-
-#filtres ul {
+#filtres > ul {
     padding: 0;
     display: flex;
     list-style: none;
     align-items: center;
     justify-content: center;
-    flex-direction: row;
     flex-wrap: wrap;
     margin: 0 1vw;
+    flex-direction: row;
+}
+
+#filtres #search-suggestions {
+    padding: 0;
+    margin: 7px 1vw;
 }
 
 #search-bar {
@@ -207,17 +188,17 @@ input[type="search"] {
 }
 
 
-
 @media screen and (max-width: 1200px) {
 
-    #search {
+    #search-form {
         width: 50%;
     }
 }
 
 @media screen and (max-width: 900px) {
 
-    #search {
+    #search-form {
         width: 90%;
     }
 }
+

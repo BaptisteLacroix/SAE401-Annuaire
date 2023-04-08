@@ -15,18 +15,6 @@ window.addEventListener("load", function () {
         }
     });
     setEvents();
-
-    const select = document.querySelector('.multiple-selection');
-
-    select.addEventListener('mousedown', function (e) {
-        const option = e.target;
-        if (option.tagName === 'OPTION') {
-            option.classList.toggle('selected');
-            e.preventDefault(); // prevent the default blue selection
-        }
-    });
-
-
 });
 
 function setLanguage(language) {
@@ -65,11 +53,11 @@ function setLanguage(language) {
 
 function setEvents() {
     let filters = document.getElementsByClassName("filter");
-    for (let i = 0; i < filters.length; i++) {
-        filters[i].addEventListener("click", function () {
-            addOnSearchbar(filters[i]);
-            filters[i].classList.add("selected");
-            filters[i].setAttribute("name", "filter");
+    for (const element of filters) {
+        element.addEventListener("click", function () {
+            addOnSearchbar(element);
+            element.classList.add("selected");
+            element.setAttribute("name", "filter");
         });
     }
 }
@@ -99,7 +87,6 @@ function validate(element, container) {
         return false;
     }
     for (let i = 0; i < activeFilters.length; i++) {
-        console.log(activeFilters[i].textContent);
         if (activeFilters[i].textContent == element.textContent + "❌") {
             return false;
         }
