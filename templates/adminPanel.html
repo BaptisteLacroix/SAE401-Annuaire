@@ -43,7 +43,7 @@
     <div class="box blue">
         <h1 id="adminPanel-add-user-group" class="adminPanelSectionTitle">Ajouter utilisateurs à groupe</h1>
         <form action="/adminPanel/addUserToGroup" method="post">
-            <label id="adminPanel-add-user-group-label-user"> Utilisateurs
+            <label id="adminPanel-add-user-group-label-user-label"> Utilisateurs
                 <!-- authorized multiple values -->
                 <select name="users" multiple class="multiple-selection">
                     {% for user in users %}
@@ -51,7 +51,7 @@
                     {% endfor %}
                 </select>
             </label>
-            <label id="adminPanel-add-user-group-label-group"> Groupe
+            <label id="adminPanel-add-user-group-label-group-label"> Groupe
                 <select name="group" class="single">
                     {% for group in groups %}
                         <option value="{{ group }}">{{ group }}</option>
@@ -64,14 +64,14 @@
     <div class="box blue">
         <h1 id="adminPanel-remove-user-group" class="adminPanelSectionTitle">Supprimer Utilisateur de groupe</h1>
         <form action="/adminPanel/deleteUserFromGroup" method="post">
-            <label id="adminPanel-remove-user-group-label-user"> Utilisateurs
+            <label id="adminPanel-remove-user-group-label-user-label"> Utilisateurs
                 <select name="users" multiple class="multiple-selection">
                     {% for user in users %}
                         <option value="{{ user }}">{{ user }}</option>
                     {% endfor %}
                 </select>
             </label>
-            <label id="adminPanel-remove-user-group-label-group"> Groupe
+            <label id="adminPanel-remove-user-group-label-group-label"> Groupe
                 <select name="group" class="single">
                     {% for group in groups %}
                         <option value="{{ group }}">{{ group }}</option>

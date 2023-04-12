@@ -39,6 +39,9 @@ function setLanguage(language) {
                                 if (element.id.indexOf("profile-") !== -1) {
                                     let spanText = element.innerHTML.split(">")[1].split("<")[0];
                                     element.innerHTML = value2 + `<span>` + spanText + `</span>`;
+                                } else if (element.id.split("-").pop() === "label") {
+                                    let elementToRemove = element.innerHTML.split("<")[0];
+                                    element.innerHTML = element.innerHTML.replace(elementToRemove, value2);
                                 }
                                 // else if the last word in the id is value
                                 else if (element.id.split("-").pop() === "value") {

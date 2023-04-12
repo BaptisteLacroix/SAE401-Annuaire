@@ -56,12 +56,12 @@
       "adminPanel-add-group-name-placeholder": "Nom du groupe",
       "adminPanel-add-group-button-value": "Ajouter",
       "adminPanel-add-user-group": "Ajouter utilisateurs à groupe",
-      "adminPanel-add-user-group-label-user": "Utilisateurs",
-      "adminPanel-add-user-group-label-group": "Groupe",
+      "adminPanel-add-user-group-label-user-label": "Utilisateurs",
+      "adminPanel-add-user-group-label-group-label": "Groupe",
       "adminPanel-add-user-group-button-value": "Ajouter",
       "adminPanel-remove-user-group": "Supprimer Utilisateur de groupe",
-      "adminPanel-remove-user-group-label-user": "Utilisateurs",
-      "adminPanel-remove-user-group-label-group": "Groupe",
+      "adminPanel-remove-user-group-label-user-label": "Utilisateurs",
+      "adminPanel-remove-user-group-label-group-label": "Groupe",
       "adminPanel-remove-user-group-button-value": "Supprimer"
     }
   ]
