@@ -2,7 +2,7 @@
   "header-title": "Annuaire",
   "search-label": "Recherche",
   "search-button": "Valider",
-  "input-search": "Rechercher...",
+  "input-search-placeholder": "Rechercher...",
   "search-presidence": "PRÉSIDENCE",
   "search-assistance": "ASSISTANCE",
   "search-communication": "COMMUNICATION",
@@ -51,18 +51,18 @@
   "adminPanel": [
     {
       "adminPanel-delete-group": "Supprimer Groupe",
-      "adminPanel-delete-group-button": "Supprimer",
+      "adminPanel-delete-group-button-value": "Supprimer",
       "adminPanel-add-group": "Rajouter groupe",
-      "adminPanel-add-group-name": "Nom du groupe",
-      "adminPanel-add-group-button": "Ajouter",
+      "adminPanel-add-group-name-placeholder": "Nom du groupe",
+      "adminPanel-add-group-button-value": "Ajouter",
       "adminPanel-add-user-group": "Ajouter utilisateurs à groupe",
       "adminPanel-add-user-group-label-user": "Utilisateurs",
       "adminPanel-add-user-group-label-group": "Groupe",
-      "adminPanel-add-user-group-button": "Ajouter",
+      "adminPanel-add-user-group-button-value": "Ajouter",
       "adminPanel-remove-user-group": "Supprimer Utilisateur de groupe",
       "adminPanel-remove-user-group-label-user": "Utilisateurs",
       "adminPanel-remove-user-group-label-group": "Groupe",
-      "adminPanel-remove-user-group-button": "Supprimer"
+      "adminPanel-remove-user-group-button-value": "Supprimer"
     }
   ]
 }

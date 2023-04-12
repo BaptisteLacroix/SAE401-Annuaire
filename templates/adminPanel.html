@@ -21,14 +21,14 @@
                     {% endfor %}
                 </select>
             </label>
-            <input id="adminPanel-delete-group-button" type="submit" class="adminPanelButton" value="Supprimer"/>
+            <input id="adminPanel-delete-group-button-value" type="submit" class="adminPanelButton" value="Supprimer"/>
         </form>
     </div>
     <div class="box blue">
         <h1 id="adminPanel-add-group" class="adminPanelSectionTitle">Rajouter groupe</h1>
         <form action="/adminPanel/addGroup" method="post">
             <label>
-                <input id="adminPanel-add-group-name" type="text" name="group" placeholder="Nom du groupe"/>
+                <input id="adminPanel-add-group-name-placeholder" type="text" name="group" placeholder="Nom du groupe"/>
             </label>
             <label>
                 <select name="OU" class="single">
@@ -37,7 +37,7 @@
                     {% endfor %}
                 </select>
             </label>
-            <input id="adminPanel-add-group-button" type="submit" class="adminPanelButton" value="Ajouter"/>
+            <input id="adminPanel-add-group-button-value" type="submit" class="adminPanelButton" value="Ajouter"/>
         </form>
     </div>
     <div class="box blue">
@@ -58,7 +58,7 @@
                     {% endfor %}
                 </select>
             </label>
-            <input id="adminPanel-add-user-group-button" type="submit" class="adminPanelButton" value="Ajouter"/>
+            <input id="adminPanel-add-user-group-button-value" type="submit" class="adminPanelButton" value="Ajouter"/>
         </form>
     </div>
     <div class="box blue">
@@ -78,7 +78,7 @@
                     {% endfor %}
                 </select>
             </label>
-            <input id="adminPanel-remove-user-group-button" type="submit" class="adminPanelButton" value="Supprimer"/>
+            <input id="adminPanel-remove-user-group-button-value" type="submit" class="adminPanelButton" value="Supprimer"/>
         </form>
     </div>
 </main>

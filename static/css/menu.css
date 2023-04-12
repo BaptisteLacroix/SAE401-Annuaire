@@ -71,14 +71,14 @@ header ul {
     cursor: pointer;
 }
 
-div#adminPanel {
+div#adminPanelDiv {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-div#adminPanel > a {
+div#adminPanelDiv > a {
     display: block;
     background: transparent;
     padding: 0.5vh 0.5vw;
@@ -92,18 +92,18 @@ div#adminPanel > a {
     transition: all 0.2s ease-in-out;
 }
 
-div#adminPanel > a {
+div#adminPanelDiv > a {
     text-decoration: none;
     color: var(--color-dark);
 }
 
-div#adminPanel > a:hover {
+div#adminPanelDiv > a:hover {
     cursor: pointer;
     background: var(--color-dark);
     color: var(--color-light);
 }
 
-div#adminPanel > button:hover > a {
+div#adminPanelDiv > button:hover > a {
     color: var(--color-light);
 }
 
