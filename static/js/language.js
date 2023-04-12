@@ -1,8 +1,8 @@
 // On window load add eventlistener to the flags
 window.addEventListener("load", function () {
     // Get the stored language or default to 'en'
-    //    const storedLanguage = localStorage.getItem("language") || "en";
-    //    setLanguage(storedLanguage);
+    const storedLanguage = localStorage.getItem("language") || "en";
+    setLanguage(storedLanguage);
 
     // Add eventlistener to the flags
     document.addEventListener("click", function (event) {
@@ -39,6 +39,13 @@ function setLanguage(language) {
                                 if (element.id.indexOf("profile-") !== -1) {
                                     let spanText = element.innerHTML.split(">")[1].split("<")[0];
                                     element.innerHTML = value2 + `<span>` + spanText + `</span>`;
+                                }
+                                // else if the last word in the id is value
+                                else if (element.id.split("-").pop() === "value") {
+                                    // replace the value element by the value
+                                    element.value = value2;
+                                } else if (element.id.split("-").pop() === "placeholder") {
+                                    element.placeholder = value2;
                                 } else {
                                     element.innerHTML = value2;
                                 }

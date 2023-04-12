@@ -2,7 +2,7 @@
   "header-title": "Directory",
   "search-label": "Search",
   "search-button": "Submit",
-  "input-search": "Search...",
+  "input-search-placeholder": "Search...",
   "search-presidence": "PRESIDENCY",
   "search-assistance": "ASSISTANCE",
   "search-communication": "COMMUNICATION",
@@ -48,21 +48,21 @@
       "profile-postal-code": "Postal Code : "
     }
   ],
-    "adminPanel": [
+  "adminPanel": [
     {
       "adminPanel-delete-group": "Delete Group",
-      "adminPanel-delete-group-button": "Delete",
+      "adminPanel-delete-group-button-value": "Delete",
       "adminPanel-add-group": "Add group",
-      "adminPanel-add-group-name": "Name of the group",
-      "adminPanel-add-group-button": "Add",
+      "adminPanel-add-group-name-placeholder": "Name of the group",
+      "adminPanel-add-group-button-value": "Add",
       "adminPanel-add-user-group": "Add users to group",
       "adminPanel-add-user-group-label-user": "Users",
       "adminPanel-add-user-group-label-group": "Group",
-      "adminPanel-add-user-group-button": "Add",
+      "adminPanel-add-user-group-button-value": "Add",
       "adminPanel-remove-user-group": "Delete Group User",
       "adminPanel-remove-user-group-label-user": "Users",
       "adminPanel-remove-user-group-label-group": "Group",
-      "adminPanel-remove-user-group-button": "Delete"
+      "adminPanel-remove-user-group-button-value": "Delete"
     }
   ]
 }
