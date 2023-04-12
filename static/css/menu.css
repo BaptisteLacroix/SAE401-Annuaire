@@ -22,10 +22,10 @@ header ul {
 #logo {
     font-family: "logo";
     font-size: 2vw;
-    
+
 }
 
-#accueil>ul {
+#accueil > ul {
     padding: 0;
     display: flex;
     list-style: none;
@@ -33,7 +33,7 @@ header ul {
     align-items: center;
 }
 
-#accueil>ul>li {
+#accueil > ul > li {
     width: 200px;
     text-align: center;
 }
@@ -71,7 +71,43 @@ header ul {
     cursor: pointer;
 }
 
-@media screen and (max-width:900px) {
+div#adminPanel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+div#adminPanel > a {
+    display: block;
+    background: transparent;
+    padding: 0.5vh 0.5vw;
+    border-radius: 20px;
+    font-size: medium;
+    color: var(--color-dark);
+    font-weight: bold;
+    text-align: center;
+    margin: 1vh auto;
+    border: var(--color-dark) solid 2px;
+    transition: all 0.2s ease-in-out;
+}
+
+div#adminPanel > a {
+    text-decoration: none;
+    color: var(--color-dark);
+}
+
+div#adminPanel > a:hover {
+    cursor: pointer;
+    background: var(--color-dark);
+    color: var(--color-light);
+}
+
+div#adminPanel > button:hover > a {
+    color: var(--color-light);
+}
+
+@media screen and (max-width: 900px) {
     #logo {
         font-size: 2vh;
     }

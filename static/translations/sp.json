@@ -47,5 +47,22 @@
       "profile-address": "Dirección : ",
       "profile-postal-code": "Código postal : "
     }
+  ],
+  "adminPanel": [
+    {
+      "adminPanel-delete-group": "Borrar grupo",
+      "adminPanel-delete-group-button": "Borrar",
+      "adminPanel-add-group": "Añadir grupo",
+      "adminPanel-add-group-name": "Nombre del grupo",
+      "adminPanel-add-group-button": "Añadir",
+      "adminPanel-add-user-group": "Añadir usuarios al grupo",
+      "adminPanel-add-user-group-label-user": "Usuarios",
+      "adminPanel-add-user-group-label-group": "Grupo",
+      "adminPanel-add-user-group-button": "Añadir",
+      "adminPanel-remove-user-group": "Borrar usuario de grupo",
+      "adminPanel-remove-user-group-label-user": "Usuarios",
+      "adminPanel-remove-user-group-label-group": "Grupo",
+      "adminPanel-remove-user-group-button": "Borrar"
+    }
   ]
 }

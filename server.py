@@ -1,7 +1,8 @@
 import secrets
 from datetime import datetime
+from typing import Union
 
-from flask import Flask, render_template, request, session, url_for, redirect, jsonify, json, abort
+from flask import Flask, render_template, request, session, url_for, redirect, jsonify, abort
 from ldap3 import Entry
 from werkzeug import Response
 
@@ -16,6 +17,16 @@ LDAP = Ldap('10.22.32.7', 'SINTA', 'LAN', DEFAULT_USER, DEFAULT_PASSWORD)
 
 
 def init_users_information() -> list[list[str, str]]:
+    """
+    Initialize the list of users and their information.
+
+    Retrieve all users from the LDAP server, and for each user, store their display name, birthdate, and department in
+    a list. Remove any duplicate entries from the list and return the resulting list of users and their information.
+
+    :return: The list of users and their information, with each user represented as a list containing their display name,
+             birthdate, and department.
+    :rtype: list[list[str, str]]
+    """
     all_filters = [
         ("OU=Département Assistance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN", "ASSISTANCE"),
         ("OU=Département Communication,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN", "COMMUNICATION"),
@@ -28,7 +39,7 @@ def init_users_information() -> list[list[str, str]]:
         ("OU=Présidence,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN", "PRESIDENCE")
     ]
     LDAP.connection()
-    users = []
+    users: list[list[str]] = []
     for f in all_filters:
         entries = LDAP.get_all_users(f[0])
         for entry in entries:
@@ -48,19 +59,31 @@ USERS_PROPOSITION = init_users_information()
 @app.route('/index')
 def index() -> str:
     """
-    The function index() is a route that renders the template index.html
-    :return: The index.html file is being returned.
+    Render the home page.
+
+    If the user is logged in, set the 'admin' flag to True and include it in the rendered template.
+    If the user is not logged in, set the 'admin' flag to False and include it in the rendered template.
+
+    :return: The HTML content of the rendered template.
+    :rtype: str
     """
     # show the user profile for that user
-    return render_template('index.html')
+    return render_template('index.html', admin=True if session.get('username') and session.get('password') else False)
 
 
 @app.route('/login', methods=['GET', 'POST'])
-def login() -> Response | str:
+def login() -> Union[Response, str]:
     """
-    The function login() is a route that renders the template login.html
-    this function is used to log in the user
-    :return: The login.html file is being returned.
+    Handle the login page.
+
+    If the user is already logged in, redirect to the home page.
+    If a POST request is received, attempt to authenticate the user with their username and password.
+    If authentication is successful, set the session and redirect to the home page.
+    If authentication fails, render the login page with an error message.
+    If a GET request is received, render the login page.
+
+    :return: A redirect to the home page if authentication is successful, the login page otherwise.
+    :rtype: Union[flask.wrappers.Response, str]
     """
     # Check if the user is already logged in
     if session.get('username'):
@@ -71,7 +94,7 @@ def login() -> Response | str:
         password: str = request.form['password']
         remember: str = request.form.get('remember')
         # search the user in the Adm_group
-        adm_users: list[str] = LDAP.getAdmUsers()
+        adm_users: list[str] = LDAP.get_adm_users()
         if username not in adm_users and username != 'administrateur':
             return render_template('login.html', error='You are not allowed to connect')
         # check the password and the username for the user in the Adm_group
@@ -82,7 +105,8 @@ def login() -> Response | str:
                 session.permanent = True
                 app.permanent_session_lifetime = datetime.timedelta(minutes=30)
             # send a message that tell the client is connected
-            return redirect(url_for('index'))
+            return redirect(
+                url_for('index', admin=True if session.get('username') and session.get('password') else False))
         if LDAP.check_password(username, password):
             # set the session
             session['username'], session['password'] = username, password
@@ -90,7 +114,8 @@ def login() -> Response | str:
                 session.permanent = True
                 app.permanent_session_lifetime = datetime.timedelta(minutes=30)
             # send a message that tell the client is connected
-            return redirect(url_for('index'))
+            return redirect(
+                url_for('index', admin=True if session.get('username') and session.get('password') else False))
         else:
             error: str = 'Incorrect username or password'
             return render_template('login.html', error=error)
@@ -99,7 +124,18 @@ def login() -> Response | str:
 
 
 @app.route('/adminPanel')
-def adminPanel() -> Response | str:
+def adminPanel() -> Union[Response, str]:
+    """
+    Render the admin panel page if the user is authenticated.
+
+    If the user is not authenticated, redirect to the home page.
+    Retrieve a list of all groups, all users and all organizational units from LDAP.
+    Remove the 'Domain Controllers' unit from the list of organizational units.
+    Return a rendered template of the admin panel page, including the retrieved data.
+
+    :return: A rendered template of the admin panel page.
+    :rtype: Union[flask.wrappers.Response, str]
+    """
     if (not session.get('username')) or (not session.get('password')):
         return redirect(url_for('index'))
     groups: list[str] = LDAP.get_all_groups()
@@ -111,17 +147,36 @@ def adminPanel() -> Response | str:
     if 'Domain Controllers' in all_organisation_unit:
         all_organisation_unit.remove('Domain Controllers')
     return render_template('adminPanel.html', groups=groups, users=users_names,
-                           all_organisation_unit=all_organisation_unit, suggestions=USERS_PROPOSITION)
+                           all_organisation_unit=all_organisation_unit, suggestions=USERS_PROPOSITION,
+                           admin=True if session.get('username') and session.get('password') else False)
 
 
 def admin_connection() -> Ldap:
+    """
+    Establish an LDAP connection to the server using the default admin credentials.
+
+    :return: A Ldap object with an established connection to the server.
+    :rtype: Ldap
+    """
     ldap: Ldap = Ldap('10.22.32.7', 'SINTA', 'LAN', DEFAULT_USER, DEFAULT_PASSWORD)
     ldap.connection()
     return ldap
 
 
 @app.route('/suggestions', methods=['POST'])
-def suggestions() -> Response | str:
+def suggestions() -> Union[Response, str]:
+    """
+    Return a JSON response containing a list of matching users based on the search value.
+
+    If a POST request is received, extract the search value from the JSON request body.
+    If the search value contains any digits, perform a search by date.
+    Otherwise, perform a search by name.
+    If the user is authenticated, include sensitive data in the response.
+    Return a JSON response containing the list of matching users.
+
+    :return: A JSON response containing the list of matching users.
+    :rtype: Union[flask.wrappers.Response, str]
+    """
     if request.method == 'POST':
         search_value: str = request.get_json().get('searchValue')
         # check if there is a number in the search value
@@ -136,6 +191,19 @@ def suggestions() -> Response | str:
 
 
 def search_by_name(search_value: str) -> list[list[str, str, str]]:
+    """
+    Search for users whose name matches the given search value.
+
+    If the search value starts with '*', search for users whose last name matches the value after the '*'.
+    If the search value ends with '*', search for users whose first name matches the value before the '*'.
+    If the search value contains '*', search for users whose first and last name match the values before and after the '*'.
+    If the search value does not contain '*', search for users whose full name contains the search value.
+
+    :param search_value: The search value to match against user names.
+    :type search_value: str
+    :return: A list of matching users, where each user is represented as a list of strings [full_name, email, role].
+    :rtype: List[List[str]]
+    """
     # if the search value start with *a so we search for all the users that end with a
     # if the search value end with a* so we search for all the users that start with a
     # if the search value start with a so we search for all the users that contain a
@@ -170,6 +238,20 @@ def search_by_name(search_value: str) -> list[list[str, str, str]]:
 
 
 def search_by_date(search_value: str) -> list[list[str, str, str]]:
+    """
+    Search for users by date of birth.
+
+    If search_value is a date in the format "yyyy/mm/dd", return all users with that birth date.
+    If search_value is "<yyyy", return all users born before the year yyyy.
+    If search_value is ">yyyy", return all users born after the year yyyy.
+    If search_value is "yyyy-yyyy", return all users born between the years yyyy and yyyy.
+    If search_value is not in any of these formats, return an empty list.
+
+    :param search_value: A search value in one of the formats specified above.
+    :type search_value: str
+    :return: A list of all matching users, each represented as a list of name, birth date, and email.
+    :rtype: List[List[str, str, str]]
+    """
     # the date of the user looks like 2000/09/30
     # if it's a date, we will search for the birthDate
     # if it's look like <1980 so we search all users born before 1980
@@ -207,7 +289,17 @@ def search_by_date(search_value: str) -> list[list[str, str, str]]:
 
 
 @app.route('/adminPanel/addUserToGroup', methods=['GET', 'POST'])
-def addUserToGroup() -> Response | str:
+def addUserToGroup() -> Union[Response, str]:
+    """
+    Handle adding users to a group in the admin panel.
+
+    If the user is not logged in, redirect to the home page.
+    If a POST request is received, add the selected users to the specified group in LDAP and redirect to the admin panel.
+    If a GET request is received, redirect to the admin panel.
+
+    :return: A redirect to the admin panel if a POST request is received, otherwise a redirect to the admin panel.
+    :rtype: Union[flask.wrappers.Response, str]
+    """
     if (not session.get('username')) or (not session.get('password')):
         return redirect(url_for('index'))
     if request.method == 'POST':
@@ -219,7 +311,19 @@ def addUserToGroup() -> Response | str:
 
 
 @app.route('/adminPanel/deleteGroup', methods=['GET', 'POST'])
-def deleteGroup() -> Response | str:
+def deleteGroup() -> Union[Response, str]:
+    """
+    Handle the deletion of a group from the admin panel.
+
+    If the user is not logged in, redirect to the home page.
+    If a POST request is received, attempt to delete the group specified in the form data.
+    If deletion is successful, redirect to the admin panel.
+    If a GET request is received, redirect to the admin panel.
+
+    :return: A redirect to the admin panel if deletion is successful or a GET request is received,
+             a redirect to the home page otherwise.
+    :rtype: Union[flask.wrappers.Response, str]
+    """
     if (not session.get('username')) or (not session.get('password')):
         return redirect(url_for('index'))
     if request.method == 'POST':
@@ -231,7 +335,18 @@ def deleteGroup() -> Response | str:
 
 
 @app.route('/adminPanel/addGroup', methods=['GET', 'POST'])
-def addGroup() -> Response | str:
+def addGroup() -> Union[Response, str]:
+    """
+    Handle the "add group" page in the admin panel.
+
+    If the user is not logged in, redirect to the home page.
+    If a POST request is received, create a new group with the specified name and organisation unit in LDAP,
+    then redirect to the admin panel.
+    If a GET request is received, render the "add group" page.
+
+    :return: A redirect to the admin panel if a group was successfully created, the "add group" page otherwise.
+    :rtype: Union[flask.wrappers.Response, str]
+    """
     if (not session.get('username')) or (not session.get('password')):
         return redirect(url_for('index'))
     if request.method == 'POST':
@@ -242,7 +357,17 @@ def addGroup() -> Response | str:
 
 
 @app.route('/adminPanel/deleteUserFromGroup', methods=['GET', 'POST'])
-def deleteUserFromGroup() -> Response | str:
+def deleteUserFromGroup() -> Union[Response, str]:
+    """
+    Handle the deletion of users from a group in the admin panel.
+
+    If the user is not logged in, redirect to the home page.
+    If a POST request is received, remove the selected users from the specified group.
+    After successful deletion, redirect to the admin panel.
+
+    :return: A redirect to the admin panel if deletion is successful, the home page otherwise.
+    :rtype: Union[flask.wrappers.Response, str]
+    """
     if (not session.get('username')) or (not session.get('password')):
         return redirect(url_for('index'))
     if request.method == 'POST':
@@ -256,22 +381,31 @@ def deleteUserFromGroup() -> Response | str:
 @app.route('/logout', methods=['GET', 'POST'])
 def logout() -> str:
     """
-    The function logout() is a route that renders the template index.html
-    :return: The index.html file is being returned.
+    Handle the logout page.
+
+    If the user is not logged in, render the home page.
+    If a POST request is received, log the user out by clearing the session and render the home page.
+    If a GET request is received, render the home page.
+
+    :return: The home page with an optional flag indicating whether the user is an admin.
+    :rtype: str
     """
     if not session.get('username'):
         return render_template('index.html')
     print("session logout")
     session.pop('username', None)
     session.pop('password', None)
-    return render_template('index.html')
+    return render_template('index.html', admin=True if session.get('username') and session.get('password') else False)
 
 
 @app.route('/globalSearch', methods=['GET', 'POST'])
 def globalSearch():
     """
-    It takes a GET request with a parameter called 'filter' and renders the globalSearch.html template with the filter value
-    :return: The globalSearch.html page is being returned.
+    Handles the search functionality for the application. Searches for users in the LDAP database based on the search
+    query and filters provided by the user.
+
+    :return: The rendered template 'globalSearch.html' with search results, suggestions, and filter information
+             if a search query is provided, otherwise the template without any search results.
     """
     all_filters = [
         {
@@ -306,6 +440,8 @@ def globalSearch():
         if any(string.isdigit() for string in post_value):
             entries = LDAP.get_mutliple_users_from_multiple_organisation(
                 [user[0] for user in search_by_date(post_value)], filter_value)
+        elif post_value == '*':
+            entries = LDAP.get_users_from_mutliple_organisation(post_value, filter_value)
         else:
             entries = LDAP.get_users_from_mutliple_organisation(post_value, filter_value)
     if entries is None:
@@ -319,14 +455,22 @@ def globalSearch():
             'first_name': entry.givenName.value,
         }
         results.append(result)
-    return render_template('globalSearch.html', filter=filter_value, users=results, suggestions=USERS_PROPOSITION)
+    return render_template('globalSearch.html', filter=filter_value, users=results, suggestions=USERS_PROPOSITION
+                           , admin=True if session.get('username') and session.get('password') else False)
 
 
 @app.route('/profile')
 def profile() -> str:
     """
-    The function profile() is a route that renders the template profile.html
-    :return: The profile.html file is being returned.
+    Display the profile of a user based on the `user` query parameter.
+
+    If the user is not found, return a 404 error.
+    If the user is found, retrieve their profile information from the LDAP directory and render the `profile.html`
+    template with the user profile information.
+    If the user is logged in, additional profile information is displayed.
+
+    :return: The HTML content of the profile page.
+    :rtype: str
     """
     filter_value: str = request.args.get('user')
 
@@ -359,7 +503,8 @@ def profile() -> str:
         })
 
     # Render the profile template with the user profile information
-    return render_template('profile.html', user=user_profile, suggestions=USERS_PROPOSITION)
+    return render_template('profile.html', user=user_profile, suggestions=USERS_PROPOSITION, admin=True if session.get(
+        'username') and session.get('password') else False)
 
 
 if __name__ == '__main__':
