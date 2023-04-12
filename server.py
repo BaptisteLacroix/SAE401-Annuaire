@@ -393,7 +393,8 @@ def logout() -> str:
     if not session.get('username'):
         return render_template('index.html')
     print("session logout")
-    session.clear()
+    session.pop('username', None)
+    session.pop('password', None)
     return render_template('index.html', admin=True if session.get('username') and session.get('password') else False)
 
 
