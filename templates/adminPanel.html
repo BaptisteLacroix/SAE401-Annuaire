@@ -43,7 +43,7 @@
     <div class="box blue">
         <h1 id="adminPanel-add-user-group" class="adminPanelSectionTitle">Ajouter utilisateurs à groupe</h1>
         <form action="/adminPanel/addUserToGroup" method="post">
-            <label> Utilisateurs
+            <label id="adminPanel-add-user-group-label-user"> Utilisateurs
                 <!-- authorized multiple values -->
                 <select name="users" multiple class="multiple-selection">
                     {% for user in users %}
@@ -51,7 +51,7 @@
                     {% endfor %}
                 </select>
             </label>
-            <label id="adminPanel-add-user-group-label"> Groupe
+            <label id="adminPanel-add-user-group-label-group"> Groupe
                 <select name="group" class="single">
                     {% for group in groups %}
                         <option value="{{ group }}">{{ group }}</option>
