@@ -63,16 +63,16 @@
 
 #page-adminPanel .multiple-selection {
     display: block;
-    margin: 5vh 0;
     height: 20vh;
+    padding: 0;
 }
 
 #page-adminPanel .multiple-selection::-webkit-scrollbar {
-	background-color: transparent;
+    background-color: transparent;
 }
 
 #page-adminPanel .multiple-selection::-webkit-scrollbar-thumb {
-	background-color: var(--color-dark);
+    background-color: var(--color-dark);
 }
 
 #page-adminPanel select.single {
@@ -112,5 +112,27 @@
 #page-adminPanel .single option:hover {
     cursor: pointer;
     font-weight: bold;
-    background: rgba(253, 253, 253, 0.5);
+}
+
+#page-adminPanel .adminForm,
+#page-adminPanel .adminForm label {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 15px;
+}
+
+#page-adminPanel .adminForm label {
+    text-align: center;
+    font-weight: 500;
+    font-size: 2vh;
+}
+
+#page-adminPanel .single:focus option {
+    border: 1px solid red;
+}
+
+#page-adminPanel .single option {
+    background-color: rgba(172, 221, 255, 0.1);
 }
