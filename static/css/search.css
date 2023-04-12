@@ -46,7 +46,8 @@ input[type="search"] {
     height: 100%;
     opacity: 0;
     transition-property: width opacity;
-    transition: all 0.3s ease-in-out;
+    transition: all 0.15s ease-in-out;
+    z-index: 0;
 }
 
 #search-button:hover {
@@ -62,7 +63,8 @@ input[type="search"] {
     display: block;
     width: 0;
     opacity: 0;
-    transition: width 0.3s ease-in-out;
+    z-index: 0;
+    transition: width 0.15s ease-in-out;
 }
 
 #search-input:has(input[type="search"]:not(:placeholder-shown)) + #search-validation {

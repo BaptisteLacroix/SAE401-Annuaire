@@ -13,7 +13,7 @@
 
     <div class="box blue">
         <h1 id="adminPanel-delete-group" class="adminPanelSectionTitle">Supprimer Groupe</h1>
-        <form action="/adminPanel/deleteGroup" method="post">
+        <form class="adminForm" action="/adminPanel/deleteGroup" method="post">
             <label>
                 <select name="group" class="single">
                     {% for group in groups %}
@@ -26,7 +26,7 @@
     </div>
     <div class="box blue">
         <h1 id="adminPanel-add-group" class="adminPanelSectionTitle">Rajouter groupe</h1>
-        <form action="/adminPanel/addGroup" method="post">
+        <form class="adminForm" action="/adminPanel/addGroup" method="post">
             <label>
                 <input id="adminPanel-add-group-name-placeholder" type="text" name="group" placeholder="Nom du groupe"/>
             </label>
@@ -42,7 +42,7 @@
     </div>
     <div class="box blue">
         <h1 id="adminPanel-add-user-group" class="adminPanelSectionTitle">Ajouter utilisateurs à groupe</h1>
-        <form action="/adminPanel/addUserToGroup" method="post">
+        <form class="adminForm" action="/adminPanel/addUserToGroup" method="post">
             <label id="adminPanel-add-user-group-label-user"> Utilisateurs
                 <!-- authorized multiple values -->
                 <select name="users" multiple class="multiple-selection">
@@ -63,7 +63,7 @@
     </div>
     <div class="box blue">
         <h1 id="adminPanel-remove-user-group" class="adminPanelSectionTitle">Supprimer Utilisateur de groupe</h1>
-        <form action="/adminPanel/deleteUserFromGroup" method="post">
+        <form class="adminForm" action="/adminPanel/deleteUserFromGroup" method="post">
             <label id="adminPanel-remove-user-group-label-user"> Utilisateurs
                 <select name="users" multiple class="multiple-selection">
                     {% for user in users %}
