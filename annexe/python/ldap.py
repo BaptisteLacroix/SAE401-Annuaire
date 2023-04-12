@@ -205,8 +205,8 @@ class Ldap:
         :return: A list of all the users found
         """
         if search_user == "*":
-            search_user = ""
-        # else if search_user doe not contain '*' add it at the end and at the beginning*
+            search_user = '*'
+        # else if search_user does not contain '*' add it at the end and at the beginning*
         elif '*' not in search_user:
             search_user = f'*{search_user}*'
         else:
@@ -282,7 +282,7 @@ class Ldap:
         else:
             print(f"User {username} not found in Active Directory")
 
-    def getAdmUsers(self) -> list[str]:
+    def get_adm_users(self) -> list[str]:
         """
         Get all the users in Grp_AdmAD
         :return: list of users

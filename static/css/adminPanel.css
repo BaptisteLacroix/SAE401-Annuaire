@@ -17,7 +17,6 @@
 .adminPanelButton {
     display: block;
     background: transparent;
-    border: none;
     padding: 1vh 1vw;
     border-radius: 20px;
     font-size: medium;
@@ -76,14 +75,42 @@
 	background-color: var(--color-dark);
 }
 
-
-#page-adminPanel .single:hover {
-    cursor: pointer;
-    font-weight: bold;
+#page-adminPanel select.single {
+    border: none;
+    background: rgba(253, 253, 253, 0.5);
+    outline: none;
+    width: 100%;
+        border-bottom: solid var(--color-dark) 1px;
+    padding: 1vw;
+    border-radius: 5px
 }
 
-.single option {
-    outline: none;
-    border: none;
-    padding: 5px;
+#page-adminPanel select.single:hover {
+    cursor: pointer;
+    background: rgba(253, 253, 253, 0.8);
+}
+
+#page-adminPanel select.single:focus {
+    background: rgba(253, 253, 253, 0.8);
+}
+
+#page-adminPanel .single::-webkit-scrollbar {
+    background-color: transparent;
+}
+
+#page-adminPanel .single::-webkit-scrollbar-thumb {
+    background-color: var(--color-dark);
+}
+
+#page-adminPanel .single option {
+    font-size: medium;
+    border-bottom: solid var(--color-dark) 1px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#page-adminPanel .single option:hover {
+    cursor: pointer;
+    font-weight: bold;
+    background: rgba(253, 253, 253, 0.5);
 }

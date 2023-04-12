@@ -1,7 +1,7 @@
 import secrets
 from datetime import datetime
 
-from flask import Flask, render_template, request, session, url_for, redirect, jsonify, json, abort
+from flask import Flask, render_template, request, session, url_for, redirect, jsonify, abort
 from ldap3 import Entry
 from werkzeug import Response
 
@@ -16,6 +16,10 @@ LDAP = Ldap('10.22.32.7', 'SINTA', 'LAN', DEFAULT_USER, DEFAULT_PASSWORD)
 
 
 def init_users_information() -> list[list[str, str]]:
+    """
+    The function init_users_information() is used to initialize the list of users
+    :return: The list of users is being returned
+    """
     all_filters = [
         ("OU=Département Assistance,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN", "ASSISTANCE"),
         ("OU=Département Communication,OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN", "COMMUNICATION"),
@@ -52,7 +56,7 @@ def index() -> str:
     :return: The index.html file is being returned.
     """
     # show the user profile for that user
-    return render_template('index.html')
+    return render_template('index.html', admin=True if session.get('username') and session.get('password') else False)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -71,7 +75,7 @@ def login() -> Response | str:
         password: str = request.form['password']
         remember: str = request.form.get('remember')
         # search the user in the Adm_group
-        adm_users: list[str] = LDAP.getAdmUsers()
+        adm_users: list[str] = LDAP.get_adm_users()
         if username not in adm_users and username != 'administrateur':
             return render_template('login.html', error='You are not allowed to connect')
         # check the password and the username for the user in the Adm_group
@@ -82,7 +86,8 @@ def login() -> Response | str:
                 session.permanent = True
                 app.permanent_session_lifetime = datetime.timedelta(minutes=30)
             # send a message that tell the client is connected
-            return redirect(url_for('index'))
+            return redirect(
+                url_for('index', admin=True if session.get('username') and session.get('password') else False))
         if LDAP.check_password(username, password):
             # set the session
             session['username'], session['password'] = username, password
@@ -90,7 +95,8 @@ def login() -> Response | str:
                 session.permanent = True
                 app.permanent_session_lifetime = datetime.timedelta(minutes=30)
             # send a message that tell the client is connected
-            return redirect(url_for('index'))
+            return redirect(
+                url_for('index', admin=True if session.get('username') and session.get('password') else False))
         else:
             error: str = 'Incorrect username or password'
             return render_template('login.html', error=error)
@@ -100,6 +106,10 @@ def login() -> Response | str:
 
 @app.route('/adminPanel')
 def adminPanel() -> Response | str:
+    """
+    The function adminPanel() is a route that renders the template adminPanel.html
+    :return:  The adminPanel.html file is being returned.
+    """
     if (not session.get('username')) or (not session.get('password')):
         return redirect(url_for('index'))
     groups: list[str] = LDAP.get_all_groups()
@@ -111,10 +121,15 @@ def adminPanel() -> Response | str:
     if 'Domain Controllers' in all_organisation_unit:
         all_organisation_unit.remove('Domain Controllers')
     return render_template('adminPanel.html', groups=groups, users=users_names,
-                           all_organisation_unit=all_organisation_unit, suggestions=USERS_PROPOSITION)
+                           all_organisation_unit=all_organisation_unit, suggestions=USERS_PROPOSITION,
+                           admin=True if session.get('username') and session.get('password') else False)
 
 
 def admin_connection() -> Ldap:
+    """
+    The function admin_connection() is used to connect to the LDAP server as ADMIN
+    :return: The Ldap object is being returned.
+    """
     ldap: Ldap = Ldap('10.22.32.7', 'SINTA', 'LAN', DEFAULT_USER, DEFAULT_PASSWORD)
     ldap.connection()
     return ldap
@@ -122,6 +137,10 @@ def admin_connection() -> Ldap:
 
 @app.route('/suggestions', methods=['POST'])
 def suggestions() -> Response | str:
+    """
+    Search all users that match the search value
+    :return: The list of users that match the search value
+    """
     if request.method == 'POST':
         search_value: str = request.get_json().get('searchValue')
         # check if there is a number in the search value
@@ -136,6 +155,11 @@ def suggestions() -> Response | str:
 
 
 def search_by_name(search_value: str) -> list[list[str, str, str]]:
+    """
+    Search all users that match the search value
+    :param search_value: the search value
+    :return: The list of users that match the search value
+    """
     # if the search value start with *a so we search for all the users that end with a
     # if the search value end with a* so we search for all the users that start with a
     # if the search value start with a so we search for all the users that contain a
@@ -170,6 +194,11 @@ def search_by_name(search_value: str) -> list[list[str, str, str]]:
 
 
 def search_by_date(search_value: str) -> list[list[str, str, str]]:
+    """
+    Search all users that match the search value
+    :param search_value: the search value
+    :return: The list of users that match the search value
+    """
     # the date of the user looks like 2000/09/30
     # if it's a date, we will search for the birthDate
     # if it's look like <1980 so we search all users born before 1980
@@ -208,6 +237,10 @@ def search_by_date(search_value: str) -> list[list[str, str, str]]:
 
 @app.route('/adminPanel/addUserToGroup', methods=['GET', 'POST'])
 def addUserToGroup() -> Response | str:
+    """
+    Add a user to a group
+    :return:  redirect to the admin panel
+    """
     if (not session.get('username')) or (not session.get('password')):
         return redirect(url_for('index'))
     if request.method == 'POST':
@@ -220,6 +253,10 @@ def addUserToGroup() -> Response | str:
 
 @app.route('/adminPanel/deleteGroup', methods=['GET', 'POST'])
 def deleteGroup() -> Response | str:
+    """
+    Delete a group
+    :return: redirect to the admin panel
+    """
     if (not session.get('username')) or (not session.get('password')):
         return redirect(url_for('index'))
     if request.method == 'POST':
@@ -232,6 +269,10 @@ def deleteGroup() -> Response | str:
 
 @app.route('/adminPanel/addGroup', methods=['GET', 'POST'])
 def addGroup() -> Response | str:
+    """
+    Add a group
+    :return:  redirect to the admin panel
+    """
     if (not session.get('username')) or (not session.get('password')):
         return redirect(url_for('index'))
     if request.method == 'POST':
@@ -243,6 +284,10 @@ def addGroup() -> Response | str:
 
 @app.route('/adminPanel/deleteUserFromGroup', methods=['GET', 'POST'])
 def deleteUserFromGroup() -> Response | str:
+    """
+    Delete a user from a group
+    :return: redirect to the admin panel
+    """
     if (not session.get('username')) or (not session.get('password')):
         return redirect(url_for('index'))
     if request.method == 'POST':
@@ -256,7 +301,7 @@ def deleteUserFromGroup() -> Response | str:
 @app.route('/logout', methods=['GET', 'POST'])
 def logout() -> str:
     """
-    The function logout() is a route that renders the template index.html
+    Logout the user from the session and redirect to the index page
     :return: The index.html file is being returned.
     """
     if not session.get('username'):
@@ -264,7 +309,7 @@ def logout() -> str:
     print("session logout")
     session.pop('username', None)
     session.pop('password', None)
-    return render_template('index.html')
+    return render_template('index.html', admin=True if session.get('username') and session.get('password') else False)
 
 
 @app.route('/globalSearch', methods=['GET', 'POST'])
@@ -306,6 +351,8 @@ def globalSearch():
         if any(string.isdigit() for string in post_value):
             entries = LDAP.get_mutliple_users_from_multiple_organisation(
                 [user[0] for user in search_by_date(post_value)], filter_value)
+        elif post_value == '*':
+            entries = LDAP.get_users_from_mutliple_organisation(post_value, filter_value)
         else:
             entries = LDAP.get_users_from_mutliple_organisation(post_value, filter_value)
     if entries is None:
@@ -319,7 +366,8 @@ def globalSearch():
             'first_name': entry.givenName.value,
         }
         results.append(result)
-    return render_template('globalSearch.html', filter=filter_value, users=results, suggestions=USERS_PROPOSITION)
+    return render_template('globalSearch.html', filter=filter_value, users=results, suggestions=USERS_PROPOSITION
+                           , admin=True if session.get('username') and session.get('password') else False)
 
 
 @app.route('/profile')
@@ -359,7 +407,8 @@ def profile() -> str:
         })
 
     # Render the profile template with the user profile information
-    return render_template('profile.html', user=user_profile, suggestions=USERS_PROPOSITION)
+    return render_template('profile.html', user=user_profile, suggestions=USERS_PROPOSITION, admin=True if session.get(
+        'username') and session.get('password') else False)
 
 
 if __name__ == '__main__':
