@@ -1,6 +1,7 @@
 import ldap3
 import pandas as pd
 from ldap3 import Server, Connection, ALL, MODIFY_ADD, SUBTREE, MODIFY_REPLACE
+import bcrypt
 
 
 def create_user(conn: ldap3.Connection, df: pd.DataFrame) -> None:
@@ -21,15 +22,16 @@ def create_user(conn: ldap3.Connection, df: pd.DataFrame) -> None:
         dn = f"cn={row['first_name']} {row['last_name']},OU={row['Département']},OU=SINTADirection,OU=Société SINTA,DC=SINTA,DC=LAN"
 
         password = row['password']
-        # hashed_password = hashlib.sha256(password.encode('utf-8')).hexdigest()
+        salt = bcrypt.gensalt()  # generate a random salt
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
         attributes = {
             'objectClass': ['top', 'person', 'organizationalPerson', 'user'],
             'name': row['first_name'] + ' ' + row['last_name'],
             'givenName': row['first_name'],
             'sn': row['last_name'],
             'mail': row['e-mail'],
-            # set password as sha256 hash
-            'userPassword': password,
+            # set password hash
+            'userPassword': hashed_password,
             'birthDate': row['birthday'].strftime('%Y/%m/%d'),
             'telephoneNumber': str(row['tel_prof']),
             'mobile': str(row['tel-perso']),

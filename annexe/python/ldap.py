@@ -1,5 +1,6 @@
 from typing import Optional
 
+import bcrypt
 import ldap3
 
 
@@ -90,6 +91,64 @@ class Ldap:
         else:
             print("Echec de l'ajout de l'unité d'organisation")
 
+    def create_user(self, first_name: str, last_name: str, email: str, password: str, birthday: str, tel_prof: str,
+                    tel_perso: str, title: str, adresse: str, region: str, code_postal: str, ville: str, pays: str,
+                    departement: str, group: str) -> bool:
+        # search the department dn (Organizational Unit)
+        department_dn = self.get_organiation_unit_by_name(departement)
+        group_dn = self.get_group_by_name(group)
+
+        user_dn = f"cn={first_name} {last_name},{department_dn}"
+
+        # change birthdate format from mm/dd/yyyy to dd/mm/yyyy
+        birthday = birthday.split('-')
+        birthday = birthday[1] + '/' + birthday[0] + '/' + birthday[2]
+
+        salt = bcrypt.gensalt()  # generate a random salt
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+        attributes = {
+            'objectClass': ['top', 'person', 'organizationalPerson', 'user'],
+            'name': first_name + ' ' + last_name,
+            'givenName': first_name,
+            'sn': last_name,
+            'mail': email,
+            # set password hash
+            'userPassword': hashed_password,
+            'birthDate': birthday,
+            'telephoneNumber': tel_prof,
+            'mobile': tel_perso,
+            'title': title,
+            'streetAddress': adresse,
+            'sAMAccountName': last_name + '_' + first_name,
+            'userPrincipalName': last_name + '_' + first_name + '@SINTA.LAN',
+            'st': region,
+            'postalCode': code_postal,
+            'l': ville,
+            'co': pays,
+            'company': 'SINTA',
+            'displayName': first_name + ' ' + last_name,
+            'distinguishedName': user_dn,
+        }
+        # Ajouter l'utilisateur à l'Active Directory
+        self.conn.add(user_dn, attributes=attributes)
+
+        # add user to group
+        print(f"Adding user {user_dn} to group {group_dn}...")
+        try:
+            self.add_user_to_group([first_name + ' ' + last_name], group)
+        except ldap3.core.exceptions.LDAPException as e:
+            print(f"Error while adding user to group: {e}")
+            return False
+
+        # Vérifier si l'ajout a réussi
+        if self.conn.result['result'] == 0:
+            print("Utilisateur ajouté avec succès")
+            # show where the object was created
+            return True
+        else:
+            print("Echec de l'ajout de l'utilisateur")
+            return False
+
     def get_organiation_unit_by_name(self, organisation_name: str) -> Optional[str]:
         """
         Search for an organization unit with the specified name in the LDAP directory and return its distinguished name.
@@ -108,7 +167,17 @@ class Ldap:
             return self.conn.entries[0].entry_dn
         return None
 
-    def create_group(self, organisation_name: str, group_name: str) -> None:
+    def get_group_by_name(self, group_name: str) -> Optional[str]:
+        self.conn.search(search_base=f'OU=Société SINTA,dc={self.dc_name},dc={self.dc_org}',
+                         search_filter=f'(cn={group_name})',
+                         search_scope=ldap3.SUBTREE,
+                         attributes=['cn'])
+
+        if self.conn.entries:
+            return self.conn.entries[0].entry_dn
+        return None
+
+    def create_group(self, organisation_name: str, group_name: str) -> bool:
         """
         Create a new group in an organization unit.
 
@@ -124,10 +193,9 @@ class Ldap:
 
         # Found the organisation_name and get the DN
         organisation_dn = self.get_organiation_unit_by_name(organisation_name)
-        print(organisation_dn)
         if organisation_dn is None:
             print("L'unité d'organisation n'existe pas")
-            return
+            return False
 
         group_dn = f'cn={group_name},{organisation_dn}'
         group_attributes = {
@@ -141,8 +209,10 @@ class Ldap:
         # Vérification de la réussite de l'ajout
         if self.conn.result['result'] == 0:
             print("Groupe ajouté avec succès")
+            return True
         else:
             print("Echec de l'ajout du groupe")
+            return False
 
     def found_group(self, group: str) -> Optional[str]:
         """
@@ -163,7 +233,7 @@ class Ldap:
             return self.conn.entries[0].entry_dn
         return None
 
-    def add_user_to_group(self, users_display_name: list[str], group_name: str) -> None:
+    def add_user_to_group(self, users_display_name: list[str], group_name: str) -> bool:
         """
         Add a list of users to a group in Active Directory.
 
@@ -174,21 +244,22 @@ class Ldap:
         :type users_display_name: list[str]
         :param group_name: The name of the group to add the users to.
         :type group_name: str
-        :return: None
-        :rtype: None
+        :return: True if the users were added to the group, False otherwise.
+        :rtype: bool
         """
+        results = False
         # Ajout de l'utilisateur au groupe
         group_cn = self.found_group(group_name)
         if group_cn is None:
             print("Le groupe n'existe pas")
-            return
+            return False
 
         # for each user
         for user in users_display_name:
             user_cn = self.search_user(user)
             if user_cn is None:
                 print("L'utilisateur n'existe pas")
-                return
+                return False
             self.conn.extend.microsoft.add_members_to_groups(
                 f'{user_cn[0].distinguishedName.value}',
                 [f'{group_cn}'])
@@ -196,8 +267,10 @@ class Ldap:
             # Vérification de la réussite de l'ajout
             if self.conn.result['result'] == 0:
                 print(f"Utilisateur {user} ajouté au groupe {group_name} avec succès")
+                results = True
             else:
                 print("Echec de l'ajout de l'utilisateur au groupe")
+        return results
 
     def get_all_organisation_unit(self) -> list[str]:
         """
@@ -229,7 +302,6 @@ class Ldap:
                              search_filter=f'(&(objectclass=user)(cn={username}*))',
                              search_scope=ldap3.SUBTREE,
                              attributes=['*', 'unicodePwd', 'userAccountControl'])
-
             # Affichage du résultat de la recherche
             if not self.conn.entries:
                 print("Aucune entrée trouvée")
@@ -263,7 +335,7 @@ class Ldap:
                 self.conn.search(search_base=organisation,
                                  search_filter=f'(&(objectclass=user)(cn={search_user}))',
                                  search_scope=ldap3.SUBTREE,
-                                 attributes=['*', 'unicodePwd', 'userAccountControl'])
+                                 attributes=['*', 'userAccountControl'])
                 # Affichage du résultat de la recherche
                 if self.conn.entries:
                     users.extend(self.conn.entries)
@@ -283,7 +355,7 @@ class Ldap:
         self.conn.search(search_base=search_base,
                          search_filter='(objectClass=user)',
                          search_scope=ldap3.SUBTREE,
-                         attributes=['*', 'unicodePwd', 'userAccountControl'])
+                         attributes=['*', 'userAccountControl'])
 
         # Affichage du résultat de la recherche
         if not self.conn.entries:
@@ -427,9 +499,8 @@ class Ldap:
         except IndexError:
             entries = self.search_user(username)
         if self.conn.entries:
-            password = f"b'{password}'"
             return entries[0].sAMAccountName.value == username and \
-                str(entries[0].userPassword.value) == password
+                bcrypt.checkpw(password.encode('utf-8'), bytes(entries[0].userPassword.value))
         return False
 
     def delete_users_from_group(self, users: list[str], group: str) -> bool:
@@ -445,7 +516,6 @@ class Ldap:
         """
         entry_dn = self.found_group(group)
         if entry_dn:
-            print(entry_dn)
             for user in users:
                 u = self.search_user(user)
                 if u:
@@ -457,6 +527,21 @@ class Ldap:
                     print(f"User {user} not found")
             return True
         print(f"Group {group} not found")
+        return False
+
+    def delete_users(self, user):
+        """
+        Delete a user from the LDAP server.
+
+        :param user: The name of the user to delete.
+        :type user: str
+        :return: True if the user was successfully deleted, False otherwise.
+        :rtype: bool
+        """
+        entry_dn = self.search_user(user)
+        if entry_dn:
+            self.conn.delete(entry_dn[0].entry_dn)
+            return True
         return False
 
 

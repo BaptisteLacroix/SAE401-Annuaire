@@ -2,7 +2,11 @@
     text-align: center;
 }
 
-#page-adminPanel input[type="text"] {
+#page-adminPanel input[type="text"],
+#page-adminPanel input[type="password"],
+#page-adminPanel input[type="email"],
+#page-adminPanel input[type="tel"],
+#page-adminPanel input[type="date"] {
     width: 100%;
     padding: 1.2vh 0;
     font-size: 16px;
@@ -79,7 +83,7 @@
     border: none;
     outline: none;
     width: 100%;
-        border-bottom: solid var(--color-dark) 1px;
+    border-bottom: solid var(--color-dark) 1px;
     padding: 1vw;
     border-radius: 5px
 }
@@ -134,4 +138,16 @@
 
 #page-adminPanel .single option {
     background-color: rgba(172, 221, 255, 0.1);
+}
+
+#adminPanel-success-message {
+    color: green;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+#adminPanel-error-message {
+    color: red;
+    font-size: 1.5em;
+    text-align: center;
 }

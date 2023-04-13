@@ -2,6 +2,7 @@ import secrets
 from datetime import datetime
 from typing import Union
 
+import regex as re
 from flask import Flask, render_template, request, session, url_for, redirect, jsonify, abort
 from ldap3 import Entry
 from werkzeug import Response
@@ -136,8 +137,11 @@ def adminPanel() -> Union[Response, str]:
     :return: A rendered template of the admin panel page.
     :rtype: Union[flask.wrappers.Response, str]
     """
-    if (not session.get('username')) or (not session.get('password')):
+    if not is_user_logged_in():
         return redirect(url_for('index'))
+    if not LDAP.check_password(session.get('username'), session.get('password')) and \
+            session.get('password') != DEFAULT_PASSWORD and session.get('username') != DEFAULT_USER:
+        return redirect(url_for('logout'))
     groups: list[str] = LDAP.get_all_groups()
     users: list[Entry] = LDAP.get_all_users("OU=Société SINTA,DC=SINTA,DC=LAN")
     users_names: list[str] = []
@@ -146,9 +150,76 @@ def adminPanel() -> Union[Response, str]:
     all_organisation_unit: list[str] = LDAP.get_all_organisation_unit()
     if 'Domain Controllers' in all_organisation_unit:
         all_organisation_unit.remove('Domain Controllers')
-    return render_template('adminPanel.html', groups=groups, users=users_names,
-                           all_organisation_unit=all_organisation_unit, suggestions=USERS_PROPOSITION,
-                           admin=True if session.get('username') and session.get('password') else False)
+    return get_error_or_success_message('adminPanel.html', groups, users_names, all_organisation_unit,
+                                        USERS_PROPOSITION,
+                                        True if session.get('username') and session.get('password') else False)
+
+
+def get_error_or_success_message(link, groups, users_names, all_organisation_unit, suggestions, admin) -> str:
+    if request.args.get('success_remove_group'):
+        return render_template(link, groups=groups, users=users_names,
+                               all_organisation_unit=all_organisation_unit, suggestions=suggestions,
+                               success_remove_group=request.args.get('success_remove_group'),
+                               admin=admin)
+    elif request.args.get('error_remove_group'):
+        return render_template(link, groups=groups, users=users_names,
+                               all_organisation_unit=all_organisation_unit, suggestions=suggestions,
+                               error_remove_group=request.args.get('error_remove_group'),
+                               admin=admin)
+    elif request.args.get('success_add_group'):
+        return render_template(link, groups=groups, users=users_names,
+                               all_organisation_unit=all_organisation_unit, suggestions=suggestions,
+                               success_add_group=request.args.get('success_add_group'),
+                               admin=admin)
+    elif request.args.get('error_add_group'):
+        return render_template(link, groups=groups, users=users_names,
+                               all_organisation_unit=all_organisation_unit, suggestions=suggestions,
+                               error_add_group=request.args.get('error_add_group'),
+                               admin=admin)
+    elif request.args.get('success_add_user_group'):
+        return render_template(link, groups=groups, users=users_names,
+                               all_organisation_unit=all_organisation_unit, suggestions=suggestions,
+                               success_add_user_group=request.args.get('success_add_user_group'),
+                               admin=admin)
+    elif request.args.get('error_add_user_group'):
+        return render_template(link, groups=groups, users=users_names,
+                               all_organisation_unit=all_organisation_unit, suggestions=suggestions,
+                               error_add_user_group=request.args.get('error_add_user_group'),
+                               admin=admin)
+    elif request.args.get('success_remove_user_group'):
+        return render_template(link, groups=groups, users=users_names,
+                               all_organisation_unit=all_organisation_unit, suggestions=suggestions,
+                               success_remove_user_group=request.args.get('success_remove_user_group'),
+                               admin=admin)
+    elif request.args.get('error_remove_user_group'):
+        return render_template(link, groups=groups, users=users_names,
+                               all_organisation_unit=all_organisation_unit, suggestions=suggestions,
+                               error_remove_user_group=request.args.get('error_remove_user_group'),
+                               admin=admin)
+    elif request.args.get('success_create_user'):
+        return render_template(link, groups=groups, users=users_names,
+                               all_organisation_unit=all_organisation_unit, suggestions=suggestions,
+                               success_create_user=request.args.get('success_create_user'),
+                               admin=admin)
+    elif request.args.get('error_create_user'):
+        return render_template(link, groups=groups, users=users_names,
+                               all_organisation_unit=all_organisation_unit, suggestions=suggestions,
+                               error_create_user=request.args.get('error_create_user'),
+                               admin=admin)
+    elif request.args.get('success_remove_user'):
+        return render_template(link, groups=groups, users=users_names,
+                               all_organisation_unit=all_organisation_unit, suggestions=suggestions,
+                               success_remove_user=request.args.get('success_remove_user'),
+                               admin=admin)
+    elif request.args.get('error_remove_user'):
+        return render_template(link, groups=groups, users=users_names,
+                               all_organisation_unit=all_organisation_unit, suggestions=suggestions,
+                               error_remove_user=request.args.get('error_remove_user'),
+                               admin=admin)
+    else:
+        return render_template(link, groups=groups, users=users_names,
+                               all_organisation_unit=all_organisation_unit, suggestions=suggestions,
+                               admin=admin)
 
 
 def admin_connection() -> Ldap:
@@ -288,28 +359,6 @@ def search_by_date(search_value: str) -> list[list[str, str, str]]:
     return matching_users
 
 
-@app.route('/adminPanel/addUserToGroup', methods=['GET', 'POST'])
-def addUserToGroup() -> Union[Response, str]:
-    """
-    Handle adding users to a group in the admin panel.
-
-    If the user is not logged in, redirect to the home page.
-    If a POST request is received, add the selected users to the specified group in LDAP and redirect to the admin panel.
-    If a GET request is received, redirect to the admin panel.
-
-    :return: A redirect to the admin panel if a POST request is received, otherwise a redirect to the admin panel.
-    :rtype: Union[flask.wrappers.Response, str]
-    """
-    if (not session.get('username')) or (not session.get('password')):
-        return redirect(url_for('index'))
-    if request.method == 'POST':
-        users: list[str] = request.form.getlist('users')
-        group: str = request.form['group']
-        LDAP.add_user_to_group(users, group)
-        return redirect(url_for('adminPanel'))
-    return redirect(url_for('adminPanel'))
-
-
 @app.route('/adminPanel/deleteGroup', methods=['GET', 'POST'])
 def deleteGroup() -> Union[Response, str]:
     """
@@ -324,13 +373,18 @@ def deleteGroup() -> Union[Response, str]:
              a redirect to the home page otherwise.
     :rtype: Union[flask.wrappers.Response, str]
     """
-    if (not session.get('username')) or (not session.get('password')):
+    if not is_user_logged_in():
         return redirect(url_for('index'))
+    if not LDAP.check_password(session.get('username'), session.get('password')) and \
+            session.get('password') != DEFAULT_PASSWORD and session.get('username') != DEFAULT_USER:
+        return redirect(url_for('logout'))
     if request.method == 'POST':
         # set to users all users from the form
         group: str = request.form['group']
-        LDAP.delete_group(group)
-        return redirect(url_for('adminPanel'))
+        result = LDAP.delete_group(group)
+        if result:
+            return redirect(url_for('adminPanel', success_remove_group="The group has been successfully removed."))
+        return redirect(url_for('adminPanel', error_remove_group="Error while removing the group."))
     return redirect(url_for('adminPanel'))
 
 
@@ -347,13 +401,46 @@ def addGroup() -> Union[Response, str]:
     :return: A redirect to the admin panel if a group was successfully created, the "add group" page otherwise.
     :rtype: Union[flask.wrappers.Response, str]
     """
-    if (not session.get('username')) or (not session.get('password')):
+    if not is_user_logged_in():
         return redirect(url_for('index'))
+    if not LDAP.check_password(session.get('username'), session.get('password')) and \
+            session.get('password') != DEFAULT_PASSWORD and session.get('username') != DEFAULT_USER:
+        return redirect(url_for('logout'))
     if request.method == 'POST':
         group: str = request.form['group']
         organisation_unit: str = request.form['OU']
-        LDAP.create_group(organisation_unit, group)
-        return redirect(url_for('adminPanel'))
+        result = LDAP.create_group(organisation_unit, group)
+        if result:
+            return redirect(url_for('adminPanel', success_add_group="Group created successfully"))
+        return redirect(url_for('adminPanel', error_add_group="Group creation failed"))
+
+
+@app.route('/adminPanel/addUserToGroup', methods=['GET', 'POST'])
+def addUserToGroup() -> Union[Response, str]:
+    """
+    Handle adding users to a group in the admin panel.
+
+    If the user is not logged in, redirect to the home page.
+    If a POST request is received, add the selected users to the specified group in LDAP and redirect to the admin panel.
+    If a GET request is received, redirect to the admin panel.
+
+    :return: A redirect to the admin panel if a POST request is received, otherwise a redirect to the admin panel.
+    :rtype: Union[flask.wrappers.Response, str]
+    """
+    if not is_user_logged_in():
+        return redirect(url_for('index'))
+    if not LDAP.check_password(session.get('username'), session.get('password')) and \
+            session.get('password') != DEFAULT_PASSWORD and session.get('username') != DEFAULT_USER:
+        return redirect(url_for('logout'))
+    if request.method == 'POST':
+        users: list[str] = request.form.getlist('users')
+        group: str = request.form['group']
+        result = LDAP.add_user_to_group(users, group)
+        if result:
+            return redirect(
+                url_for('adminPanel', success_add_user_group="The users were added to the group successfully."))
+        return redirect(url_for('adminPanel', error_add_user_group="Error while adding users to the group."))
+    return redirect(url_for('adminPanel'))
 
 
 @app.route('/adminPanel/deleteUserFromGroup', methods=['GET', 'POST'])
@@ -368,14 +455,193 @@ def deleteUserFromGroup() -> Union[Response, str]:
     :return: A redirect to the admin panel if deletion is successful, the home page otherwise.
     :rtype: Union[flask.wrappers.Response, str]
     """
-    if (not session.get('username')) or (not session.get('password')):
+    if not is_user_logged_in():
         return redirect(url_for('index'))
+    if not LDAP.check_password(session.get('username'), session.get('password')) and \
+            session.get('password') != DEFAULT_PASSWORD and session.get('username') != DEFAULT_USER:
+        return redirect(url_for('logout'))
     if request.method == 'POST':
         # set to users all users from the form
         users: list[str] = request.form.getlist('users')
         group: str = request.form['group']
-        LDAP.delete_users_from_group(users, group)
-        return redirect(url_for('adminPanel'))
+        result = LDAP.delete_users_from_group(users, group)
+        if result:
+            return redirect(url_for('adminPanel', success_remove_user_group="User removed from group"))
+        return redirect(url_for('adminPanel', error_remove_user_group="Error removing user from group"))
+
+
+@app.route('/adminPanel/createUser', methods=['GET', 'POST'])
+def createUser() -> Union[Response, str]:
+    """
+    Handle the "create user" page in the admin panel.
+
+    If the user is not logged in, redirect to the home page.
+    If a POST request is received, create a new user with the specified details in LDAP,
+    then redirect to the admin panel.
+    If a GET request is received, render the "create user" page.
+
+    :return: A redirect to the admin panel if a user was successfully created, the "create user" page otherwise.
+    :rtype: Union[flask.wrappers.Response, str]
+    """
+    global USERS_PROPOSITION
+    if not is_user_logged_in():
+        return redirect(url_for('index'))
+    if not LDAP.check_password(session.get('username'), session.get('password')) and \
+            session.get('password') != DEFAULT_PASSWORD and session.get('username') != DEFAULT_USER:
+        return redirect(url_for('logout'))
+    if request.method == 'POST':
+        error_message: str = validate_user_input()
+        if error_message:
+            return redirect(url_for('adminPanel', error_create_user=error_message))
+
+        # create the user
+        result = LDAP.create_user(request.form['first_name'], request.form['last_name'], request.form['email'],
+                                  request.form['password'], request.form['birthday'], request.form['tel_prof'],
+                                  request.form['tel_perso'], request.form['title'], request.form['adresse'],
+                                  request.form['region'], request.form['code_postal'], request.form['ville'],
+                                  request.form['pays'], request.form['departement'], request.form['group'])
+
+        if result:
+            USERS_PROPOSITION = init_users_information()
+            return redirect(url_for('adminPanel', success_create_user="User created successfully"))
+        return redirect(url_for('adminPanel', error_create_user="Error while creating user"))
+    return redirect(url_for('adminPanel'))
+
+
+@app.route('/adminPanel/deleteUser', methods=['GET', 'POST'])
+def deleteUser() -> Union[Response, str]:
+    """
+    Handle the deletion of users in the admin panel.
+
+    If the user is not logged in, redirect to the home page.
+    If a POST request is received, remove the selected users from LDAP.
+    After successful deletion, redirect to the admin panel.
+
+    :return: A redirect to the admin panel if deletion is successful, the home page otherwise.
+    :rtype: Union[flask.wrappers.Response, str]
+    """
+    global USERS_PROPOSITION
+    if not is_user_logged_in():
+        return redirect(url_for('index'))
+    if not LDAP.check_password(session.get('username'), session.get('password')) and \
+            session.get('password') != DEFAULT_PASSWORD and session.get('username') != DEFAULT_USER:
+        return redirect(url_for('logout'))
+    if request.method == 'POST':
+        # set to users all users from the form
+        user: str = request.form['user']
+        result = LDAP.delete_users(user)
+        if result:
+            USERS_PROPOSITION = init_users_information()
+            return redirect(url_for('adminPanel', success_remove_user="User removed successfully"))
+        return redirect(url_for('adminPanel', error_remove_user="Error removing user"))
+
+
+def is_user_logged_in() -> bool:
+    """
+    Check if a user is logged in by checking the session for a username and password.
+
+    :return: True if the user is logged in, False otherwise.
+    :rtype: bool
+    """
+    return bool(session.get('username') and session.get('password'))
+
+
+def is_valid_birthday(birthday: str) -> bool:
+    """
+    Check if the given string is a valid birthday.
+
+    :param birthday: The birthday to check.
+    :type birthday: str
+    :return: True if the birthday is valid, False otherwise.
+    :rtype: bool
+    """
+    print(birthday)
+    if not re.match("^[0-9]{4}-((0[1-9])|(1[0-2]))-(([0-2][0-9])|(3[0-1]))$", birthday):
+        return False
+    return True
+
+
+def is_valid_phone_number(phone_number: str) -> bool:
+    """
+    Check if the given string is a valid phone number.
+
+    :param phone_number: The phone number to check.
+    :type phone_number: str
+    :return: True if the phone number is valid, False otherwise.
+    :rtype: bool
+    """
+    if not re.match(r"^[0-9]{10}$", phone_number):
+        return False
+    return True
+
+
+def is_valid_postal_code(postal_code: str) -> bool:
+    """
+    Check if the given string is a valid postal code.
+
+    :param postal_code: The postal code to check.
+    :type postal_code: str
+    :return: True if the postal code is valid, False otherwise.
+    :rtype: bool
+    """
+    if not re.match(r"^[0-9]{5}$", postal_code):
+        return False
+    return True
+
+
+def validate_user_input() -> str:
+    """
+    Validate user input.
+
+    :return: An error message if the user input is invalid, or an empty string if the input is valid.
+    :rtype: str
+    """
+    required_fields = ['first_name', 'last_name', 'email', 'password', 'birthday', 'tel_prof', 'tel_perso', 'title',
+                       'adresse', 'region', 'code_postal', 'ville', 'pays', 'departement', 'group']
+    for field in required_fields:
+        if not request.form.get(field):
+            return f"Veuillez remplir tous les champs {field}"
+
+    if not is_valid_email(request.form.get('email')):
+        return "Veuillez entrer une adresse email valide"
+
+    if not is_valid_birthday(request.form.get('birthday')):
+        return "Veuillez entrer une date de naissance valide : dd/mm/yyyy"
+
+    if not is_valid_phone_number(request.form.get('tel_prof')):
+        return "Veuillez entrer un numéro de téléphone valide"
+
+    if not is_valid_phone_number(request.form.get('tel_perso')):
+        return "Veuillez entrer un numéro de téléphone valide"
+
+    if not is_valid_postal_code(request.form.get('code_postal')):
+        return "Veuillez entrer un code postal valide"
+
+    if not is_valid_password(request.form.get('password')):
+        return "Veuillez entrer un mot de passe valide (8 caractères minimum, 1 majuscule, 1 minuscule, 1 chiffre)"
+    return ""
+
+
+def is_valid_email(email: str) -> bool:
+    """
+    Check if the given email is valid.
+
+    :param email: The email to check.
+    :type email: str
+    :return: True if the email is valid, False otherwise.
+    :rtype: bool
+    """
+    return bool(re.match(r"[^@]+@[^@]+\.[^@]+", email))
+
+
+def is_valid_password(password: str) -> bool:
+    """
+    Check if the given password is valid.
+    :param password: The password to check.
+    :return: True if the password is valid, False otherwise.
+    """
+    return len(password) >= 8 and re.search(r"[a-z]", password) and re.search(r"[A-Z]", password) and re.search(
+        r"[0-9]", password)
 
 
 @app.route('/logout', methods=['GET', 'POST'])
@@ -390,12 +656,10 @@ def logout() -> str:
     :return: The home page with an optional flag indicating whether the user is an admin.
     :rtype: str
     """
-    if not session.get('username'):
-        return render_template('index.html')
     print("session logout")
     session.pop('username', None)
     session.pop('password', None)
-    return render_template('index.html', admin=True if session.get('username') and session.get('password') else False)
+    return render_template('index.html', admin=False)
 
 
 @app.route('/globalSearch', methods=['GET', 'POST'])
@@ -430,7 +694,8 @@ def globalSearch():
                 'first_name': entry.givenName.value,
             }
             results.append(result)
-        return render_template('globalSearch.html', users=results)
+        return render_template('globalSearch.html', users=results,
+                               admin=True if session.get('username') and session.get('password') else False)
 
     filter_value = []
     if len(request.form.getlist("filtersUsed")) > 0:
