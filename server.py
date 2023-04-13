@@ -1,5 +1,5 @@
 import secrets
-from datetime import datetime
+from datetime import timedelta, datetime
 from typing import Union
 
 import regex as re
@@ -104,7 +104,7 @@ def login() -> Union[Response, str]:
             session['username'], session['password'] = username, password
             if remember == 'on':
                 session.permanent = True
-                app.permanent_session_lifetime = datetime.timedelta(minutes=30)
+                app.permanent_session_lifetime = timedelta(minutes=30)
             # send a message that tell the client is connected
             return redirect(
                 url_for('index', admin=True if session.get('username') and session.get('password') else False))
@@ -113,7 +113,7 @@ def login() -> Union[Response, str]:
             session['username'], session['password'] = username, password
             if remember == 'on':
                 session.permanent = True
-                app.permanent_session_lifetime = datetime.timedelta(minutes=30)
+                app.permanent_session_lifetime = timedelta(minutes=30)
             # send a message that tell the client is connected
             return redirect(
                 url_for('index', admin=True if session.get('username') and session.get('password') else False))
@@ -156,6 +156,27 @@ def adminPanel() -> Union[Response, str]:
 
 
 def get_error_or_success_message(link, groups, users_names, all_organisation_unit, suggestions, admin) -> str:
+    """
+    This function receives a set of parameters, it returns a string based on the value of the query parameters in the
+    request object. If the 'success' or 'error' parameters are set, the message returned includes either a success or an
+    error message in relation to a particular operation, depending on which parameter is set. Otherwise, it returns a
+    string with the default page content.
+
+    :param link: The link of the page to which the function will return the message.
+    :type link: str
+    :param groups: The groups of the users.
+    :type groups: list[str]
+    :param users_names: The names of the users.
+    :type users_names: list[str]
+    :param all_organisation_unit: The list of all organization units.
+    :type all_organisation_unit: list[str]
+    :param suggestions: The suggestions for the groups or users.
+    :type suggestions: list[str]
+    :param admin: Whether the current user is an admin or not.
+    :type admin: bool
+    :return: A string with a success or error message or the default page content.
+    :rtype: str
+    """
     if request.args.get('success_remove_group'):
         return render_template(link, groups=groups, users=users_names,
                                all_organisation_unit=all_organisation_unit, suggestions=suggestions,
@@ -258,7 +279,8 @@ def suggestions() -> Union[Response, str]:
                 return jsonify([])
         else:
             matching_users: list[list[str, str, str]] = search_by_name(search_value)
-        return jsonify(matching_users)
+            return jsonify(matching_users)
+    return jsonify(matching_users)
 
 
 def search_by_name(search_value: str) -> list[list[str, str, str]]:
@@ -285,26 +307,27 @@ def search_by_name(search_value: str) -> list[list[str, str, str]]:
         for user in USERS_PROPOSITION:
             # disable the case sensitive
             if user[0].split(' ')[1].lower().endswith(search_value[1:].lower()):
-                matching_users.append(user)
+                # append only the first and the last element from the user
+                matching_users.append([user[0], user[2]])
     elif search_value[0] == '*' and len(search_value) > 1 and search_value[1] == ' ':
         # search for all users where the last_name start with the search value
         for user in USERS_PROPOSITION:
             # disable the case sensitive
             if user[0].split(' ')[1].lower().startswith(search_value[2:].lower()):
-                matching_users.append(user)
+                matching_users.append([user[0], user[2]])
     elif search_value[-1] == '*':
         for user in USERS_PROPOSITION:
             if user[0].split(' ')[0].lower().startswith(search_value[:-1].lower()):
-                matching_users.append(user)
+                matching_users.append([user[0], user[2]])
     elif '*' in search_value:
         for user in USERS_PROPOSITION:
             if user[0].split(' ')[0].lower().startswith(search_value.split('*')[0].lower()) and user[0].split(' ')[1]. \
                     lower().startswith(search_value.split('*')[1].replace(' ', '').lower()):
-                matching_users.append(user)
+                matching_users.append([user[0], user[2]])
     else:
         for user in USERS_PROPOSITION:
             if search_value.lower() in user[0].lower():
-                matching_users.append(user)
+                matching_users.append([user[0], user[2]])
     return matching_users
 
 
@@ -331,27 +354,24 @@ def search_by_date(search_value: str) -> list[list[str, str, str]]:
     # if it's look like 10/05/1980 so we search all users born on 10/05/1980
     matching_users: list[list[str, str]] = []
     if search_value[0] == '<':
-        print("start with <")
         for user in USERS_PROPOSITION:
-            if user[1].split('/')[0] < search_value[1:]:
+            if int(user[1].split('/')[0]) <= int(search_value[1:]) and len(search_value[1:]) == 4:
                 matching_users.append(user)
     elif search_value[0] == '>':
-        print("start with >")
         for user in USERS_PROPOSITION:
-            if user[1].split('/')[0] > search_value[1:]:
+            if int(user[1].split('/')[0]) >= int(search_value[1:]) and len(search_value[1:]) == 4:
                 matching_users.append(user)
     elif '-' in search_value:
-        print("contains -")
         for user in USERS_PROPOSITION:
-            if search_value.split('-')[0] < user[1].split('/')[0] < search_value.split('-')[1]:
-                matching_users.append(user)
+            if search_value.split('-')[0] != '':
+                if int(search_value.split('-')[0]) <= int(user[1].split('/')[0]) <= int(search_value.split('-')[1]) \
+                        and len(search_value.split('-')[1]) == 4 and len(search_value.split('-')[0]) == 4:
+                    matching_users.append(user)
     elif len(search_value) == 4:
-        print("contains year")
         for user in USERS_PROPOSITION:
-            if search_value == user[1].split("/")[0]:
+            if int(search_value) == int(user[1].split("/")[0]):
                 matching_users.append(user)
     else:
-        print("contains nothing")
         for user in USERS_PROPOSITION:
             date: str = user[1].split('/')[2] + "/" + user[1].split('/')[1] + "/" + user[1].split('/')[0]
             if date == search_value:
@@ -555,7 +575,6 @@ def is_valid_birthday(birthday: str) -> bool:
     :return: True if the birthday is valid, False otherwise.
     :rtype: bool
     """
-    print(birthday)
     if not re.match("^[0-9]{4}-((0[1-9])|(1[0-2]))-(([0-2][0-9])|(3[0-1]))$", birthday):
         return False
     return True
@@ -656,7 +675,6 @@ def logout() -> str:
     :return: The home page with an optional flag indicating whether the user is an admin.
     :rtype: str
     """
-    print("session logout")
     session.pop('username', None)
     session.pop('password', None)
     return render_template('index.html', admin=False)
@@ -697,24 +715,18 @@ def globalSearch():
         return render_template('globalSearch.html', users=results,
                                admin=True if session.get('username') and session.get('password') else False)
 
-    filter_value = []
-    if len(request.form.getlist("filtersUsed")) > 0:
-        filters = request.form.getlist("filtersUsed")
-        # split this string ['["ASSISTANCE","COMMUNICATION"]'] into a list of strings ['ASSISTANCE', 'COMMUNICATION']
-        list_filters = filters[0].replace('[', '').replace(']', '').replace('"', '').split(',')
-        for f in list_filters:
-            filter_value.append(all_filters[0].get(f))
+    filter_value = get_filter_value(request.form.getlist("filtersUsed"), all_filters)
 
     post_value = request.form.get('searchValue')
     if filter_value[0] is None:
-        if any(string.isdigit() for string in post_value):
+        if any(string.isdigit() for string in post_value) and is_user_logged_in():
             entries = LDAP.get_multiple_users([user[0] for user in search_by_date(post_value)])
         elif post_value == '*':
             entries = LDAP.get_all_users(all_filters[0].get('default'))
         else:
             entries = LDAP.search_user(post_value)
     else:
-        if any(string.isdigit() for string in post_value):
+        if any(string.isdigit() for string in post_value) and is_user_logged_in():
             entries = LDAP.get_mutliple_users_from_multiple_organisation(
                 [user[0] for user in search_by_date(post_value)], filter_value)
         elif post_value == '*':
@@ -724,6 +736,52 @@ def globalSearch():
     if entries is None:
         entries = []
     # Retrieve the necessary information for each compatible user and store it in a list of dicts
+    results = create_search_results_list(entries)
+    return render_template('globalSearch.html', filter=filter_value, users=results, suggestions=USERS_PROPOSITION
+                           , admin=True if session.get('username') and session.get('password') else False)
+
+
+def get_filter_value(filters_used: list[str], all_filters: list[dict[str, str]]) -> list[str]:
+    """
+    Convert a list of filters used by the user into a list of their corresponding values.
+
+    The input list `filters_used` is expected to be a list with a single string element. This string should be a JSON-encoded
+    list of strings, such as `['["ASSISTANCE","COMMUNICATION"]']`. The function will extract the individual filters from this
+    string, convert them into their corresponding values from the input list `all_filters`, and return a list of these values.
+
+    If the input list `filters_used` is empty, the function returns an empty list.
+
+    :param filters_used: A list containing a single string element with the JSON-encoded list of filters used by the user.
+    :type filters_used: List[str]
+    :param all_filters: A list of dictionaries mapping filter keys to their corresponding values.
+    :type all_filters: List[Dict[str, str]]
+    :return: A list of filter values corresponding to the filters used by the user.
+    :rtype: List[str]
+    """
+    filter_value = []
+    if len(filters_used) > 0:
+        # split this string ['["ASSISTANCE","COMMUNICATION"]'] into a list of strings ['ASSISTANCE', 'COMMUNICATION']
+        list_filters = filters_used[0].replace('[', '').replace(']', '').replace('"', '').split(',')
+        for f in list_filters:
+            filter_value.append(all_filters[0].get(f))
+    return filter_value
+
+
+def create_search_results_list(entries: list[Entry]) -> list[dict[str, str]]:
+    """
+    Given a list of LDAP entries, extract the relevant information and return a list of search results.
+
+    Each search result is a dictionary with the following keys:
+    - 'title': the value of the 'title' attribute in the LDAP entry.
+    - 'last_name': the value of the 'sn' attribute in the LDAP entry.
+    - 'first_name': the value of the 'givenName' attribute in the LDAP entry.
+
+    :param entries: A list of LDAP entries.
+    :type entries: List[ldap3.core.entry.Entry]
+
+    :return: A list of search results.
+    :rtype: List[Dict[str, str]]
+    """
     results = []
     for entry in entries:
         result = {
@@ -732,8 +790,7 @@ def globalSearch():
             'first_name': entry.givenName.value,
         }
         results.append(result)
-    return render_template('globalSearch.html', filter=filter_value, users=results, suggestions=USERS_PROPOSITION
-                           , admin=True if session.get('username') and session.get('password') else False)
+    return results
 
 
 @app.route('/profile')

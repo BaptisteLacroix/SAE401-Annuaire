@@ -77,10 +77,18 @@
                 const matchingUsers = JSON.parse(xhr.responseText);
                 searchSuggestions.innerHTML = '';
                 matchingUsers.forEach(user => {
-                    if (all_active_filters.includes(user[2]) === true || all_active_filters.length === 0) {
-                        const suggestionElement = document.createElement('li');
-                        suggestionElement.innerHTML = `<a href="./profile?user=${user[0]}">${user[0]}</a>`;
-                        searchSuggestions.appendChild(suggestionElement);
+                    if (user.length === 2) {
+                        if (all_active_filters.includes(user[1]) === true || all_active_filters.length === 0) {
+                            const suggestionElement = document.createElement('li');
+                            suggestionElement.innerHTML = `<a href="./profile?user=${user[0]}">${user[0]}</a>`;
+                            searchSuggestions.appendChild(suggestionElement);
+                        }
+                    } else {
+                        if (all_active_filters.includes(user[2]) === true || all_active_filters.length === 0) {
+                            const suggestionElement = document.createElement('li');
+                            suggestionElement.innerHTML = `<a href="./profile?user=${user[0]}">${user[0]}</a>`;
+                            searchSuggestions.appendChild(suggestionElement);
+                        }
                     }
                 });
             } else {
