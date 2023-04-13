@@ -420,6 +420,19 @@ def globalSearch():
         }
     ]
     # get the value of the filter parameter key from all_filters
+    if len(request.form.getlist("filtersUsed")) == 0 and request.form.get('searchValue') is None:
+        entries = LDAP.get_all_users(all_filters[0].get('default'))
+        results = []
+        for entry in entries:
+            result = {
+                'title': entry.title.value,
+                'last_name': entry.sn.value,
+                'first_name': entry.givenName.value,
+            }
+            print(result)
+            results.append(result)
+        return render_template('globalSearch.html', users=results)
+
     filter_value = []
     if len(request.form.getlist("filtersUsed")) > 0:
         filters = request.form.getlist("filtersUsed")

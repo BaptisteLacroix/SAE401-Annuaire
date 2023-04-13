@@ -9,22 +9,27 @@
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 4vw;
+    place-items: center;
     padding: 1vh 0;
 }
 
 .line a {
     text-decoration: none;
     color: black;
+    width: 80%;
+    height: 110px;
 }
 
 .item {
     background-color: #fff;
-    margin: 2vh 4vw;
     display: flex;
     flex-direction: row;
     border-radius: 10px;
     transition: all .2s ease-in-out;
     opacity: 0.9;
+    width: 100%;
+    height: 100%;
 }
 
 .item:hover {
@@ -42,7 +47,6 @@
 }
 
 .statusInfo {
-    font-size: x-large;
     font-weight: bold;
 }
 
@@ -59,7 +63,7 @@
 }
 
 @media screen and (max-width:1200px) {
-    
+
     .line {
         grid-template-columns: 1fr 1fr 1fr ;
     }
@@ -73,8 +77,30 @@
     .statusInfo {
         font-size: large;
     }
-    
+
     .nomInfo {
         font-size: small;
+    }
+}
+
+@media screen and (max-width: 780px) {
+    .line {
+        grid-template-columns: 1fr;
+    }
+
+    .item img {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .line {
+        grid-template-columns: 1fr;
+    }
+
+    .item img {
+        width: 80px;
+        height: 80px;
     }
 }

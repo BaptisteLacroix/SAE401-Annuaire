@@ -38,7 +38,6 @@ input[type="search"] {
     position: absolute;
     top: 0;
     right: 0;
-    width: 0;
     font-weight: bold;
     background: var(--color-brand);
     border-radius: 0 var(--rad) var(--rad) 0;
