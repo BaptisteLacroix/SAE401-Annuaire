@@ -1,6 +1,6 @@
 :root {
     --background-color: rgba(212, 209, 209, 0);
-    --header-background: rgba(172, 221, 255, 1);
+    --header-background: rgba(172, 221, 255, 0.8);
     --rad: .7rem;
     --dur: .2s;
     --color-dark: #2f2f2f;
@@ -9,7 +9,7 @@
     --font-fam: 'Lato', sans-serif;
     --height: 4vh;
     --btn-width: 7vh;
-    --footer-background: rgba(172, 221, 255, 1);
+    --footer-background: rgba(172, 221, 255, 0.8);
 }
 
 ::-webkit-scrollbar {

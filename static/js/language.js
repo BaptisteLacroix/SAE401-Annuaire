@@ -57,7 +57,33 @@ function setLanguage(language) {
                     });
                 }
             }
-
+            let flag;
+            switch (language) {
+                case "fr":
+                    // on met le drapeau anglais en visible
+                    flag = document.getElementById("french");
+                    if (flag != null) {
+                        flag.src = "../static/img/drapeau/en.svg";
+                        flag.id = "english";
+                    }
+                    break;
+                case "en":
+                    // on met le drapeau espagnol en visible
+                    flag = document.getElementById("english");
+                    if (flag != null) {
+                        flag.src = "../static/img/drapeau/es.svg";
+                        flag.id = "spanish";
+                    }
+                    break;
+                case "sp":
+                    // on met le drapeau francais en visible
+                    flag = document.getElementById("spanish");
+                    if (flag != null) {
+                        flag.src = "../static/img/drapeau/fr.svg";
+                        flag.id = "french";
+                    }
+                    break;
+            }
         });
 }
 

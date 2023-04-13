@@ -1,118 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500&family=Roboto:wght@300&display=swap%27');
+
 @font-face {
     font-family: 'logo';
     src: url("../font/BANNER.ttf") format("truetype");
 }
 
-
 header {
     background-color: var(--header-background);
-    display: block;
+    height: 80px;
 }
 
-header ul {
-    padding: 0;
+header>nav {
+    height: 100%;
+}
+
+header>nav ul {
+    height: 100%;
     list-style: none;
-}
-
-#filtres {
-    /* background-color: #fff; */
-    color: #fff;
-}
-
-#logo {
-    font-family: "logo";
-    font-size: 2vw;
-
-}
-
-#accueil > ul {
-    padding: 0;
     display: flex;
-    list-style: none;
-    justify-content: space-around;
-    align-items: center;
-}
-
-#accueil > ul > li {
-    width: 200px;
-    text-align: center;
-}
-
-#accueil a {
-    text-decoration: none;
-    color: black;
-}
-
-#right-nav {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 1vh;
-}
-
-.headertext {
-    font-family: sans-serif;
-    font-size: 3vw;
-    font-weight: bold;
-}
-
-#flags {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding-top: .5vh;
-}
-
-#flags img {
-    height: 2vh;
-}
-
-#flags img:hover {
-    cursor: pointer;
-}
-
-div#adminPanelDiv {
-    display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
+    gap: 30px;
+    padding: 0 4vw;
+    margin: 0;
 }
 
-div#adminPanelDiv > a {
-    display: block;
-    background: transparent;
-    padding: 0.5vh 0.5vw;
-    border-radius: 20px;
-    font-size: medium;
-    color: var(--color-dark);
-    font-weight: bold;
-    text-align: center;
-    margin: 1vh auto;
-    border: var(--color-dark) solid 2px;
-    transition: all 0.2s ease-in-out;
+header>nav>ul>li>ul {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: right;
 }
 
-div#adminPanelDiv > a {
+header>nav>ul .left-right {
+    flex:1;
+}
+
+header>nav>ul a {
     text-decoration: none;
-    color: var(--color-dark);
+    color: black;
+    font-weight: bold;
+    font-family: Poppins;
 }
 
-div#adminPanelDiv > a:hover {
-    cursor: pointer;
-    background: var(--color-dark);
-    color: var(--color-light);
+header>nav>ul>li>ul img {
+    width: 50px;
+    border-radius: 5px;
+    display: block;
 }
 
-div#adminPanelDiv > button:hover > a {
-    color: var(--color-light);
-}
-
-@media screen and (max-width: 900px) {
-    #logo {
-        font-size: 2vh;
+@media screen and (max-width: 500px) {
+    header>nav>ul a {
+        font-size: xx-small;
     }
 
-    .headertext {
-        font-size: 2vh;
+    header>nav>ul>li>ul img {
+        width: 20px;
     }
 }

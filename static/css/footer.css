@@ -33,6 +33,12 @@ footer div{
 
 @media screen and (max-width: 900px) {
     footer div{
-        font-size: 1.5vw;
+        font-size: 10px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    footer div{
+        font-size: 7px;
     }
 }
