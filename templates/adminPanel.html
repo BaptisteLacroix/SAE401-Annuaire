@@ -13,13 +13,13 @@
 
     {% if error_remove_group %}
         <div class="box red">
-            <h1 id="adminPanel-error" class="adminPanelSectionTitle">Erreur</h1>
+            <h1 id="adminPanel-error" class="adminPanelSectionTitle">Error</h1>
             <p id="adminPanel-error-message">{{ error_remove_group }}</p>
         </div>
     {% endif %}
     {% if success_remove_group %}
         <div class="box green">
-            <h1 id="adminPanel-success" class="adminPanelSectionTitle">Succès</h1>
+            <h1 id="adminPanel-success" class="adminPanelSectionTitle">Success</h1>
             <p id="adminPanel-success-message">{{ success_remove_group }}</p>
         </div>
     {% endif %}
@@ -40,13 +40,13 @@
 
     {% if error_add_group %}
         <div class="box red">
-            <h1 id="adminPanel-error" class="adminPanelSectionTitle">Erreur</h1>
+            <h1 id="adminPanel-error" class="adminPanelSectionTitle">Error</h1>
             <p id="adminPanel-error-message">{{ error_add_group }}</p>
         </div>
     {% endif %}
     {% if success_add_group %}
         <div class="box green">
-            <h1 id="adminPanel-success" class="adminPanelSectionTitle">Succès</h1>
+            <h1 id="adminPanel-success" class="adminPanelSectionTitle">Success</h1>
             <p id="adminPanel-success-message">{{ success_add_group }}</p>
         </div>
     {% endif %}
@@ -70,20 +70,20 @@
 
     {% if error_add_user_group %}
         <div class="box red">
-            <h1 id="adminPanel-error" class="adminPanelSectionTitle">Erreur</h1>
+            <h1 id="adminPanel-error" class="adminPanelSectionTitle">Error</h1>
             <p id="adminPanel-error-message">{{ error_add_user_group }}</p>
         </div>
     {% endif %}
     {% if success_add_user_group %}
         <div class="box green">
-            <h1 id="adminPanel-success" class="adminPanelSectionTitle">Succès</h1>
+            <h1 id="adminPanel-success" class="adminPanelSectionTitle">Success</h1>
             <p id="adminPanel-success-message">{{ success_add_user_group }}</p>
         </div>
     {% endif %}
     <div class="box blue">
         <h1 id="adminPanel-add-user-group" class="adminPanelSectionTitle">Ajouter utilisateurs à groupe</h1>
         <form class="adminForm" action="/adminPanel/addUserToGroup" method="post">
-            <label id="adminPanel-add-user-group-label-user"> Utilisateurs
+            <label id="adminPanel-add-user-group-label-user-label"> Utilisateurs
                 <!-- authorized multiple values -->
                 <select name="users" multiple class="multiple-selection">
                     {% for user in users %}
@@ -105,20 +105,20 @@
 
     {% if error_remove_user_group %}
         <div class="box red">
-            <h1 id="adminPanel-error" class="adminPanelSectionTitle">Erreur</h1>
+            <h1 id="adminPanel-error" class="adminPanelSectionTitle">Error</h1>
             <p id="adminPanel-error-message">{{ error_remove_user_group }}</p>
         </div>
     {% endif %}
     {% if success_remove_user_group %}
         <div class="box green">
-            <h1 id="adminPanel-success" class="adminPanelSectionTitle">Succès</h1>
+            <h1 id="adminPanel-success" class="adminPanelSectionTitle">Success</h1>
             <p id="adminPanel-success-message">{{ success_remove_user_group }}</p>
         </div>
     {% endif %}
     <div class="box blue">
         <h1 id="adminPanel-remove-user-group" class="adminPanelSectionTitle">Supprimer Utilisateur de groupe</h1>
         <form class="adminForm" action="/adminPanel/deleteUserFromGroup" method="post">
-            <label id="adminPanel-remove-user-group-label-user"> Utilisateurs
+            <label id="adminPanel-remove-user-group-label-user-label"> Utilisateurs
                 <select name="users" multiple class="multiple-selection">
                     {% for user in users %}
                         <option value="{{ user }}">{{ user }}</option>
@@ -140,78 +140,78 @@
 
     {% if error_create_user %}
         <div class="box red">
-            <h1 id="adminPanel-error" class="adminPanelSectionTitle">Erreur</h1>
+            <h1 id="adminPanel-error" class="adminPanelSectionTitle">Error</h1>
             <p id="adminPanel-error-message">{{ error_create_user }}</p>
         </div>
     {% endif %}
     {% if success_create_user %}
         <div class="box green">
-            <h1 id="adminPanel-success" class="adminPanelSectionTitle">Succès</h1>
+            <h1 id="adminPanel-success" class="adminPanelSectionTitle">Success</h1>
             <p id="adminPanel-success-message">{{ success_create_user }}</p>
         </div>
     {% endif %}
     <div class="box blue">
         <h1 id="adminPanel-create-user" class="adminPanelSectionTitle">Creer un utilisateur dans l'AD</h1>
         <form class="adminForm" action="/adminPanel/createUser" method="post">
-            <label id="adminPanel-create-user-label-first_name"> Prénom
+            <label id="adminPanel-create-user-label-first_name-label"> Prénom
                 <input id="adminPanel-create-user-first_name-placeholder" type="text" name="first_name"
                        placeholder="Prénom" required/>
             </label>
-            <label id="adminPanel-create-user-label-last_name"> Nom
+            <label id="adminPanel-create-user-label-last_name-label"> Nom
                 <input id="adminPanel-create-user-last_name-placeholder" type="text" name="last_name"
                        placeholder="Nom" required/>
             </label>
-            <label id="adminPanel-create-user-label-email"> Email
+            <label id="adminPanel-create-user-label-email-label"> Email
                 <input id="adminPanel-create-user-email-placeholder" type="email" name="email" placeholder="Email"
                        required/>
             </label>
-            <label id="adminPanel-create-user-label-password"> Mot de passe
+            <label id="adminPanel-create-user-label-password-label"> Mot de passe
                 <input id="adminPanel-create-user-password-placeholder" type="password" name="password"
                        placeholder="Mot de passe" required/>
             </label>
-            <label id="adminPanel-create-user-label-birthday"> Date de naissance
+            <label id="adminPanel-create-user-label-birthday-label"> Date de naissance
                 <input id="adminPanel-create-user-birthday-placeholder" type="date" name="birthday" required/>
             </label>
-            <label id="adminPanel-create-user-label-tel_prof"> Téléphone professionnel
+            <label id="adminPanel-create-user-label-tel_prof-label"> Téléphone professionnel
                 <input id="adminPanel-create-user-tel_prof-placeholder" type="tel" maxlength="10" name="tel_prof"
                        placeholder="Téléphone professionnel" required/>
             </label>
-            <label id="adminPanel-create-user-label-tel_perso"> Téléphone personnel
+            <label id="adminPanel-create-user-label-tel_perso-label"> Téléphone personnel
                 <input id="adminPanel-create-user-tel_perso-placeholder" type="tel" maxlength="10" name="tel_perso"
                        placeholder="Téléphone personnel" required/>
             </label>
-            <label id="adminPanel-create-user-label-title"> Rôle
+            <label id="adminPanel-create-user-label-title-label"> Rôle
                 <input id="adminPanel-create-user-title-placeholder" type="text" name="title" placeholder="Titre"
                        required/>
             </label>
-            <label id="adminPanel-create-user-label-adresse"> Adresse
+            <label id="adminPanel-create-user-label-adresse-label"> Adresse
                 <input id="adminPanel-create-user-adresse-placeholder" type="text" name="adresse"
                        placeholder="Adresse" required/>
             </label>
-            <label id="adminPanel-create-user-label-region"> Région
+            <label id="adminPanel-create-user-label-region-label"> Région
                 <input id="adminPanel-create-user-region-placeholder" type="text" name="region" placeholder="Région"
                        required/>
             </label>
-            <label id="adminPanel-create-user-label-code_postal"> Code postal
+            <label id="adminPanel-create-user-label-code_postal-label"> Code postal
                 <input id="adminPanel-create-user-code_postal-placeholder" type="text" maxlength="5" name="code_postal"
                        placeholder="Code postal" required/>
             </label>
-            <label id="adminPanel-create-user-label-ville"> Ville
+            <label id="adminPanel-create-user-label-ville-label"> Ville
                 <input id="adminPanel-create-user-ville-placeholder" type="text" name="ville" placeholder="Ville"
                        required/>
             </label>
-            <label id="adminPanel-create-user-label-pays"> Pays
+            <label id="adminPanel-create-user-label-pays-label"> Pays
                 <input id="adminPanel-create-user-pays-placeholder" type="text" name="pays" placeholder="Pays"
                        required/>
             </label>
-            <label id="adminPanel-create-user-label-departement"> Département
+            <label id="adminPanel-create-user-label-departement-label"> Département
                 <select name="departement" class="single">
                     {% for organisation_unit in all_organisation_unit %}
                         <option value="{{ organisation_unit }}"> {{ organisation_unit }}</option>
                     {% endfor %}
                 </select>
             </label>
-            <label id="adminPanel-create-user-label-group"> Groupe
+            <label id="adminPanel-create-user-label-group-label"> Groupe
                 <select name="group" class="single">
                     {% for group in groups %}
                         <option value="{{ group }}">{{ group }}</option>
@@ -226,20 +226,20 @@
 
     {% if error_remove_user %}
         <div class="box red">
-            <h1 id="adminPanel-error" class="adminPanelSectionTitle">Erreur</h1>
+            <h1 id="adminPanel-error" class="adminPanelSectionTitle">Error</h1>
             <p id="adminPanel-error-message">{{ error_remove_user }}</p>
         </div>
     {% endif %}
     {% if success_remove_user %}
         <div class="box green">
-            <h1 id="adminPanel-success" class="adminPanelSectionTitle">Succès</h1>
+            <h1 id="adminPanel-success" class="adminPanelSectionTitle">Success</h1>
             <p id="adminPanel-success-message">{{ success_remove_user }}</p>
         </div>
     {% endif %}
     <div class="box blue">
         <h1 id="adminPanel-delete-user" class="adminPanelSectionTitle">Supprimer un utilisateur de l'AD</h1>
         <form class="adminForm" action="/adminPanel/deleteUser" method="post">
-            <label id="adminPanel-delete-user-label-user"> Utilisateurs
+            <label id="adminPanel-delete-user-label-user-label"> Utilisateurs
                 <select name="user" class="single">
                     {% for user in users %}
                         <option value="{{ user }}">{{ user }}</option>
