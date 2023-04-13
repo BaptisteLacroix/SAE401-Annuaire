@@ -28,7 +28,12 @@ function setLanguage(language) {
             for (const [key, value] of Object.entries(data)) {
                 const element = document.getElementById(key);
                 if (element) {
-                    element.innerHTML = value;
+                    if (element.id.indexOf("search-filter") !== -1) {
+                        let elementToRemove = element.innerHTML.split("<")[0];
+                        element.innerHTML = element.innerHTML.replace(elementToRemove, value);
+                    } else {
+                        element.innerHTML = value;
+                    }
                 }
                 if (key === page) {
                     value.forEach((item) => {
@@ -100,7 +105,8 @@ function setEvents() {
 
 function addOnSearchbar(element) {
     let span = document.createElement("span");
-    span.className = "active-filter";
+    span.className = "active-filter " + element.classList[1];
+    span.id = "search-" + element.classList[1];
     span.innerText = element.textContent;
     let searchBar = document.getElementById("filters-used");
     if (validate(element, searchBar)) {

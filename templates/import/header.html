@@ -3,7 +3,7 @@
         <ul>
             <li class="left-right">
                 {% if admin %}
-                <a id="logoutText" href="./index">
+                <a id="logoutText" href="./logout">
                     <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em"
                         preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24">
                         <path fill="black"
@@ -26,7 +26,7 @@
             </li>
 
             <li><a href="./index">SINTA</a></li>
-            <li><a href="./globalSearch">Rechrecher</a></li>
+            <li><a id="header-rechercher" href="./globalSearch">Rechercher</a></li>
             {% if admin %}
             <li><a href="./adminPanel ">Admin panel</a></li>
             {% endif %}

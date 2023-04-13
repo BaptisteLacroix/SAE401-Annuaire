@@ -1,15 +1,9 @@
 {
   "header-title": "Directory",
+  "header-rechercher": "Search",
   "search-label": "Search",
   "search-button": "Submit",
   "input-search-placeholder": "Search...",
-  "search-presidence": "PRESIDENCY",
-  "search-assistance": "ASSISTANCE",
-  "search-communication": "COMMUNICATION",
-  "search-rh": "HUMAN RESOURCES",
-  "search-finance": "FINANCE",
-  "search-marketing": "MARKETING",
-  "search-informatique": "INFORMATION TECHNOLOGY",
   "index": [
     {
       "index-par1": "Welcome to the search help for the company directory!",
@@ -19,7 +13,7 @@
       "index-par6": "Use mot* to display all people whose first name starts with \"mot\".",
       "index-par7": "Use *mot to display all people whose last name ends with \"mot\".",
       "index-par8": "Use mot * to display all people whose first name is \"mot\".",
-      "index-par9": "Use mot*f to display all people whose first name starts with \"mot\" and last name starts\n            with\n            \"f\".",
+      "index-par9": "Use mot* f to display all people whose first name starts with \"mot\" and last name starts\n            with\n            \"f\".",
       "index-par10": "Use a to display all people whose name or first name contains the letter \"a\".",
       "index-par11": "Use col to display all people whose name or first name contains \"col\".",
       "index-par12": "Search by date of birth:",

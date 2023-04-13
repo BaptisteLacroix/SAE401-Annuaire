@@ -1,15 +1,9 @@
 {
   "header-title": "Annuaire",
+  "header-rechercher": "Rechercher",
   "search-label": "Recherche",
   "search-button": "Valider",
   "input-search-placeholder": "Rechercher...",
-  "search-presidence": "PRÉSIDENCE",
-  "search-assistance": "ASSISTANCE",
-  "search-communication": "COMMUNICATION",
-  "search-rh": "RESSOURCES HUMAINES",
-  "search-finance": "FINANCE",
-  "search-marketing": "MARKETING",
-  "search-informatique": "INFORMATIQUE",
   "index": [
     {
       "index-par1": "Bienvenue sur l'aide à la recherche de l'annuaire d'entreprise !",
@@ -19,7 +13,7 @@
       "index-par6": "Utilisez mot* pour afficher toutes les personnes dont le prénom commence par\n                    \"mot\".",
       "index-par7": "Utilisez *mot pour afficher toutes les personnes dont le nom se termine par\n                    \"mot\".",
       "index-par8": "Utilisez mot * pour afficher toutes les personnes dont le prénom est \"mot\".",
-      "index-par9": "Utilisez mot*f pour afficher toutes les personnes dont le prénom commence par \"mot\"\n                    et le nom\n                    commence\n                    par \"f\".",
+      "index-par9": "Utilisez mot* f pour afficher toutes les personnes dont le prénom commence par \"mot\"\n                    et le nom\n                    commence\n                    par \"f\".",
       "index-par10": "Utilisez a pour afficher toutes les personnes dont le nom ou le prénom contient la\n                    lettre \"a\".",
       "index-par11": "Utilisez col pour afficher toutes les personnes dont le nom ou le prénom contient\n                    \"col\".",
       "index-par12": "Recherche par date de naissance :",
