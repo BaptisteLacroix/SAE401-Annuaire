@@ -12,15 +12,25 @@
   "search-informatique": "INFORMÁTICA",
   "index": [
     {
-      "index-help": "Ayuda para la búsqueda",
-      "index-par1": "La búsqueda se realiza en el inicio del apellido de la persona seguido de su nombre:",
-      "index-par2": "\"Mar\", busca todas las personas cuyo apellido comienza por mar",
-      "index-par3": "\",Martin m\" busca todas las personas llamadas Martin cuyo nombre comienza por m",
-      "index-par4": "Es posible utilizar el carácter * como comodín:",
-      "index-par5": "\",Mar* m\", busca todas las personas cuyo apellido comienza por mar y cuyo nombre comienza por m",
-      "index-par6": "Para los apellidos compuestos, el separador entre la partícula y el apellido no está normalizado, puede ser\n un guión, un espacio, un guión bajo. Utilice el comodín * para cubrir todos los casos:",
-      "index-par7": "le*corbusier cubre lecorbusier, le corbusier, le-corbusier y le_corbusier",
-      "index-par8": "Si su búsqueda sigue siendo infructuosa, busque en una parte del apellido, por ejemplo: *corbus"
+      "index-par1": "¡Bienvenido a la ayuda de búsqueda del directorio de la empresa!",
+      "index-par2": "Para buscar personas en el directorio, puede utilizar filtros y comodines para refinar su búsqueda. Aquí hay algunos ejemplos para ayudarlo:",
+      "index-par3": "Búsqueda por nombre:",
+      "index-par4": "Utilice * para mostrar todas las personas de la empresa.",
+      "index-par6": "Utilice mot* para mostrar todas las personas cuyo nombre comienza con \"mot\".",
+      "index-par7": "Utilice *mot para mostrar todas las personas cuyo nombre termina en \"mot\".",
+      "index-par8": "Utilice mot * para mostrar todas las personas cuyo nombre es \"mot\".",
+      "index-par9": "Utilice mot*f para mostrar todas las personas cuyo nombre comienza con \"mot\" y apellido comienza con \"f\".",
+      "index-par10": "Utilice a para mostrar todas las personas cuyo nombre o apellido contiene la letra \"a\".",
+      "index-par11": "Utilice col para mostrar todas las personas cuyo nombre o apellido contiene \"col\".",
+      "index-par12": "Búsqueda por fecha de nacimiento:",
+      "index-par13": "Utilice >1999 para mostrar todas las personas nacidas después de 1999.",
+      "index-par14": "Utilice <1999 para mostrar todas las personas nacidas antes de 1999.",
+      "index-par15": "Utilice 1980-1999 para mostrar todas las personas nacidas entre 1980 y 1999.",
+      "index-par16": "Utilice 10/05/1999 para mostrar todas las personas nacidas el 10 de mayo de 1999.",
+      "index-par17": "Utilice 1999 para mostrar todas las personas nacidas en 1999.",
+      "index-par18": "Filtrado:",
+      "index-par19": "Utilice (Presidencia, Comunicación, Recursos Humanos) col para mostrar todas las personas cuyo nombre o apellido contiene \"col\" y que son parte de uno de los siguientes grupos: \"Presidencia\", \"Comunicación\" o \"Recursos Humanos\".",
+      "index-par20": "Recuerde que puede combinar varios filtros y comodines para refinar aún más su búsqueda. Por ejemplo, puede utilizar (Presidencia) mot* para mostrar todas las personas cuyo nombre comienza con \"mot\" y que son parte del grupo \"Presidencia\"."
     }
   ],
   "login": [

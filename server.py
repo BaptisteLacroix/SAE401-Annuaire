@@ -429,7 +429,6 @@ def globalSearch():
                 'last_name': entry.sn.value,
                 'first_name': entry.givenName.value,
             }
-            print(result)
             results.append(result)
         return render_template('globalSearch.html', users=results)
 

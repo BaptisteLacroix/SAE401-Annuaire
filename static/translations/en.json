@@ -12,15 +12,25 @@
   "search-informatique": "INFORMATION TECHNOLOGY",
   "index": [
     {
-      "index-help": "Search Help",
-      "index-par1": "The search is performed on the beginning of the person's last name followed by their first name:",
-      "index-par2": "\"Mar\" searches for all people whose last name starts with mar",
-      "index-par3": "\"Martin m\" searches for all people named Martin whose first name starts with m",
-      "index-par4": "It is possible to use the * character as a wildcard:",
-      "index-par5": "\"Mar* m\" searches for all people whose last name starts with mar and whose first name starts with m",
-      "index-par6": "For compound names, the separator between the particle and the name is not standardized, it may be a hyphen, a space, or an underscore. Use the * wildcard to cover all cases:",
-      "index-par7": "le*corbusier covers lecorbusier, le corbusier, le-corbusier, and le_corbusier",
-      "index-par8": "if your search is still unsuccessful, search for a part of the name, for example: *corbus"
+      "index-par1": "Welcome to the search help for the company directory!",
+      "index-par2": "To find people in the directory, you can use filters and wildcards to refine your search. Here are\n            some examples to help you:",
+      "index-par3": "Search by name:",
+      "index-par4": "Use * to display all people in the company.",
+      "index-par6": "Use mot* to display all people whose first name starts with \"mot\".",
+      "index-par7": "Use *mot to display all people whose last name ends with \"mot\".",
+      "index-par8": "Use mot * to display all people whose first name is \"mot\".",
+      "index-par9": "Use mot*f to display all people whose first name starts with \"mot\" and last name starts\n            with\n            \"f\".",
+      "index-par10": "Use a to display all people whose name or first name contains the letter \"a\".",
+      "index-par11": "Use col to display all people whose name or first name contains \"col\".",
+      "index-par12": "Search by date of birth:",
+      "index-par13": "Use >1999 to display all people born after 1999.",
+      "index-par14": "Use <1999 to display all people born before 1999.",
+      "index-par15": "Use 1980-1999 to display all people born between 1980 and 1999.",
+      "index-par16": "Use 10/05/1999 to display all people born on May 10, 1999.",
+      "index-par17": "Use 1999 to display all people born in 1999.",
+      "index-par18": "Filtering:",
+      "index-par19": "Use (Presidency, Communication, Human Resources) col to display all people whose name or first\n            name contains \"col\" and who are part of one of the following groups: \"Presidency\",\n            \"Communication\", or \"Human Resources\".",
+      "index-par20": "Remember, you can combine multiple filters and wildcards to further refine your search. For\n            example, you can use (Presidency) mot* to display all people whose first name starts with \"mot\"\n            and who are part of the \"Presidency\" group."
     }
   ],
   "login": [
