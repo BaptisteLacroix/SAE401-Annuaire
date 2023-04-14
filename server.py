@@ -302,22 +302,22 @@ def search_by_name(search_value: str) -> list[list[str, str, str]]:
     :return: A list of matching users, where each user is represented as a list of strings [full_name, email, role].
     :rtype: List[List[str]]
     """
-    # if the search value start with *a so we search for all the users that end with a
+    # if the search value start with *a, so we search for all the users that end with a
     # if the search value end with a* so we search for all the users that start with a
-    # if the search value start with a so we search for all the users that contain a
-    # if the search value looks like mar* m so we search for all the users that the first_name start with mar and the
+    # if the search value start with a, so we search for all the users that contain a
+    # if the search value looks like mar* m, so we search for all the users that the first_name start with mar and the
     # last_name start with m
     matching_users: list[list[str, str]] = []
     if search_value[0] == '*' and len(search_value) > 1 and search_value[1] != ' ':
         for user in USERS_PROPOSITION:
-            # disable the case sensitive
+            # disable the case-sensitive
             if user[0].split(' ')[1].lower().endswith(search_value[1:].lower()):
                 # append only the first and the last element from the user
                 matching_users.append([user[0], user[2]])
     elif search_value[0] == '*' and len(search_value) > 1 and search_value[1] == ' ':
         # search for all users where the last_name start with the search value
         for user in USERS_PROPOSITION:
-            # disable the case sensitive
+            # disable the case-sensitive
             if user[0].split(' ')[1].lower().startswith(search_value[2:].lower()):
                 matching_users.append([user[0], user[2]])
     elif search_value[-1] == '*':
@@ -615,9 +615,12 @@ def is_valid_postal_code(postal_code: str) -> bool:
 
 def validate_user_input() -> str:
     """
-    Validate user input.
+    Validate the user input submitted in a form.
 
-    :return: An error message if the user input is invalid, or an empty string if the input is valid.
+    Check that all required fields are filled, and that their values are valid. If any validation fails,
+    return an error message that describes the validation failure.
+
+    :return: An empty string if validation succeeds, an error message otherwise.
     :rtype: str
     """
     required_fields = ['first_name', 'last_name', 'email', 'password', 'birthday', 'tel_prof', 'tel_perso', 'title',
@@ -661,8 +664,11 @@ def is_valid_email(email: str) -> bool:
 def is_valid_password(password: str) -> bool:
     """
     Check if the given password is valid.
+
     :param password: The password to check.
+    :type password: str
     :return: True if the password is valid, False otherwise.
+    :rtype: bool
     """
     return len(password) >= 8 and re.search(r"[a-z]", password) and re.search(r"[A-Z]", password) and re.search(
         r"[0-9]", password)
@@ -688,11 +694,11 @@ def logout() -> str:
 @app.route('/globalSearch', methods=['GET', 'POST'])
 def globalSearch():
     """
-    Handles the search functionality for the application. Searches for users in the LDAP database based on the search
-    query and filters provided by the user.
+    This function is responsible for handling the global search feature of the application. It searches for users in the
+    LDAP directory based on the search value and the filter criteria provided by the user. If no search value or filter
+    is provided, all users are returned.
 
-    :return: The rendered template 'globalSearch.html' with search results, suggestions, and filter information
-             if a search query is provided, otherwise the template without any search results.
+    :return: A Response object representing the search results page with the appropriate data and template.
     """
     all_filters = [
         {
