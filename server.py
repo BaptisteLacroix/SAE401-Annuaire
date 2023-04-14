@@ -24,6 +24,8 @@ def init_users_information() -> list[list[str, str]]:
     Retrieve all users from the LDAP server, and for each user, store their display name, birthdate, and department in
     a list. Remove any duplicate entries from the list and return the resulting list of users and their information.
 
+    This will be used for suggestions when searching a user.
+
     :return: The list of users and their information, with each user represented as a list containing their display name,
              birthdate, and department.
     :rtype: list[list[str, str]]
@@ -91,6 +93,9 @@ def login() -> Union[Response, str]:
         return redirect(url_for('index'))
 
     if request.method == 'POST':
+        # check all the fields are filled
+        if not request.form['username'] or not request.form['password']:
+            return render_template('login.html', error='Please fill all the fields')
         username: str = request.form['username']
         password: str = request.form['password']
         remember: str = request.form.get('remember')
@@ -280,7 +285,7 @@ def suggestions() -> Union[Response, str]:
         else:
             matching_users: list[list[str, str, str]] = search_by_name(search_value)
             return jsonify(matching_users)
-    return jsonify(matching_users)
+        return jsonify(matching_users)
 
 
 def search_by_name(search_value: str) -> list[list[str, str, str]]:

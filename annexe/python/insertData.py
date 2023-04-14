@@ -63,7 +63,7 @@ def create_user(conn: ldap3.Connection, df: pd.DataFrame) -> None:
             # add the user to the group {Grp_AdmAD}
             add_to_admin_group(conn, row)
 
-        print(f"User {row['first_name']} {row['last_name']} added to Active Directory with password {row['password']}")
+        print(f"User {row['first_name']} {row['last_name']} added to Active Directory")
 
 
 def add_to_admin_group(conn: Connection, row: dict[str, str]) -> None:
