@@ -83,9 +83,9 @@ To run the application locally, follow these steps:
 # Contributors
 This project was created by :
  - [Lacroix Baptiste](https://github.com/BaptisteLacroix)
- - [Romain Patureau](https://github.com/RainbowGamer333)
- - [Mateus Lopes](https://github.com/Cmoitchoupi)
- - [Marvin Conil](https://github.com/MarvStunt)
+ - [Patureau Romain](https://github.com/RainbowGamer333)
+ - [Lopes Mateus](https://github.com/Cmoitchoupi)
+ - [Conil Mar vin](https://github.com/MarvStunt)
  - [Hassan Sacha](https://github.com/SachaHassan) <br>
 
 During the second year of the BUT program at the University Nice Côte d'Azur, under the supervision of professors Ms. Feneon and Mr. Bilancini.
