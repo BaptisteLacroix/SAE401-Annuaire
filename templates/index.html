@@ -53,35 +53,36 @@
             </li>
         </ul>
 
-        <p id="index-par11">Recherche par date de naissance :</p>
-        <ul>
-            <li>
-                <p id="index-par12">
-                    Utilisez >1999 pour afficher toutes les personnes nées après 1999.
-                </p>
-            </li>
-            <li>
-                <p id="index-par13">
-                    Utilisez <1999 pour afficher toutes les personnes nées avant 1999.
-                </p>
-            </li>
-            <li>
-                <p id="index-par14">
-                    Utilisez 1980-1999 pour afficher toutes les personnes nées entre 1980 et 1999.
-                </p>
-            </li>
-            <li>
-                <p id="index-par15">
-                    Utilisez 10/05/1999 pour afficher toutes les personnes nées le 10 mai 1999.
-                </p>
-            </li>
-            <li>
-                <p id="index-par16">
-                    Utilisez 1999 pour afficher toutes les personnes nées en 1999.
-                </p>
-            </li>
-        </ul>
-
+        {% if admin %}
+            <p id="index-par11">Recherche par date de naissance :</p>
+            <ul>
+                <li>
+                    <p id="index-par12">
+                        Utilisez >1999 pour afficher toutes les personnes nées après 1999.
+                    </p>
+                </li>
+                <li>
+                    <p id="index-par13">
+                        Utilisez <1999 pour afficher toutes les personnes nées avant 1999.
+                    </p>
+                </li>
+                <li>
+                    <p id="index-par14">
+                        Utilisez 1980-1999 pour afficher toutes les personnes nées entre 1980 et 1999.
+                    </p>
+                </li>
+                <li>
+                    <p id="index-par15">
+                        Utilisez 10/05/1999 pour afficher toutes les personnes nées le 10 mai 1999.
+                    </p>
+                </li>
+                <li>
+                    <p id="index-par16">
+                        Utilisez 1999 pour afficher toutes les personnes nées en 1999.
+                    </p>
+                </li>
+            </ul>
+        {% endif %}
         <p id="index-par17">
             Filtrage :
         </p>
