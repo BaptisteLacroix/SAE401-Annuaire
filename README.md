@@ -1,92 +1,86 @@
-# S401_Equipe4B
+# Project Name: Active Directory Lookup
+This is a project developed by Romain Patureau, Mateus Lopes, Marvin Conil, Hassan Sacha, and Albert Ict during their second year of BUT at the University Nice Côte d'Azur, in the Informatique department. The project was developed with the guidance of professors Mme Feneon and M. Bilancini.
+
+# Objective
+The main objective of this project is to design an application that allows interaction with an Active Directory. The project aims to create a website that enables us to perform searches to gather information about employees within our company.
+
+# General Objectives
+As a technical team, we aim to:
+
+ - Configure the Active Directory
+ - Create a website to use the Active Directory of the company
+ - Manage the database (creating/deleting groups and adding/removing employees from a group)
+ - Keep the user database up to date (creating/deleting employees)
+ - Establish a connection between the website and the database
+ - Feed the active directory through a script
+ 
+As a user, they can:
+
+ - Perform precise searches or use jokers
+ - Consult information about the person searched for (name, first name, professional email, department, role, professional phone  number, company)
+ - Connect as an administrator (Grp_AdmAD) to access more information during the search
+ - Consult the help for the search on the homepage
+ - Translate the page based on the chosen language
+ 
+# Main Features
+## Hierarchy
+ - Search for employee names
+ - Search using jokers
+ - Access the information of the employee searched for
+ - Keep the groups up to date by the administrator
+ 
+# Definitions
+ 1. The search function allows finding an employee using simple search. For example: "Fabien" will return all employees with the first or last name "Fabien".<br>The functionality using jokers allows searching for an employee using the "`*`" character. For example: "`Fa*en`" will return all employees with the first letters "Fa" and last letters "en".
+ 2. This feature allows displaying information about the searched employee, such as their name, first name, email, and phone number for lambda users. More information will be available to connected users with administrative permissions.
+ 3. This feature will allow the site administrator to manage the database, i.e., add, modify, and consult accounts in the database.
+ 
+#  Secondary Features
+## Hierarchy
+ - Filter searches
+ - Search for users by date of birth (only for connected users) using jokers
+ - Translate the site according to the desired language
+ - Suggest search for the user
+ - User administration
+ 
+# Definitions
+ - The filter search feature allows searching for an employee more precisely. Example: "Fabien" will return all employees named "Fabien", and the filter can be applied to see all "Fabien" working in the HR department.
+ - The date of birth search feature using jokers (>, <, -) allows searching for a specific employee. For example, ">1999" will search for all people born after 1999, "1980-1999" will search for all people born between 1980 and 1999, "1999" will search for all people born in 1999, and finally, 10/05/1999 will search for people born on May 10, 1999.
+ - This feature allows foreign users to consult the page without any problems. Three languages will be available (English, Spanish, and French).
+ - The search suggestion feature enables the user to obtain recommended results after entering a few letters in the search.
+ - The feature allows the administrator to create or delete users to maintain a good overview of the company on the site.
+ 
+# Technologies Used
+ - Python (Flask) for back-end development
+ - JavaScript for front-end development and for the communication between the server and the front
+ - HTML/CSS for creating the website interface
+ - Active Directory for managing the database and user accounts
+ 
+# Features
+The main features of the application are:
+ - The main features of the application are:
+ - Searching employees using their name or using wildcard characters.
+ - Displaying employee information such as name, email, department, role, and phone number.
+ - Allowing the administrator to manage the user database, including adding, modifying, and deleting user accounts.
+ - Allowing users to filter their search results based on the birthdate of employees.
+ - Translating the website into three different languages: English, French, and Spanish.
+ - Providing search suggestions to users after they start typing in the search bar.
+Allowing the administrator to create and delete user accounts.
+
+# Installation
+To run the application locally, follow these steps:
+
+ - Clone the project from the GitHub repository.
+ - Install the required dependencies using pip : 
+    - `pip install Flask`
+    - `pip install regex`
+    - `pip install ldap3`
+ - Make sure Active Directory is installed and configured properly.
+ - Run the server.py file using Python to start the Flask server.
+    - `flask --app server.py run`
+ - Open a web browser and navigate to http://localhost:5000 to access the website.
+ - You can insert the data from the users.xlsx file into the AD using the insertData.py file.
 
 
-
-## Getting started
-
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
-
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
-
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin https://iut-git.unice.fr/hs002077/s401_equipe4b.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](https://iut-git.unice.fr/hs002077/s401_equipe4b/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+# Contributors
+This project was created by Lacroix Baptiste, Romain Patureau, Mateus Lopes, Marvin Conil, Hassan Sacha 
+During the second year of the BUT program at the University Nice Côte d'Azur, under the supervision of professors Ms. Feneon and Mr. Bilancini.
