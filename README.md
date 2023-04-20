@@ -87,4 +87,5 @@ This project was created by :
  - [Mateus Lopes](https://github.com/Cmoitchoupi)
  - [Marvin Conil](https://github.com/MarvStunt)
  - [Hassan Sacha](https://github.com/SachaHassan) <br>
+
 During the second year of the BUT program at the University Nice Côte d'Azur, under the supervision of professors Ms. Feneon and Mr. Bilancini.
