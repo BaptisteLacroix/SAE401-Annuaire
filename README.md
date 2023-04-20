@@ -1,5 +1,4 @@
 # Project Name: Active Directory Lookup
-This is a project developed by Romain Patureau, Mateus Lopes, Marvin Conil, Hassan Sacha, and Albert Ict during their second year of BUT at the University Nice Côte d'Azur, in the Informatique department. The project was developed with the guidance of professors Mme Feneon and M. Bilancini.
 
 # Objective
 The main objective of this project is to design an application that allows interaction with an Active Directory. The project aims to create a website that enables us to perform searches to gather information about employees within our company.
@@ -82,5 +81,5 @@ To run the application locally, follow these steps:
 
 
 # Contributors
-This project was created by Lacroix Baptiste, Romain Patureau, Mateus Lopes, Marvin Conil, Hassan Sacha 
+This project was created by [Lacroix Baptiste](https://github.com/BaptisteLacroix), [Romain Patureau](https://github.com/RainbowGamer333), [Mateus Lopes](https://github.com/Cmoitchoupi), [Marvin Conil](https://github.com/MarvStunt), [Hassan Sacha](https://github.com/SachaHassan) 
 During the second year of the BUT program at the University Nice Côte d'Azur, under the supervision of professors Ms. Feneon and Mr. Bilancini.
